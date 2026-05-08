@@ -1166,20 +1166,29 @@ tr:last-child td {
   }
 
   .header-inner {
-    align-items: flex-start;
-    flex-direction: column;
-    padding: 0.8rem 0;
+    align-items: center;
+    flex-wrap: wrap;
+    min-height: 64px;
+    padding: 0.55rem 0;
   }
 
   .nav {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 0.15rem;
+    scrollbar-width: none;
+  }
+
+  .nav::-webkit-scrollbar {
+    display: none;
   }
 
   .hero,
   .hero-tight,
   .city-hero {
     min-height: auto;
-    padding: 3.6rem 0 2.4rem;
+    padding: 2.8rem 0 2rem;
   }
 
   .toc-band {
@@ -1194,6 +1203,60 @@ tr:last-child td {
 @media (max-width: 640px) {
   .container {
     width: min(calc(100% - 1rem), var(--container));
+  }
+
+  .header-inner {
+    gap: 0.45rem;
+    padding: 0.45rem 0 0.35rem;
+  }
+
+  .brand {
+    gap: 0.5rem;
+  }
+
+  .brand-mark {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .brand-copy strong {
+    font-size: 0.95rem;
+  }
+
+  .brand-copy span {
+    display: none;
+  }
+
+  .nav {
+    gap: 0.25rem;
+    font-size: 0.86rem;
+  }
+
+  .nav-link {
+    flex: 0 0 auto;
+    padding: 0.38rem 0.52rem;
+  }
+
+  .breadcrumb ol {
+    width: min(calc(100% - 1rem), var(--container));
+    padding: 0.45rem 0;
+    font-size: 0.82rem;
+  }
+
+  .page-status-inner {
+    gap: 0.45rem;
+    padding: 0.55rem 0;
+  }
+
+  .page-status-pill,
+  .page-status-copy {
+    font-size: 0.78rem;
+  }
+
+  .hero,
+  .hero-tight,
+  .city-hero {
+    padding: 2rem 0 1.45rem;
   }
 
   .stat-grid {
