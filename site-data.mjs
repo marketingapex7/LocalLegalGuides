@@ -1,5 +1,5 @@
 export const siteData = {
-  siteName: "LocalLegalGuides",
+  siteName: "Local Legal Guides",
   siteTagline: "Local legal guides by city",
   siteDescription:
     "Local legal guides for DUI, DWI, personal injury, city courts, agencies, deadlines, and official local resources.",

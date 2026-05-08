@@ -1,5 +1,5 @@
 {
-  "name": "local-legal-guide-rebuild",
+  "name": "local-legal-guides",
   "private": true,
   "type": "module",
   "scripts": {

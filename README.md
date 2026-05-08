@@ -1,4 +1,4 @@
-# LocalLegalGuides
+# Local Legal Guides
 
 Static legal guide site generator for city-based DUI/DWI and personal injury pages.
 

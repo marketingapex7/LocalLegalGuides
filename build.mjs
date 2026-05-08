@@ -1877,8 +1877,8 @@ function sponsorshipPage() {
     <div class="container hero-grid">
       <div class="hero-copy">
         <p class="eyebrow">For attorneys</p>
-        <h1>Claim a LocalLegalGuides regional sponsorship package.</h1>
-        <p class="lede">Each cluster can feature one clearly labeled attorney sponsor across its related city pages. LocalLegalGuides uses the same regional structure across every market so sponsorship stays consistent and transparent.</p>
+        <h1>Claim a Local Legal Guides regional sponsorship package.</h1>
+        <p class="lede">Each cluster can feature one clearly labeled attorney sponsor across its related city pages. Local Legal Guides uses the same regional structure across every market so sponsorship stays consistent and transparent.</p>
       </div>
       <aside class="hero-card">
         <div class="hero-card-header">
@@ -2009,7 +2009,7 @@ function mediaKitPage() {
         <div class="section-head">
           <p class="eyebrow">Disclosure model</p>
           <h2>Built to stay useful and transparent.</h2>
-          <p>Sponsors are advertisers. Sponsorship does not mean LocalLegalGuides endorses the attorney, ranks the attorney, guarantees results, or replaces the reader's need to verify court and agency information.</p>
+          <p>Sponsors are advertisers. Sponsorship does not mean Local Legal Guides endorses the attorney, ranks the attorney, guarantees results, or replaces the reader's need to verify court and agency information.</p>
         </div>
         <div class="hero-actions">
           <a class="button button-primary" href="/claim-sponsorship/">Claim sponsorship</a>
@@ -2034,7 +2034,7 @@ function sponsorAgreementPage() {
       <div class="hero-copy">
         <p class="eyebrow">Sponsor agreement</p>
         <h1>Plain-language sponsorship terms.</h1>
-        <p class="lede">This page explains how LocalLegalGuides presents attorney sponsorships, what is included in the starter package, and what the sponsorship does not promise.</p>
+        <p class="lede">This page explains how Local Legal Guides presents attorney sponsorships, what is included in the starter package, and what the sponsorship does not promise.</p>
       </div>
       <aside class="hero-card">
         <div class="hero-card-header">
@@ -2062,7 +2062,7 @@ function sponsorAgreementPage() {
           <h2>What the sponsorship does not mean.</h2>
         </div>
         <ol class="bulleted-list">
-          <li>LocalLegalGuides does not endorse, rank, certify, or recommend the sponsor.</li>
+          <li>Local Legal Guides does not endorse, rank, certify, or recommend the sponsor.</li>
           <li>Sponsorship does not guarantee leads, calls, cases, clicks, rankings, or legal outcomes.</li>
           <li>Guide content, official contacts, legal summaries, and source links remain editorially separate from advertising.</li>
           <li>The sponsor is responsible for ensuring its ad copy complies with attorney advertising rules that apply to the sponsor.</li>
@@ -2089,7 +2089,7 @@ function sponsorAgreementPage() {
         <div class="section-head">
           <p class="eyebrow">Renewal and changes</p>
           <h2>Keep the package simple.</h2>
-          <p>Renewal, replacement copy, cancellation, and market expansion can be handled by written agreement. LocalLegalGuides may decline or remove sponsor material that is misleading, unverifiable, noncompliant, or inconsistent with the site disclosure model.</p>
+          <p>Renewal, replacement copy, cancellation, and market expansion can be handled by written agreement. Local Legal Guides may decline or remove sponsor material that is misleading, unverifiable, noncompliant, or inconsistent with the site disclosure model.</p>
         </div>
       </div>
       <div>
@@ -2136,7 +2136,7 @@ function privacyPage() {
 function contactPage() {
   return infoPage(
     "Contact",
-    "Contact LocalLegalGuides",
+    `Contact ${siteData.siteName}`,
     `Use the right inbox so your question reaches the right person quickly.`,
     `<div class="container card-grid three-up">
       <article class="info-card"><h3>Legal and compliance</h3><p><a class="text-link" href="mailto:${siteData.legalEmail}">${siteData.legalEmail}</a></p></article>

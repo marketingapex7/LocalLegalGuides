@@ -130,5 +130,5 @@ createServer(async (req, res) => {
     res.end("Not found");
   }
 }).listen(port, () => {
-  console.log(`LocalLegalGuides running at http://localhost:${port}`);
+  console.log(`Local Legal Guides running at http://localhost:${port}`);
 });
