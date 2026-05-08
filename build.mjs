@@ -927,6 +927,7 @@ function cityToc(isDui) {
     [isDui ? "Penalties" : "Claim value", "#penalties"],
     [isDui ? "Implied consent" : "Fault and proof", "#implied-consent"],
     [isDui ? "License restoration" : "Insurance and settlement", "#restoration"],
+    [isDui ? "DUI attorney" : "Injury attorney", "#attorney-question"],
     ["Official sources", "#sources"],
     ["Common questions", "#faq"],
   ];
@@ -937,6 +938,45 @@ function cityToc(isDui) {
       <nav class="toc-list">${items
         .map((item, index) => `<a href="${item[1]}"><span>${index + 1}</span>${escapeHtml(item[0])}</a>`)
         .join("")}</nav>
+    </div>
+  </section>`;
+}
+
+function attorneyQuestionSection({ city, region, isDui, basics }) {
+  const title = isDui
+    ? `Do I need a ${basics.duiName} attorney in ${city.name}?`
+    : `Do I need a personal injury attorney in ${city.name}?`;
+  const intro = isDui
+    ? `People often search for "${city.name} DUI attorney" even when ${region.state} uses ${basics.duiName} as the formal offense name. A lawyer is not required just to read court dates, contact the clerk, or look up driver-service information. People often consider talking with a lawyer when a case could affect jail exposure, fines, supervision, a license suspension, commercial driving privileges, immigration status, or a professional license.`
+    : `A ${city.name} personal injury attorney is not required just to request a crash report, open an insurance claim, or collect basic records. People often consider talking with a lawyer when injuries are serious, fault is disputed, medical bills are growing, an insurer asks for a recorded statement, or a government vehicle or public property may be involved.`;
+  const cards = isDui
+    ? [
+        ["Court consequences", `${basics.duiName} cases can involve criminal court, plea options, sentencing conditions, and local court procedures.`],
+        ["License consequences", "A lawyer can explain how the court case, testing issues, and state driver-license rules may move on separate tracks."],
+        ["Records to gather", `Useful records may include the ticket, bond paperwork, court date notice, police agency information, test paperwork, and any Secretary of State or DMV notice.`],
+      ]
+    : [
+        ["Liability and proof", "A lawyer can evaluate fault, causation, medical documentation, witness issues, and whether comparative fault may be raised."],
+        ["Insurance and liens", "Injury claims can involve liability coverage, medical payments coverage, health-insurance liens, subrogation, or uninsured motorist issues."],
+        ["Records to gather", "Useful records may include the crash or incident report, photographs, medical records, bills, wage documents, insurance letters, and claim numbers."],
+      ];
+  const closing = isDui
+    ? `This page does not recommend a specific lawyer and is not legal advice. It is meant to help you identify the local court, police agency, and license contacts that may matter before you decide whether to contact a ${region.state} ${
+        basics.duiName === "DUI" ? "DUI attorney" : `${basics.duiName} or DUI attorney`
+      }.`
+    : `This page does not recommend a specific lawyer and is not legal advice. It is meant to help you identify the local court, records, and insurance context that may matter before you decide whether to contact a ${region.state} personal injury attorney.`;
+
+  return `<section class="section section-attorney-question" id="attorney-question">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Attorney question</p>
+        <h2>${escapeHtml(title)}</h2>
+        <p>${escapeHtml(intro)}</p>
+      </div>
+      <div class="card-grid three-up">${cards
+        .map((item) => `<article class="info-card"><h3>${escapeHtml(item[0])}</h3><p>${escapeHtml(item[1])}</p></article>`)
+        .join("")}</div>
+      <p class="legal-note">${escapeHtml(closing)}</p>
     </div>
   </section>`;
 }
@@ -1420,6 +1460,8 @@ function cityShell(city, region, practice) {
         .join("")}</div>
     </div>
   </section>
+
+  ${attorneyQuestionSection({ city, region, isDui, basics })}
 
   <section class="section section-alt" id="related-guides">
     <div class="container split-grid">
