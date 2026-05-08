@@ -1,0 +1,9 @@
+{
+  "name": "local-legal-guide-rebuild",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "serve": "node server.mjs"
+  }
+}
