@@ -185,7 +185,7 @@ function sponsorProfileCard(region, packageInfo, placement = "cluster") {
     </ul>
     <p class="sponsor-note">Attorney Advertising. Any future sponsor placement will remain separate from official legal and government resource information.</p>
     <div class="hero-actions">
-      <a class="button button-primary" href="/claim-sponsorship/" ${trackingAttrs(`${eventBase}_claim_click`, {
+      <a class="button button-primary" href="/sponsorships/" ${trackingAttrs(`${eventBase}_claim_click`, {
         region: region.slug,
         placement,
         status: packageInfo.status,
@@ -1417,7 +1417,7 @@ function cityShell(city, region, practice) {
           </ul>
           <div class="hero-actions">
             <a class="button button-primary" href="${sponsorPackageHref(region)}">View regional sponsor package</a>
-            <a class="button button-secondary" href="/claim-sponsorship/">Claim this package</a>
+            <a class="button button-secondary" href="/sponsorships/">Claim this package</a>
           </div>
         </aside>
         <div class="sponsor-inline-card">
@@ -2012,7 +2012,7 @@ function mediaKitPage() {
           <p>Sponsors are advertisers. Sponsorship does not mean Local Legal Guides endorses the attorney, ranks the attorney, guarantees results, or replaces the reader's need to verify court and agency information.</p>
         </div>
         <div class="hero-actions">
-          <a class="button button-primary" href="/claim-sponsorship/">Claim sponsorship</a>
+          <a class="button button-primary" href="/sponsorships/">Claim sponsorship</a>
           <a class="button button-secondary" href="/sponsor-agreement/">Sponsor terms</a>
         </div>
       </div>
@@ -2098,7 +2098,7 @@ function sponsorAgreementPage() {
           <h2>Start with availability.</h2>
           <p>Send the region you want, the firm name, and the best contact person. We can confirm whether the cluster is open and what would be needed to launch.</p>
           <div class="hero-actions">
-            <a class="button button-primary" href="/claim-sponsorship/">Claim sponsorship</a>
+            <a class="button button-primary" href="/sponsorships/">Claim sponsorship</a>
             <a class="button button-secondary" href="mailto:${siteData.sponsorsEmail}">${siteData.sponsorsEmail}</a>
           </div>
         </aside>
@@ -2282,12 +2282,12 @@ function renderRegion(region) {
 
 function renderStaticPages() {
   const pages = {
-    "/claim-sponsorship/": {
-      title: `Claim Sponsorship | ${siteData.siteName}`,
+    "/sponsorships/": {
+      title: `Sponsorships | ${siteData.siteName}`,
       description: `${siteData.siteName} sponsorship details for regional cluster packages and related city-page attorney placements.`,
       body: sponsorshipPage(),
-      active: "/claim-sponsorship/",
-      crumbs: ["Claim Sponsorship"],
+      active: "/sponsorships/",
+      crumbs: ["Sponsorships"],
     },
     "/pricing/": {
       title: `Sponsorship Pricing | ${siteData.siteName}`,
@@ -2300,14 +2300,14 @@ function renderStaticPages() {
       title: `Sponsor Media Kit | ${siteData.siteName}`,
       description: `${siteData.siteName} sponsor media kit with regional inventory, package benefits, starter pricing, and disclosure details for attorneys.`,
       body: mediaKitPage(),
-      active: "/claim-sponsorship/",
+      active: "/sponsorships/",
       crumbs: ["Sponsor Media Kit"],
     },
     "/sponsor-agreement/": {
       title: `Sponsor Agreement | ${siteData.siteName}`,
       description: `${siteData.siteName} plain-language sponsorship terms, disclosure rules, exclusivity notes, and attorney advertising limitations.`,
       body: sponsorAgreementPage(),
-      active: "/claim-sponsorship/",
+      active: "/sponsorships/",
       crumbs: ["Sponsor Agreement"],
     },
     "/terms/": {
@@ -2362,7 +2362,7 @@ function sitemapEntries() {
     "/dui/",
     "/personal-injury/",
     "/regions/",
-    "/claim-sponsorship/",
+    "/sponsorships/",
     "/pricing/",
     "/sponsor-media-kit/",
     "/sponsor-agreement/",
@@ -2397,6 +2397,12 @@ function securityHeadersFile() {
 
 /*.html
   Cache-Control: no-cache
+`;
+}
+
+function redirectsFile() {
+  return `/claim-sponsorship/ /sponsorships/ 301
+/claim-sponsorship /sponsorships/ 301
 `;
 }
 
@@ -2488,6 +2494,7 @@ ${sitemapEntries()
     `User-agent: *\nAllow: /\nSitemap: ${absoluteUrl("/sitemap.xml")}\n`
   );
   await writeTarget("_headers", securityHeadersFile());
+  await writeTarget("_redirects", redirectsFile());
 }
 
 await main();
