@@ -2401,7 +2401,8 @@ function securityHeadersFile() {
 }
 
 function redirectsFile() {
-  return `/claim-sponsorship/ /sponsorships/ 301
+  return `https://www.locallegalguides.com/* https://locallegalguides.com/:splat 301
+/claim-sponsorship/ /sponsorships/ 301
 /claim-sponsorship /sponsorships/ 301
 `;
 }
