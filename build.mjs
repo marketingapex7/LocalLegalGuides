@@ -947,24 +947,24 @@ function attorneyQuestionSection({ city, region, isDui, basics }) {
     ? `Do I need a ${basics.duiName} attorney in ${city.name}?`
     : `Do I need a personal injury attorney in ${city.name}?`;
   const intro = isDui
-    ? `People often search for "${city.name} DUI attorney" even when ${region.state} uses ${basics.duiName} as the formal offense name. A lawyer is not required just to read court dates, contact the clerk, or look up driver-service information. People often consider talking with a lawyer when a case could affect jail exposure, fines, supervision, a license suspension, commercial driving privileges, immigration status, or a professional license.`
-    : `A ${city.name} personal injury attorney is not required just to request a crash report, open an insurance claim, or collect basic records. People often consider talking with a lawyer when injuries are serious, fault is disputed, medical bills are growing, an insurer asks for a recorded statement, or a government vehicle or public property may be involved.`;
+    ? `${basics.duiName} is a serious offense that can carry serious consequences if it is not handled correctly. People often search for "${city.name} DUI attorney" even when ${region.state} uses ${basics.duiName} as the formal offense name. Because a case can affect criminal penalties, driving privileges, insurance, employment, commercial driving status, immigration status, or a professional license, seeking legal advice from a licensed ${region.state} attorney is strongly recommended.`
+    : `A personal injury claim can have serious financial and legal consequences if deadlines, evidence, medical documentation, insurance issues, or settlement terms are handled incorrectly. People often consider talking with a ${city.name} personal injury attorney when injuries are serious, fault is disputed, medical bills are growing, an insurer asks for a recorded statement, or a government vehicle or public property may be involved. Seeking legal advice from a licensed ${region.state} attorney is strongly recommended before making decisions that could affect a claim.`;
   const cards = isDui
     ? [
-        ["Court consequences", `${basics.duiName} cases can involve criminal court, plea options, sentencing conditions, and local court procedures.`],
-        ["License consequences", "A lawyer can explain how the court case, testing issues, and state driver-license rules may move on separate tracks."],
-        ["Records to gather", `Useful records may include the ticket, bond paperwork, court date notice, police agency information, test paperwork, and any Secretary of State or DMV notice.`],
+        ["Criminal consequences", `${basics.duiName} cases can involve criminal court, plea options, sentencing conditions, fines, probation terms, and local court procedures.`],
+        ["License consequences", "Driving privileges can move on a separate timeline from the court case, so missed driver-service deadlines can create problems even before the criminal case is finished."],
+        ["Records to gather", `Useful records may include the ticket, bond paperwork, court date notice, police agency information, chemical-test paperwork, and any Secretary of State or DMV notice.`],
       ]
     : [
-        ["Liability and proof", "A lawyer can evaluate fault, causation, medical documentation, witness issues, and whether comparative fault may be raised."],
-        ["Insurance and liens", "Injury claims can involve liability coverage, medical payments coverage, health-insurance liens, subrogation, or uninsured motorist issues."],
-        ["Records to gather", "Useful records may include the crash or incident report, photographs, medical records, bills, wage documents, insurance letters, and claim numbers."],
+        ["Liability and proof", "Fault, causation, medical documentation, witness issues, and comparative fault arguments can all affect whether a claim succeeds."],
+        ["Insurance and liens", "Injury claims can involve liability coverage, medical payments coverage, health-insurance liens, subrogation, uninsured motorist issues, or disputed settlement terms."],
+        ["Records to gather", "Useful records may include the crash or incident report, photographs, medical records, bills, wage documents, insurance letters, claim numbers, and repair estimates."],
       ];
   const closing = isDui
-    ? `This page does not recommend a specific lawyer and is not legal advice. It is meant to help you identify the local court, police agency, and license contacts that may matter before you decide whether to contact a ${region.state} ${
+    ? `This page does not recommend a specific lawyer and is not legal advice. It is meant to help you identify the local court, police agency, and license contacts that may matter before you contact a ${region.state} ${
         basics.duiName === "DUI" ? "DUI attorney" : `${basics.duiName} or DUI attorney`
       }.`
-    : `This page does not recommend a specific lawyer and is not legal advice. It is meant to help you identify the local court, records, and insurance context that may matter before you decide whether to contact a ${region.state} personal injury attorney.`;
+    : `This page does not recommend a specific lawyer and is not legal advice. It is meant to help you identify the local court, records, and insurance context that may matter before you contact a ${region.state} personal injury attorney.`;
 
   return `<section class="section section-attorney-question" id="attorney-question">
     <div class="container">
