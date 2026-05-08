@@ -662,12 +662,12 @@ function officeCards(offices) {
           <h3>${escapeHtml(office.name)}</h3>
         </div>
         <dl class="contact-list">
-          ${office.address ? `<div><dt>Address</dt><dd><a href="${mapsHref(office.address)}" target="_blank" rel="noopener noreferrer">${escapeHtml(office.address)}</a></dd></div>` : ""}
-          ${office.phone ? `<div><dt>Phone</dt><dd>${escapeHtml(office.phone)}</dd></div>` : ""}
-          ${office.hours ? `<div><dt>Hours</dt><dd>${escapeHtml(office.hours)}</dd></div>` : ""}
+          ${office.address ? `<dt>Address</dt><dd><a href="${mapsHref(office.address)}" target="_blank" rel="noopener noreferrer" aria-label="Map for ${escapeHtml(office.name)} at ${escapeHtml(office.address)}">${escapeHtml(office.address)}</a></dd>` : ""}
+          ${office.phone ? `<dt>Phone</dt><dd>${escapeHtml(office.phone)}</dd>` : ""}
+          ${office.hours ? `<dt>Hours</dt><dd>${escapeHtml(office.hours)}</dd>` : ""}
         </dl>
         ${office.note ? `<p>${escapeHtml(office.note)}</p>` : ""}
-        ${office.href ? `<a class="text-link" href="${escapeHtml(office.href)}" target="_blank" rel="noopener noreferrer">Official website</a>` : ""}
+        ${office.href ? `<a class="text-link" href="${escapeHtml(office.href)}" target="_blank" rel="noopener noreferrer" aria-label="Official website for ${escapeHtml(office.name)}">Official website</a>` : ""}
       </article>`
     )
     .join("");
@@ -1096,7 +1096,7 @@ function regionSummary(region) {
         .map((city) => `<a class="region-city-pill" href="${pathForPracticeCity("dui", city.slug)}">${escapeHtml(city.name)}</a>`)
         .join("")}
     </div>
-    <a class="text-link" href="/clusters/${region.slug}/">View region</a>
+    <a class="text-link" href="/clusters/${region.slug}/" aria-label="View ${escapeHtml(region.name)} region">View region</a>
   </article>`;
 }
 
@@ -1702,12 +1702,12 @@ function homePage() {
           <span class="pill">Source-backed</span>
           <span class="pill pill-muted">Local first</span>
         </div>
-        <div class="stat-grid">
-          <div><dt>Markets</dt><dd>Illinois, Missouri, North Carolina</dd></div>
-          <div><dt>Practice areas</dt><dd>DUI + Personal Injury</dd></div>
-          <div><dt>City pages</dt><dd>${cityCount} cities in the current map</dd></div>
-          <div><dt>Sources</dt><dd>State law and court references</dd></div>
-        </div>
+        <dl class="stat-grid">
+          <dt>Markets</dt><dd>Illinois, Missouri, North Carolina</dd>
+          <dt>Practice areas</dt><dd>DUI + Personal Injury</dd>
+          <dt>City pages</dt><dd>${cityCount} cities in the current map</dd>
+          <dt>Sources</dt><dd>State law and court references</dd>
+        </dl>
       </aside>
     </div>
   </section>
