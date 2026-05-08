@@ -5,6 +5,7 @@ import { siteData } from "./site-data.mjs";
 const root = process.cwd();
 const outputRoot = path.join(root, "dist");
 const practiceBySlug = new Map(siteData.practiceAreas.map((p) => [p.slug, p]));
+const googleAnalyticsId = "G-VLQC2KYC9E";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -1042,6 +1043,14 @@ function pageShell({ title, description, body, active = "", route = "/", schema 
     <meta name="twitter:card" content="summary_large_image" />
     <title>${escapeHtml(title)}</title>
     <link rel="stylesheet" href="/styles.css" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '${googleAnalyticsId}');
+    </script>
     <script src="/app.js" defer></script>
     ${schemaTags}
   </head>
@@ -2460,7 +2469,7 @@ function securityHeadersFile() {
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: SAMEORIGIN
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self'; img-src 'self' data:; frame-src https://maps.google.com https://www.google.com; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self'; img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com; frame-src https://maps.google.com https://www.google.com; connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://*.google-analytics.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
 
 /styles.css
   Cache-Control: public, max-age=3600, must-revalidate
