@@ -199,6 +199,39 @@ function sponsorProfileCard(region, packageInfo, placement = "cluster") {
   </aside>`;
 }
 
+function citySponsorNotice(region, packageInfo) {
+  const sponsor = activeSponsor(packageInfo);
+
+  if (sponsor) {
+    return `<aside class="sponsor-panel">
+      <p class="eyebrow">Attorney Advertising</p>
+      ${sponsorIdentityBlock(sponsor)}
+      <p>This attorney sponsor is part of the ${escapeHtml(region.name)} regional package. Official court, police, and DMV information on this page remains separate from advertising.</p>
+      <div class="hero-actions">
+        <a class="button button-primary" href="${escapeHtml(sponsor.ctaUrl)}" ${trackingAttrs("city_sponsor_cta_click", {
+          region: region.slug,
+          placement: "city",
+          firm: sponsor.firmName,
+          status: packageInfo.status,
+        })}>Visit sponsor</a>
+        <a class="button button-secondary" href="${sponsorPackageHref(region)}">View regional package</a>
+      </div>
+      <p class="sponsor-note">${escapeHtml(sponsor.disclaimer || "Attorney Advertising. Sponsorship does not imply endorsement.")}</p>
+    </aside>`;
+  }
+
+  return `<aside class="sponsor-panel">
+    <p class="eyebrow">Regional sponsor package</p>
+    <h2>Part of the ${escapeHtml(region.name)} sponsor package.</h2>
+    <p>This city guide is included in one regional sponsorship package for ${escapeHtml(region.name)}. Sponsor details, coverage, and package terms live on the cluster page so this city page can stay focused on local legal information.</p>
+    <div class="hero-actions">
+      <a class="button button-primary" href="${sponsorPackageHref(region)}">View regional sponsor package</a>
+      <a class="button button-secondary" href="/sponsorships/">Ask about sponsorship</a>
+    </div>
+    <p class="sponsor-note">Attorney Advertising. Future sponsor placements remain separate from official court, police, and driver-service references.</p>
+  </aside>`;
+}
+
 function sponsorInquiryForm({ defaultRegion = "", title = "Sponsor inquiry", intro = "Share the market you want and the best way to reach you." }) {
   const regionOptions = siteData.regions
     .map((region) => `<option value="${escapeHtml(region.slug)}"${region.slug === defaultRegion ? " selected" : ""}>${escapeHtml(region.name)}</option>`)
@@ -1404,25 +1437,7 @@ function cityShell(city, region, practice) {
         </div>
       </div>
       <div>
-        <aside class="sponsor-panel">
-          <p class="eyebrow">Regional sponsor package</p>
-          <h2>This page is part of the ${escapeHtml(region.name)} sponsor package.</h2>
-          <p>Any attorney advertised for ${escapeHtml(region.name)} should be disclosed as a regional sponsor across the related city pages. The legal guide content still stands on its own even when no sponsor is active.</p>
-          <ul class="sponsor-list">
-            <li>Links back to the featured sponsor position for ${escapeHtml(region.name)}.</li>
-            <li>Built for one sponsor across ${region.cities.length} cities in this cluster.</li>
-            <li>${escapeHtml(packageInfo.termLabel)} at $${escapeHtml(packageInfo.annualPriceUsd)} per year to start.</li>
-            <li>Keeps official court, police, and DMV contacts separate.</li>
-            <li>Uses clear advertising disclosure without implying endorsement.</li>
-          </ul>
-          <div class="hero-actions">
-            <a class="button button-primary" href="${sponsorPackageHref(region)}">View regional sponsor package</a>
-            <a class="button button-secondary" href="/sponsorships/">Claim this package</a>
-          </div>
-        </aside>
-        <div class="sponsor-inline-card">
-          ${sponsorProfileCard(region, packageInfo, "city")}
-        </div>
+        ${citySponsorNotice(region, packageInfo)}
       </div>
     </div>
   </section>
@@ -1749,6 +1764,17 @@ function regionPage(region) {
     .map((item) => `<article class="info-card"><h3>${escapeHtml(item[0])}</h3><p>${escapeHtml(item[1])}</p></article>`)
     .join("");
 
+  const sponsorPackageDetails = [
+    ["Package term", `${packageInfo.termLabel} at ${formatCurrency(packageInfo.annualPriceUsd)} per year to start.`],
+    ["Cluster ownership", `One sponsor position covers the full ${region.name} cluster instead of selling city-by-city.`],
+    ["City-page presence", `Matching sponsor notices appear across ${guideCount(region)} live city guides and link back to this package section.`],
+    ["Disclosure standard", "Every sponsor placement is labeled as attorney advertising and kept separate from official public-agency resources."],
+    ["Conversion path", `Interested attorneys can claim the package from this page or email ${siteData.sponsorsEmail} with the target region.`],
+    ["Content independence", "The legal guides stay useful even without a sponsor, which protects trust and makes the ad placement feel cleaner."],
+  ]
+    .map((item) => `<article class="info-card"><h3>${escapeHtml(item[0])}</h3><p>${escapeHtml(item[1])}</p></article>`)
+    .join("");
+
   return `<section class="hero hero-tight">
     <div class="container hero-grid">
       <div class="hero-copy">
@@ -1839,6 +1865,11 @@ function regionPage(region) {
         </div>
         ${metricsGrid(sponsorMetrics(region, packageInfo), "metric-grid metric-grid-compact")}
         <div class="card-grid three-up">${sponsorFeatureCards}</div>
+        <div class="section-head section-head-compact">
+          <p class="eyebrow">Package details</p>
+          <h2>What the regional sponsor gets.</h2>
+        </div>
+        <div class="card-grid three-up">${sponsorPackageDetails}</div>
       </div>
       <div>
         ${sponsorProfileCard(region, packageInfo, "cluster")}
