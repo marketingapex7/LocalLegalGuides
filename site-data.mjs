@@ -49,7 +49,7 @@ const office = ({ name, type, address, phone, hours, courtSystem, href, note }) 
 const police = (name, address, phone, href, note, type = "Municipal Police") =>
   office({ name, type, address, phone, href, note });
 
-const city = ({ slug, name, agency, police: cityPolice, courtOverride, personalInjuryCourtOverride, licenseOfficeOverride }) => ({
+const city = ({
   slug,
   name,
   agency,
@@ -57,6 +57,69 @@ const city = ({ slug, name, agency, police: cityPolice, courtOverride, personalI
   courtOverride,
   personalInjuryCourtOverride,
   licenseOfficeOverride,
+  dui_local_data,
+  duiLocalData,
+}) => ({
+  slug,
+  name,
+  agency,
+  police: cityPolice,
+  courtOverride,
+  personalInjuryCourtOverride,
+  licenseOfficeOverride,
+  dui_local_data,
+  duiLocalData,
+});
+
+const jurisdiction = (agency, role, notes) => ({ agency, role, notes });
+
+const duiData = ({
+  summary,
+  sourceName,
+  sourceUrl,
+  sourceDate,
+  campaigns = [],
+  arrestSummary,
+  arrestYear,
+  arrestSourceName,
+  arrestSourceUrl,
+  crashSummary,
+  crashSourceName,
+  crashSourceUrl,
+  roads = [],
+  jurisdictions = [],
+  note,
+}) => ({
+  enforcement_snapshot: summary
+    ? {
+        summary,
+        source_name: sourceName,
+        source_url: sourceUrl,
+        source_date: sourceDate,
+      }
+    : undefined,
+  past_campaigns: campaigns,
+  arrest_data: arrestSummary
+    ? {
+        city_level_available: Boolean(arrestYear),
+        summary: arrestSummary,
+        year: arrestYear,
+        source_name: arrestSourceName ?? sourceName,
+        source_url: arrestSourceUrl ?? sourceUrl,
+      }
+    : undefined,
+  crash_context: crashSummary
+    ? {
+        summary: crashSummary,
+        source_name: crashSourceName,
+        source_url: crashSourceUrl,
+      }
+    : undefined,
+  local_roads: roads,
+  jurisdiction_notes: jurisdictions,
+  data_availability_note:
+    note ??
+    "City-level DUI arrest data is not published consistently across every police department. This guide uses local campaign results, official annual reports, and county/state context when city-level data is unavailable.",
 });
 
 const stLouisCountyCourt = office({
@@ -354,8 +417,8 @@ const expansionRegions = [
     court: stLouisCountyCourt,
     licenseOffice: stLouisCountyLicense,
     cities: [
-      city({ slug: "clayton-mo", name: "Clayton", agency: "Clayton Police Department", police: police("Clayton Police Department", "10 S. Brentwood Boulevard, Clayton, MO 63105", "(314) 645-3000", "https://www.claytonmo.gov/police", "For Clayton police reports, crash records, and court-corridor enforcement questions.") }),
-      city({ slug: "university-city-mo", name: "University City", agency: "University City Police Department", police: police("University City Police Department", "6801 Delmar Boulevard, University City, MO 63130", "(314) 725-2211", "https://www.ucitymo.org/78/Police-Department", "For University City police reports, crash records, and local enforcement questions.") }),
+      city({ slug: "clayton-mo", name: "Clayton", agency: "Clayton Police Department", police: police("Clayton Police Department", "10 S. Brentwood Boulevard, Clayton, MO 63105", "(314) 645-3000", "https://www.claytonmo.gov/police", "For Clayton police reports, crash records, and court-corridor enforcement questions."), dui_local_data: duiData({ summary: "The Clayton Police Department publishes annual reports covering crime statistics, budget, organizational structure, internal investigations, use-of-force data, and other department performance indicators.", sourceName: "Clayton Police Department 2024 Annual Report", sourceUrl: "https://www.claytonmo.gov/government/police/clayton-police-department-2020-annual-report", sourceDate: "2024", roads: ["I-64", "I-170", "S. Brentwood Boulevard", "Forsyth Boulevard", "Hanley Road"], jurisdictions: [jurisdiction("Clayton Police Department", "Municipal police", "Handles city traffic stops and crash reports in Clayton."), jurisdiction("St. Louis County Police Department", "County police", "May be involved in regional or nearby county enforcement."), jurisdiction("Missouri State Highway Patrol", "State patrol", "May handle highway enforcement and crash investigations.")] }) }),
+      city({ slug: "university-city-mo", name: "University City", agency: "University City Police Department", police: police("University City Police Department", "6801 Delmar Boulevard, University City, MO 63130", "(314) 725-2211", "https://www.ucitymo.org/78/Police-Department", "For University City police reports, crash records, and local enforcement questions."), dui_local_data: duiData({ summary: "University City publishes annual reports and police crime-statistics pages that link to official NIBRS crime data resources for the department.", sourceName: "University City Police crime statistics", sourceUrl: "https://www.ucitymo.org/482/Crime-Statistics", roads: ["Delmar Boulevard", "Olive Boulevard", "I-170", "Skinker Boulevard", "Big Bend Boulevard"], jurisdictions: [jurisdiction("University City Police Department", "Municipal police", "Handles city traffic stops, incident reports, and crash records."), jurisdiction("St. Louis County Police Department", "County police", "May be involved in nearby county areas or mutual-aid situations."), jurisdiction("Missouri State Highway Patrol", "State patrol", "May handle highway and state-route enforcement.")] }) }),
       city({ slug: "maplewood-mo", name: "Maplewood", agency: "Maplewood Police Department", police: police("Maplewood Police Department", "7601 Manchester Road, Maplewood, MO 63143", "(314) 645-4880", "https://www.cityofmaplewood.com/", "For Maplewood records and police-report questions, confirm the current records contact before visiting.") }),
       city({ slug: "richmond-heights-mo", name: "Richmond Heights", agency: "Richmond Heights Police Department", police: police("Richmond Heights Police Department", "7447 Dale Avenue, Richmond Heights, MO 63117", "(314) 655-3630", "https://rhpolice.org/contact-us/general-contact-information/", "For Richmond Heights police reports, crash records, and local enforcement questions.") }),
       city({ slug: "brentwood-mo", name: "Brentwood", agency: "Brentwood Police Department", police: police("Brentwood Police Department", "272 Hanley Industrial Court, Brentwood, MO 63144", "(314) 644-7100", "https://brentwoodmo.org/13/Police", "For Brentwood police reports, crash records, and local enforcement questions.") }),
@@ -537,9 +600,9 @@ const expansionRegions = [
       note: "Use the Missouri DOR locator to confirm current services and hours.",
     }),
     cities: [
-      city({ slug: "nixa-mo", name: "Nixa", agency: "Nixa Police Department", police: police("Nixa Police Department", "715 W. Center Circle, Nixa, MO 65714", "(417) 725-2510", "https://www.nixa.com/departments/police-department/", "For Nixa police reports, crash records, and local enforcement questions.") }),
-      city({ slug: "ozark-mo", name: "Ozark", agency: "Ozark Police Department", police: police("Ozark Police Department", "201 E. Brick Street, Ozark, MO 65721", "(417) 581-6600", "https://www.ozarkmissouri.com/125/Police-Department", "For Ozark police reports, crash records, and Christian County court-adjacent questions.") }),
-      city({ slug: "republic-mo", name: "Republic", agency: "Republic Police Department", police: police("Republic Police Department", "540 Civic Boulevard, Republic, MO 65738", "(417) 732-3900", "https://www.republicmo.com/", "For Republic police reports, crash records, and local enforcement questions."), courtOverride: greeneCountyCourt, personalInjuryCourtOverride: greeneCountyCourt }),
+      city({ slug: "nixa-mo", name: "Nixa", agency: "Nixa Police Department", police: police("Nixa Police Department", "715 W. Center Circle, Nixa, MO 65714", "(417) 725-2510", "https://www.nixa.com/departments/police-department/", "For Nixa police reports, crash records, and local enforcement questions."), dui_local_data: duiData({ summary: "The Nixa Police Department publishes annual police reports that summarize department activities, events, and traffic-enforcement data.", sourceName: "Nixa annual police reports", sourceUrl: "https://www.nixa.com/annual-police-reports/", arrestSummary: "The 2023 Nixa Police annual report listed 12,916 traffic stops overall and described moving, equipment, license, and investigative traffic-stop categories.", arrestYear: "2023", arrestSourceName: "2023 Nixa Police annual report", arrestSourceUrl: "https://www.nixa.com/wp-content/uploads/2024/06/2023-NixaPoliceDepartment-AnnualReport.pdf", roads: ["U.S. Route 160", "Missouri Route 14", "Main Street", "Mount Vernon Street", "Nicholas Road"], jurisdictions: [jurisdiction("Nixa Police Department", "Municipal police", "Handles city traffic stops and crash reports in Nixa."), jurisdiction("Christian County Sheriff's Office", "County sheriff", "May be involved outside city limits or on county matters."), jurisdiction("Missouri State Highway Patrol", "State patrol", "May handle state-route and highway enforcement.")] }) }),
+      city({ slug: "ozark-mo", name: "Ozark", agency: "Ozark Police Department", police: police("Ozark Police Department", "201 E. Brick Street, Ozark, MO 65721", "(417) 581-6600", "https://www.ozarkmissouri.com/125/Police-Department", "For Ozark police reports, crash records, and Christian County court-adjacent questions."), dui_local_data: duiData({ summary: "Ozark's official police pages identify traffic-enforcement work and note that a 2024 Officer of the Year had led the department in DWI investigations for two years.", sourceName: "Ozark Police Officer of the Year page", sourceUrl: "https://ozarkmissouri.com/346/Officer-of-the-Year", roads: ["U.S. Route 65", "Missouri Route 14", "State Highway NN", "3rd Street", "Jackson Street"], jurisdictions: [jurisdiction("Ozark Police Department", "Municipal police", "Handles city traffic stops and crash reports in Ozark."), jurisdiction("Christian County Sheriff's Office", "County sheriff", "May be involved outside city limits or on county matters."), jurisdiction("Missouri State Highway Patrol", "State patrol", "May handle U.S. 65 and state-route enforcement.")] }) }),
+      city({ slug: "republic-mo", name: "Republic", agency: "Republic Police Department", police: police("Republic Police Department", "540 Civic Boulevard, Republic, MO 65738", "(417) 732-3900", "https://www.republicmo.com/", "For Republic police reports, crash records, and local enforcement questions."), courtOverride: greeneCountyCourt, personalInjuryCourtOverride: greeneCountyCourt, dui_local_data: duiData({ summary: "Republic Police published a 2024 annual traffic safety report describing traffic-safety grants for DWI and hazardous moving-violation enforcement.", sourceName: "Republic Police 2024 Annual Traffic Safety Report", sourceUrl: "https://www.republicmo.com/DocumentCenter/View/7698/Annual-Traffic-Report-2024", sourceDate: "2024", arrestSummary: "The 2024 report says Republic Police secured DWI and hazardous-moving-violation grants and logged approximately 219.75 overtime hours directed solely at traffic-safety enforcement during the grant cycle.", arrestYear: "2024", roads: ["U.S. Route 60", "Missouri Route 174", "Main Avenue", "Elm Street", "Wilson's Creek Boulevard"], jurisdictions: [jurisdiction("Republic Police Department", "Municipal police", "Handles city traffic stops and crash reports in Republic."), jurisdiction("Greene County Sheriff's Office", "County sheriff", "May be involved outside city limits or on county matters."), jurisdiction("Missouri State Highway Patrol", "State patrol", "May handle highway and state-route enforcement.")] }) }),
       city({ slug: "willard-mo", name: "Willard", agency: "Willard Police Department", police: police("Willard Police Department", "795 Hughes Road, Willard, MO 65781", "(417) 742-3077", "https://www.cityofwillard.org/", "For Willard police reports, crash records, and local enforcement questions."), courtOverride: greeneCountyCourt, personalInjuryCourtOverride: greeneCountyCourt }),
       city({ slug: "battlefield-mo", name: "Battlefield", agency: "Battlefield Police Department", police: police("Battlefield Police Department", "5021 S. State Highway FF, Battlefield, MO 65619", "(417) 890-9876", "https://www.battlefieldmo.gov/page/police", "For Battlefield police reports, crash records, and local enforcement questions."), courtOverride: greeneCountyCourt, personalInjuryCourtOverride: greeneCountyCourt }),
     ],
@@ -576,7 +639,7 @@ const expansionRegions = [
       note: "Use the Missouri DOR locator to confirm current services and hours.",
     }),
     cities: [
-      city({ slug: "liberty-mo", name: "Liberty", agency: "Liberty Police Department", police: police("Liberty Police Department", "1908 Plumber's Way, Suite 400, Liberty, MO 64068", "(816) 439-4701", "https://www.libertymissouri.gov/police", "For Liberty police reports, crash records, and Clay County court-adjacent questions.") }),
+      city({ slug: "liberty-mo", name: "Liberty", agency: "Liberty Police Department", police: police("Liberty Police Department", "1908 Plumber's Way, Suite 400, Liberty, MO 64068", "(816) 439-4701", "https://www.libertymissouri.gov/police", "For Liberty police reports, crash records, and Clay County court-adjacent questions."), dui_local_data: duiData({ summary: "Liberty Police provide public crime-mapping and police-record resources, including traffic accident report access and records-unit guidance.", sourceName: "Liberty Police Department", sourceUrl: "https://www.libertymissouri.gov/police", roads: ["I-35", "U.S. Route 69", "Missouri Route 291", "Kansas Street", "Withers Road"], jurisdictions: [jurisdiction("Liberty Police Department", "Municipal police", "Handles city traffic stops and crash reports in Liberty."), jurisdiction("Clay County Sheriff's Office", "County sheriff", "May be involved outside city limits or on county matters."), jurisdiction("Missouri State Highway Patrol", "State patrol", "May handle highway enforcement and crash investigations.")] }) }),
       city({ slug: "gladstone-mo", name: "Gladstone", agency: "Gladstone Police Department", police: police("Gladstone Police Department", "7010 N. Holmes Street, Gladstone, MO 64118", "(816) 436-3550", "https://www.gladstone.mo.us/Police/", "For Gladstone police reports, crash records, and local enforcement questions.") }),
       city({ slug: "north-kansas-city-mo", name: "North Kansas City", agency: "North Kansas City Police Department", police: police("North Kansas City Police Department", "2020 Howell Street, North Kansas City, MO 64116", "(816) 274-6013", "https://www.nkc.org/", "For North Kansas City police reports, crash records, and local enforcement questions.") }),
       city({ slug: "parkville-mo", name: "Parkville", agency: "Parkville Police Department", police: police("Parkville Police Department", "8880 Clark Avenue, Parkville, MO 64152", "(816) 741-4454", "https://parkvillemo.gov/", "For Parkville police reports, crash records, and Platte County routing questions."), courtOverride: platteCountyCourt, personalInjuryCourtOverride: platteCountyCourt }),
@@ -1016,6 +1079,18 @@ export const siteData = {
             href: "https://www.vil.maryville.il.us/99/Police",
             note: "For village police records, local crash reports, and municipal law-enforcement questions.",
           },
+          dui_local_data: duiData({
+            summary:
+              "Maryville's official police page identifies traffic enforcement as one of the services provided by the village police department.",
+            sourceName: "Village of Maryville Police Department",
+            sourceUrl: "https://www.vil.maryville.il.us/99/Police",
+            roads: ["I-55", "I-70", "Illinois Route 159", "Illinois Route 162", "N. Center Street"],
+            jurisdictions: [
+              jurisdiction("Maryville Police Department", "Municipal police", "Handles local traffic enforcement and crash reports inside Maryville."),
+              jurisdiction("Madison County Sheriff's Office", "County sheriff", "May be involved outside municipal limits or on county-level matters."),
+              jurisdiction("Illinois State Police", "State police", "May handle crashes and impaired-driving enforcement on interstate or state routes."),
+            ],
+          }),
         },
         {
           slug: "troy-il",
@@ -1029,6 +1104,29 @@ export const siteData = {
             href: "https://www.troyil.us/238/Police-Department",
             note: "For city police records, local crash reports, and municipal law-enforcement questions.",
           },
+          dui_local_data: duiData({
+            summary:
+              "Troy Police reported a Labor Day impaired-driving and traffic-safety effort tied to Illinois Drive Sober, Drive High Get a DUI, and Click It or Ticket campaigns.",
+            sourceName: "RiverBender Troy Police Labor Day enforcement report",
+            sourceUrl: "https://www.riverbender.com/news/details/troy-police-conduct-extensive-labor-day-impaired-driving-enforcement-85893.cfm",
+            sourceDate: "September 2025",
+            campaigns: [
+              {
+                campaign_name: "Labor Day impaired-driving enforcement campaign",
+                date_range: "Labor Day weekend 2025",
+                results_summary:
+                  "Troy Police reported 51 traffic stops, 26 seat-belt citations, one suspended-driver arrest, seven distracted-driving citations, six speeding citations, and 10 other citations.",
+                source_name: "RiverBender",
+                source_url: "https://www.riverbender.com/news/details/troy-police-conduct-extensive-labor-day-impaired-driving-enforcement-85893.cfm",
+              },
+            ],
+            roads: ["I-55", "I-70", "U.S. Route 40", "Illinois Route 162", "Market Street"],
+            jurisdictions: [
+              jurisdiction("Troy Police Department", "Municipal police", "Handles city traffic stops and local crash reports within Troy."),
+              jurisdiction("Madison County Sheriff's Office", "County sheriff", "May be involved outside city limits or on county roads."),
+              jurisdiction("Illinois State Police", "State police", "May handle interstate and state-route enforcement."),
+            ],
+          }),
         },
       ],
     },
@@ -1129,6 +1227,18 @@ export const siteData = {
             href: "https://www.ofallon.mo.us/police",
             note: "For city police reports, local crash records, and O'Fallon law-enforcement questions.",
           },
+          dui_local_data: duiData({
+            summary:
+              "O'Fallon Police publish annual reports and identify patrol and traffic-related operations through the department's official site.",
+            sourceName: "O'Fallon Police Department annual report page",
+            sourceUrl: "https://www.ofallon.mo.us/annual-report",
+            roads: ["I-70", "Highway K", "Bryan Road", "Mexico Road", "Veterans Memorial Parkway"],
+            jurisdictions: [
+              jurisdiction("O'Fallon Police Department", "Municipal police", "Handles city traffic stops and local crash reports inside O'Fallon."),
+              jurisdiction("St. Charles County Sheriff's Department", "County sheriff", "May be involved outside city limits or on county-level matters."),
+              jurisdiction("Missouri State Highway Patrol", "State patrol", "May handle highway crashes, DWI arrests, and traffic enforcement on state routes."),
+            ],
+          }),
           licenseOfficeOverride: {
             name: "O'Fallon License Office",
             type: "Missouri License Office",
@@ -1151,6 +1261,22 @@ export const siteData = {
             href: "https://www.stcharlescitymo.gov/166/Police",
             note: "For city police records, traffic crash reports, and local law-enforcement questions.",
           },
+          dui_local_data: duiData({
+            summary:
+              "The St. Charles Police Department publishes annual reports, including 2024 statistics on calls for service, incident reports, arrests, citations, and traffic crashes.",
+            sourceName: "St. Charles Police Department 2024 Annual Report",
+            sourceUrl: "https://www.stcharlescitymo.gov/DocumentCenter/View/13699/2024-Annual-Report",
+            sourceDate: "2024",
+            arrestSummary:
+              "The 2024 St. Charles Police annual report includes arrest and citation data; the department's official police page also links annual reports from 2018 through 2024.",
+            arrestYear: "2024",
+            roads: ["I-70", "Route 94", "Fifth Street", "Zumbehl Road", "First Capitol Drive"],
+            jurisdictions: [
+              jurisdiction("St. Charles Police Department", "Municipal police", "Handles city traffic stops and crash reports within St. Charles."),
+              jurisdiction("St. Charles County Sheriff's Department", "County sheriff", "May be involved outside municipal limits or in county-level enforcement."),
+              jurisdiction("Missouri State Highway Patrol", "State patrol", "May handle highway enforcement and crash investigations on state routes."),
+            ],
+          }),
         },
         {
           slug: "st-peters-mo",
@@ -1164,6 +1290,18 @@ export const siteData = {
             href: "https://www.stpetersmo.net/254/Police-Department",
             note: "For St. Peters police reports, local crash records, and municipal enforcement questions.",
           },
+          dui_local_data: duiData({
+            summary:
+              "The St. Peters Police Department publishes annual reports that include crime statistics, organizational summaries, department goals, and other police activity information.",
+            sourceName: "St. Peters Police Department annual reports",
+            sourceUrl: "https://www.stpetersmo.net/187/Annual-Report",
+            roads: ["I-70", "Mexico Road", "Mid Rivers Mall Drive", "Salt River Road", "Spencer Road"],
+            jurisdictions: [
+              jurisdiction("St. Peters Police Department", "Municipal police", "Handles city traffic stops and local crash reports inside St. Peters."),
+              jurisdiction("St. Charles County Sheriff's Department", "County sheriff", "May be involved outside city limits or on county matters."),
+              jurisdiction("Missouri State Highway Patrol", "State patrol", "May handle interstate and state-route enforcement."),
+            ],
+          }),
         },
         {
           slug: "wentzville-mo",
@@ -1177,6 +1315,18 @@ export const siteData = {
             href: "https://www.wentzvillemo.gov/police/",
             note: "For Wentzville police records, local crash reports, and city enforcement questions.",
           },
+          dui_local_data: duiData({
+            summary:
+              "The Wentzville Police Department publishes annual reports with statistical data and year-over-year comparisons for department activity.",
+            sourceName: "Wentzville Police Department annual reports",
+            sourceUrl: "https://www.wentzvillemo.gov/police/welcome-to-wpd/about-wpd/wpd-annual-report/",
+            roads: ["I-70", "I-64", "U.S. Route 61", "Wentzville Parkway", "Pearce Boulevard"],
+            jurisdictions: [
+              jurisdiction("Wentzville Police Department", "Municipal police", "Handles city traffic stops and local crash reports inside Wentzville."),
+              jurisdiction("St. Charles County Sheriff's Department", "County sheriff", "May be involved outside municipal limits or in county-level enforcement."),
+              jurisdiction("Missouri State Highway Patrol", "State patrol", "May handle highway crashes and DWI enforcement on I-70, I-64, and U.S. 61."),
+            ],
+          }),
           licenseOfficeOverride: {
             name: "Wentzville License Office",
             type: "Missouri License Office",
@@ -1303,6 +1453,23 @@ export const siteData = {
             href: "https://www.manchestermo.gov/160/Police",
             note: "For Manchester police records, local crash reports, and city enforcement questions.",
           },
+          dui_local_data: duiData({
+            summary:
+              "Manchester's official police page identifies traffic enforcement and auto accident investigation among the services provided by the department.",
+            sourceName: "Manchester Police Department",
+            sourceUrl: "https://www.manchestermo.gov/160/Police",
+            arrestSummary:
+              "Manchester's 2023 year-end police report listed 40 DWI entries within traffic-related issues, along with traffic surveys, complaints, grants, towed autos, and careless-and-imprudent driving categories.",
+            arrestYear: "2023",
+            arrestSourceName: "Manchester Police year-end report",
+            arrestSourceUrl: "https://manchestermo.gov/DocumentCenter/View/6603/Year-End-Report",
+            roads: ["Manchester Road", "Highlands Boulevard Drive", "Big Bend Road", "Sulphur Spring Road", "I-270"],
+            jurisdictions: [
+              jurisdiction("Manchester Police Department", "Municipal police", "Handles city traffic stops, crash reports, and municipal enforcement inside Manchester."),
+              jurisdiction("St. Louis County Police Department", "County police", "May be involved in nearby county areas or regional enforcement support."),
+              jurisdiction("Missouri State Highway Patrol", "State patrol", "May handle state-route or highway enforcement and crash investigations."),
+            ],
+          }),
         },
         {
           slug: "wildwood-mo",
@@ -1386,6 +1553,22 @@ export const siteData = {
             href: "https://www.charlottenc.gov/cmpd/Organization/Patrol-Divisions/South-Division",
             note: "Ballantyne is within Charlotte-Mecklenburg Police Department service territory; confirm the responding division for a specific incident.",
           },
+          dui_local_data: duiData({
+            summary:
+              "Charlotte-Mecklenburg Police publish annual and quarterly statistical reports; CMPD's 2025 annual report describes weekly speed, reckless-driving, and DWI enforcement operations on high-injury networks.",
+            sourceName: "CMPD 2025 Annual Report",
+            sourceUrl: "https://www.charlottenc.gov/files/sharedassets/police/v/2/newsroom/article_documents/2025_cmpd_annual_report-final.pdf",
+            sourceDate: "2025",
+            arrestSummary:
+              "CMPD reported 72 combined traffic operations in 2025, including DWI task-force activity, 4,840 traffic stops, 5,756 violations, and 782 DWI charges across the Charlotte-Mecklenburg jurisdiction.",
+            arrestYear: "2025",
+            roads: ["I-485", "Johnston Road", "Providence Road West", "Ballantyne Commons Parkway", "Lancaster Highway"],
+            jurisdictions: [
+              jurisdiction("Charlotte-Mecklenburg Police Department - South Division", "Municipal police", "Primary local police reference for Ballantyne-area stops and crash reports."),
+              jurisdiction("Mecklenburg County Sheriff's Office", "County sheriff", "May be involved in court security, custody, or county-level processes."),
+              jurisdiction("North Carolina State Highway Patrol", "State patrol", "May handle highway crashes and impaired-driving enforcement on state routes and interstates."),
+            ],
+          }),
           courtOverride: {
             name: "Mecklenburg County Courthouse",
             address: "832 E. Fourth Street, Charlotte, NC 28202",
@@ -1591,6 +1774,23 @@ export const siteData = {
             href: "https://www.wakeforestnc.gov/police",
             note: "For Wake Forest police reports, crash records, and local enforcement questions.",
           },
+          dui_local_data: duiData({
+            summary:
+              "Wake Forest Police publish a Traffic Enforcement Unit page describing a DWI Traffic Team focused on impaired-driving enforcement in town.",
+            sourceName: "Wake Forest Police Traffic Enforcement Unit",
+            sourceUrl: "https://www.wakeforestnc.gov/police/operations/special-operations/impact-division/traffic-enforcement-unit",
+            arrestSummary:
+              "In July 2024, Wake Forest Police reported 10 DWI arrests over one weekend, 19 since July 1, and 103 DWI arrests for the year to that point.",
+            arrestYear: "2024",
+            arrestSourceName: "Wake Forest Police DWI enforcement release",
+            arrestSourceUrl: "https://www.wakeforestnc.gov/news/wake-forest-police-warn-motorists-not-drink-drive-after-10-dwi-weekend-arrests",
+            roads: ["Capital Boulevard", "U.S. 1", "NC 98", "S. Main Street", "Rogers Road"],
+            jurisdictions: [
+              jurisdiction("Wake Forest Police Department", "Municipal police", "Handles local traffic stops, DWI enforcement, and crash reports inside Wake Forest."),
+              jurisdiction("Wake County Sheriff's Office", "County sheriff", "May be involved outside town limits or in county-level processes."),
+              jurisdiction("North Carolina State Highway Patrol", "State patrol", "May handle state-route and highway enforcement."),
+            ],
+          }),
         },
       ],
     },
@@ -1677,6 +1877,19 @@ export const siteData = {
             href: "https://www.apexnc.org/261/Police-Department",
             note: "For Apex police reports, crash records, and local enforcement questions.",
           },
+          dui_local_data: duiData({
+            summary:
+              "Apex Police publish annual statistical reports and maintain records-office guidance for police and accident reports.",
+            sourceName: "Apex Police Department",
+            sourceUrl: "https://www.apexnc.org/261/Police-Department",
+            sourceDate: "2023 statistical report listed on official police page",
+            roads: ["U.S. 64", "NC 55", "Apex Peakway", "Salem Street", "Ten Ten Road"],
+            jurisdictions: [
+              jurisdiction("Apex Police Department", "Municipal police", "Handles local traffic stops and crash reports inside Apex."),
+              jurisdiction("Wake County Sheriff's Office", "County sheriff", "May be involved outside town limits or on county matters."),
+              jurisdiction("North Carolina State Highway Patrol", "State patrol", "May handle state-route and highway enforcement."),
+            ],
+          }),
           licenseOfficeOverride: {
             name: "NCDMV Driver License Office - Cary",
             type: "NCDMV Driver License Office",
@@ -1699,6 +1912,22 @@ export const siteData = {
             href: "https://www.carync.gov/services-publications/police",
             note: "For Cary police reports, crash records, and local enforcement questions.",
           },
+          dui_local_data: duiData({
+            summary:
+              "Cary Police publish annual reports, maintain Police 2 Citizen report access, and provide public crash-data resources through Cary's open-data portal.",
+            sourceName: "Town of Cary Police",
+            sourceUrl: "https://www.carync.gov/services-publications/police",
+            crashSummary:
+              "Cary's public crash dataset contains crash information from the last five years to the current date and notes that the data is dynamic as reports are updated.",
+            crashSourceName: "Cary Police crash data",
+            crashSourceUrl: "https://data.carync.gov/explore/dataset/cpd-crash-incidents/",
+            roads: ["U.S. 1", "U.S. 64", "NC 55", "Kildaire Farm Road", "Maynard Road"],
+            jurisdictions: [
+              jurisdiction("Cary Police Department", "Municipal police", "Handles Cary traffic stops, crash reports, and local enforcement questions."),
+              jurisdiction("Wake County Sheriff's Office", "County sheriff", "May be involved outside town limits or in county-level processes."),
+              jurisdiction("North Carolina State Highway Patrol", "State patrol", "May handle highway and state-route enforcement."),
+            ],
+          }),
           licenseOfficeOverride: {
             name: "NCDMV Driver License Office - Cary",
             type: "NCDMV Driver License Office",
