@@ -12,6 +12,7 @@ const navLinks = [
   { href: "/dui/", label: "DUI" },
   { href: "/personal-injury/", label: "Personal Injury" },
   { href: "/regions/", label: "Regions" },
+  { href: "/sponsorships/", label: "For Attorneys" },
   { href: "/contact/", label: "Contact" },
 ];
 
@@ -229,7 +230,7 @@ function citySponsorNotice(region, packageInfo) {
       <a class="button button-primary" href="${sponsorPackageHref(region)}">View regional sponsor package</a>
       <a class="button button-secondary" href="/sponsorships/">Ask about sponsorship</a>
     </div>
-    <p class="sponsor-note">Attorney Advertising. Future sponsor placements remain separate from official court, police, and driver-service references.</p>
+    <p class="sponsor-note">Attorney Advertising. Future sponsor placements remain separate from official court, police, records, and public-agency references.</p>
   </aside>`;
 }
 
@@ -361,6 +362,185 @@ function sourceCards(sources) {
         )}</span><strong>Official source</strong></a>`
     )
     .join("");
+}
+
+function sourceChips(sources, label = "Sources") {
+  const chips = sources.filter(Boolean).slice(0, 4);
+  if (!chips.length) {
+    return "";
+  }
+
+  return `<div class="source-chip-row" aria-label="${escapeHtml(label)}">
+    <span>${escapeHtml(label)}:</span>
+    ${chips
+      .map((source) => `<a href="${escapeHtml(source.href)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.label)}</a>`)
+      .join("")}
+  </div>`;
+}
+
+function documentChecklist(isDui) {
+  return isDui
+    ? [
+        "Ticket or citation",
+        "Bond paperwork",
+        "Court date notice",
+        "Police agency information",
+        "Chemical test paperwork",
+        "Secretary of State or DMV notice",
+        "Towing or impound paperwork",
+        "Any crash report information",
+      ]
+    : [
+        "Crash or incident report",
+        "Photos and videos",
+        "Medical records",
+        "Medical bills",
+        "Insurance claim numbers",
+        "Witness names",
+        "Repair estimates",
+        "Wage loss documents",
+        "Letters from insurers",
+      ];
+}
+
+function documentChecklistSection(isDui) {
+  const title = isDui ? "Documents to gather after a DUI or DWI arrest." : "Documents to gather after an injury.";
+  const intro = isDui
+    ? "These records can help readers understand the court, license, records, and vehicle issues that may move on separate tracks."
+    : "These records can help readers organize insurance, medical, liability, and damages questions before deadlines become urgent.";
+
+  return `<section class="section section-alt" id="documents">
+    <div class="container split-grid">
+      <div class="section-head">
+        <p class="eyebrow">Evidence and documents</p>
+        <h2>${escapeHtml(title)}</h2>
+        <p>${escapeHtml(intro)}</p>
+      </div>
+      <ul class="checklist-grid">${documentChecklist(isDui).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+    </div>
+  </section>`;
+}
+
+function processTimeline(isDui) {
+  return isDui
+    ? [
+        "Stop or arrest",
+        "Booking, citation, or release paperwork",
+        "First local court date",
+        "Secretary of State or DMV license track",
+        "Discovery and evidence review",
+        "Plea, hearing, trial, or dismissal",
+        "Sentencing or license reinstatement steps",
+      ]
+    : [
+        "Incident or crash",
+        "Medical treatment",
+        "Police or incident report",
+        "Insurance claim",
+        "Medical documentation",
+        "Settlement discussion",
+        "Lawsuit filing if unresolved",
+        "Resolution, trial, or dismissal",
+      ];
+}
+
+function timelineList(isDui) {
+  return `<ol class="timeline-list">${processTimeline(isDui)
+    .map((item) => `<li><span>${escapeHtml(item)}</span></li>`)
+    .join("")}</ol>`;
+}
+
+function cityLocalFlavor(city, region, isDui) {
+  if (city.slug === "edwardsville-il" && isDui) {
+    return "This guide focuses on DUI cases connected to Edwardsville and nearby Madison County communities, including traffic stops handled by Edwardsville Police, Madison County deputies, or Illinois State Police around I-55, I-70, I-255, Route 157, Route 159, and local roads near the courthouse district.";
+  }
+
+  if (city.slug === "edwardsville-il") {
+    return "This guide focuses on injury claims connected to Edwardsville roads, businesses, public property, and Madison County civil court filings. It is designed to help readers identify where reports, court records, and insurance-related documents may come from.";
+  }
+
+  return isDui
+    ? `This guide focuses on ${stateBasics(region).duiName} cases connected to ${city.name} and nearby ${region.name} communities, including stops handled by city police, county agencies, or state officers on local roads and commuter routes.`
+    : `This guide focuses on injury claims connected to ${city.name} roads, businesses, public property, and local court filings. It is designed to help readers identify where reports, court records, and insurance-related documents may come from.`;
+}
+
+function accidentReportSection(city, region) {
+  return `<section class="section" id="accident-report">
+    <div class="container split-grid">
+      <div class="section-head">
+        <p class="eyebrow">Crash and incident reports</p>
+        <h2>How to find a crash or incident report in ${escapeHtml(city.name)}.</h2>
+        <p>If ${escapeHtml(city.agency)} handled the scene, the city police department may be the starting point for a local crash or incident report. If the crash occurred outside city limits, the county sheriff or state police may be the correct records source.</p>
+      </div>
+      <aside class="info-card callout-card">
+        <h3>Records tip</h3>
+        <p>Use the report number, date, location, involved vehicles, and responding agency name when asking for a report. If the crash involved public property or a public vehicle, ask about any shorter notice requirements.</p>
+      </aside>
+    </div>
+  </section>`;
+}
+
+function editorialReviewBlock(isDui) {
+  const sourceTypes = isDui
+    ? "public court, law enforcement, Secretary of State, DMV, and state-law sources"
+    : "public court, law enforcement, records, insurance-process, and state-law sources";
+  return `<section class="section section-editorial" id="editorial-review">
+    <div class="container">
+      <div class="editorial-card">
+        <p class="eyebrow">Editorial review</p>
+        <h2>How this guide was created.</h2>
+        <p>This guide was prepared by Local Legal Guides using ${escapeHtml(sourceTypes)}. It is reviewed for source accuracy, local relevance, and clarity. It is not legal advice and does not create an attorney-client relationship.</p>
+        <dl class="review-meta">
+          <dt>Last reviewed</dt><dd>May 2026</dd>
+          <dt>Next scheduled review</dt><dd>November 2026</dd>
+        </dl>
+      </div>
+    </div>
+  </section>`;
+}
+
+function relatedResourceLinks(region, isDui) {
+  if (region.stateCode !== "IL") {
+    return "";
+  }
+
+  const resources = isDui
+    ? [
+        ["Illinois DUI license suspension guide", "/resources/illinois-dui-license-suspension/"],
+        ["Madison County DUI process", "/resources/madison-county-dui-process/"],
+      ]
+    : [
+        ["Illinois personal injury deadlines", "/resources/illinois-personal-injury-deadlines/"],
+        ["Madison County accident report guide", "/resources/madison-county-accident-report-guide/"],
+      ];
+  return `<section class="section section-alt" id="related-resources">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Related local resources</p>
+        <h2>Neutral guides that explain the broader process.</h2>
+      </div>
+      <div class="card-grid two-up">${resources
+        .map((item) => `<a class="related-card" href="${item[1]}"><span>Resource</span><strong>${escapeHtml(item[0])}</strong><p>Read the background guide and then return to the city page for local offices and source links.</p></a>`)
+        .join("")}</div>
+    </div>
+  </section>`;
+}
+
+function citySponsorAvailabilityBox(region, packageInfo) {
+  return `<section class="sponsor-availability-band" aria-label="Sponsor availability">
+    <div class="container sponsor-availability-inner">
+      <div>
+        <p class="eyebrow">Attorney sponsorship</p>
+        <h2>${escapeHtml(region.name)} sponsor package ${packageInfo.status === "sponsored" ? "is sponsored" : "is available"}.</h2>
+        <p>This guide is built to remain useful with or without a sponsor, which helps the sponsor placement appear next to credible local information rather than inside a generic ad directory.</p>
+      </div>
+      <a class="button button-primary" href="${sponsorPackageHref(region)}" ${trackingAttrs("claim_package_click", {
+        region: region.slug,
+        placement: "city_top",
+        status: packageInfo.status,
+      })}>View sponsor package</a>
+    </div>
+  </section>`;
 }
 
 function mapsHref(address) {
@@ -618,7 +798,7 @@ function quickActionCards({ city, region, court, licenseOffice, isDui, basics })
       label: "1",
       title: "Preserve proof now",
       body: "Save photos, medical records, witness names, bills, repair estimates, and insurance communications before details get harder to recover.",
-      href: "#deadlines",
+      href: "#documents",
       cta: "Evidence checklist",
     },
     {
@@ -917,18 +1097,21 @@ function webPageSchema({ title, description, route, modifiedDate = siteData.last
   };
 }
 
-function cityToc(isDui) {
+function cityToc(isDui, region) {
   const items = [
     ["Local directory", "#directory"],
     ["Map", "#map"],
     ["Local details", "#local"],
     ["Key deadlines", "#deadlines"],
+    ["Documents", "#documents"],
     [isDui ? "DUI law" : "Injury law", "#state-law"],
     ["Case process", "#process"],
     [isDui ? "Penalties" : "Claim value", "#penalties"],
     [isDui ? "Implied consent" : "Fault and proof", "#implied-consent"],
     [isDui ? "License restoration" : "Insurance and settlement", "#restoration"],
+    ...(isDui ? [] : [["Reports", "#accident-report"]]),
     [isDui ? "DUI attorney" : "Injury attorney", "#attorney-question"],
+    ...(region?.stateCode === "IL" ? [["Resources", "#related-resources"]] : []),
     ["Official sources", "#sources"],
     ["Common questions", "#faq"],
   ];
@@ -1018,6 +1201,7 @@ function pageShell({ title, description, body, active = "", route = "/", schema 
         (active === "dui" && item.href === "/dui/") ||
         (active === "personal-injury" && item.href === "/personal-injury/") ||
         (active === "regions" && item.href === "/regions/") ||
+        (active === "/sponsorships/" && item.href === "/sponsorships/") ||
         (active === "contact" && item.href === "/contact/");
       return `<a class="nav-link${isActive ? " is-active" : ""}" href="${item.href}">${item.label}</a>`;
     })
@@ -1252,7 +1436,7 @@ function cityShell(city, region, practice) {
     ...sourcesForPractice(basics, isDui),
     { label: court.name, href: court.href },
     city.police ? { label: city.police.name, href: city.police.href } : null,
-    licenseOffice ? { label: licenseOffice.name, href: licenseOffice.href } : null,
+    isDui && licenseOffice ? { label: licenseOffice.name, href: licenseOffice.href } : null,
   ].filter(Boolean);
   const breadcrumbs = [
     { name: "Home", href: "/" },
@@ -1268,6 +1452,7 @@ function cityShell(city, region, practice) {
         <p class="eyebrow">${escapeHtml(region.state)} | ${escapeHtml(practice.label)}</p>
         <h1>${escapeHtml(title)}</h1>
         <p class="lede">${escapeHtml(intro)}</p>
+        <p class="hero-note">${escapeHtml(cityLocalFlavor(city, region, isDui))}</p>
         <div class="hero-actions">
           <a class="button button-primary" href="#local">Local details</a>
           <a class="button button-secondary" href="#sources">Official sources</a>
@@ -1278,9 +1463,9 @@ function cityShell(city, region, practice) {
           <span class="pill">Verified guide</span>
           <span class="pill pill-muted">${escapeHtml(region.name)}</span>
         </div>
-        <div class="stat-grid">${snapshot
-          .map((item) => `<div><span>${escapeHtml(item.label)}</span><strong>${escapeHtml(item.value)}</strong></div>`)
-          .join("")}</div>
+        <dl class="stat-grid">${snapshot
+          .map((item) => `<dt>${escapeHtml(item.label)}</dt><dd>${escapeHtml(item.value)}</dd>`)
+          .join("")}</dl>
       </aside>
     </div>
   </section>
@@ -1294,6 +1479,8 @@ function cityShell(city, region, practice) {
   </section>`
       : ""
   }
+
+  ${citySponsorAvailabilityBox(region, packageInfo)}
 
   <section class="quick-start" id="start-here">
     <div class="container quick-start-grid">
@@ -1319,14 +1506,22 @@ function cityShell(city, region, practice) {
     </div>
   </section>
 
-  ${cityToc(isDui)}
+  ${cityToc(isDui, region)}
 
   <section class="section section-directory" id="directory">
     <div class="container">
       <div class="section-head">
         <p class="eyebrow">Local directory</p>
-        <h2>Courts, police, and license offices serving ${escapeHtml(city.name)}.</h2>
-        <p>Use these contacts to confirm court dates, request records, verify office hours, or find the correct agency before visiting.</p>
+        <h2>${escapeHtml(
+          isDui
+            ? `Courts, police, and license offices serving ${city.name}.`
+            : `Courts, police, and records offices serving ${city.name}.`
+        )}</h2>
+        <p>${escapeHtml(
+          isDui
+            ? "Use these contacts to confirm court dates, request records, verify office hours, or find the correct agency before visiting."
+            : "Use these contacts to confirm court records, request police or incident reports, verify office hours, or find the correct records source before visiting."
+        )}</p>
       </div>
       <div class="directory-grid">
         <div>
@@ -1338,8 +1533,8 @@ function cityShell(city, region, practice) {
           <div class="office-stack">${officeCards(enforcementOffices)}</div>
         </div>
         <div>
-          <div class="directory-label">${isDui ? "Driver services" : "Records and claims"}</div>
-          <div class="office-stack">${officeCards([licenseOffice])}</div>
+          <div class="directory-label">${isDui ? "Driver services" : "Records and agency references"}</div>
+          <div class="office-stack">${officeCards(isDui ? [licenseOffice] : [city.police, ...(region.sharedEnforcement ?? [])].filter(Boolean))}</div>
         </div>
       </div>
     </div>
@@ -1353,7 +1548,9 @@ function cityShell(city, region, practice) {
         <p>The map is a quick orientation tool. Confirm the right office and hours before traveling.</p>
       </div>
       <div class="map-shell">
-        <iframe title="${escapeHtml(city.name)} local legal office map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="${mapEmbedHref(`${city.name} ${region.stateCode} police courthouse driver services`)}"></iframe>
+        <iframe title="${escapeHtml(city.name)} local legal office map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="${mapEmbedHref(
+          isDui ? `${city.name} ${region.stateCode} police courthouse driver services` : `${city.name} ${region.stateCode} police courthouse records`
+        )}"></iframe>
       </div>
     </div>
   </section>
@@ -1382,6 +1579,8 @@ function cityShell(city, region, practice) {
     </div>
   </section>
 
+  ${documentChecklistSection(isDui)}
+
   <section class="section section-alt" id="state-law">
     <div class="container">
       <div class="section-head">
@@ -1391,6 +1590,7 @@ function cityShell(city, region, practice) {
       <div class="card-grid four-up">${localLawCards
         .map((item) => `<article class="info-card"><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.body)}</p></article>`)
         .join("")}</div>
+      ${sourceChips(sourcesForPractice(basics, isDui), "Source")}
     </div>
   </section>
 
@@ -1399,9 +1599,9 @@ function cityShell(city, region, practice) {
       <div>
         <div class="section-head">
           <p class="eyebrow">Process</p>
-          <h2>What to expect next.</h2>
+          <h2>${escapeHtml(isDui ? `Typical local ${basics.duiName} path.` : "Typical local injury claim path.")}</h2>
         </div>
-        <ol class="bulleted-list">${process.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ol>
+        ${timelineList(isDui)}
       </div>
       <div>
         <div class="section-head">
@@ -1431,6 +1631,7 @@ function cityShell(city, region, practice) {
         ["Insurance", "Available liability coverage, uninsured motorist coverage, med-pay, and liens can change net recovery."],
         ["Damages", "Lost wages, pain, impairment, scarring, and permanency can all matter."],
       ])}</div>`}
+      ${sourceChips(sourcesForPractice(basics, isDui), "Source")}
     </div>
   </section>
 
@@ -1448,6 +1649,7 @@ function cityShell(city, region, practice) {
             ["Comparative fault", "The other side may argue the injured person was partly or fully responsible."],
             ["Documentation", "Reports, photographs, medical records, and witness statements often decide the practical strength of the claim."],
           ])}</div>
+      ${sourceChips(sourcesForPractice(basics, isDui), "Source")}
     </div>
   </section>
 
@@ -1470,7 +1672,11 @@ function cityShell(city, region, practice) {
     </div>
   </section>
 
+  ${isDui ? "" : accidentReportSection(city, region)}
+
   ${attorneyQuestionSection({ city, region, isDui, basics })}
+
+  ${relatedResourceLinks(region, isDui)}
 
   <section class="section section-alt" id="related-guides">
     <div class="container split-grid">
@@ -1508,6 +1714,8 @@ function cityShell(city, region, practice) {
     </div>
   </section>
 
+  ${editorialReviewBlock(isDui)}
+
   <section class="section" id="faq">
     <div class="container split-grid">
       <div>
@@ -1533,7 +1741,7 @@ function cityShell(city, region, practice) {
     body,
     faq,
     breadcrumbs,
-    offices: [...courtOffices, ...enforcementOffices, licenseOffice].filter(Boolean),
+    offices: [...courtOffices, ...enforcementOffices, ...(isDui ? [licenseOffice] : [])].filter(Boolean),
   };
 }
 
@@ -1632,6 +1840,56 @@ function duiEdwardsvillePage(city, region, guide) {
   </section>`;
 }
 
+function practiceHubContent(practice) {
+  const isDui = practice.slug === "dui";
+  const cards = isDui
+    ? [
+        ["Court path", "Each DUI or DWI city guide identifies the likely court reference, local clerk path, and nearby agencies connected to the stop or arrest."],
+        ["License consequences", "The guides flag the separate driver-license track so readers know court dates and license deadlines may not move together."],
+        ["Arresting agencies", "City police, county deputies, sheriff offices, and state police can all affect where reports, tickets, and evidence begin."],
+        ["Official sources", "State statutes, court pages, driver-service agencies, and local law-enforcement resources are linked so readers can verify important details."],
+      ]
+    : [
+        ["Accident reports", "City injury guides point readers toward the police, sheriff, or state agency that may hold crash or incident reports."],
+        ["Local courts", "Each guide connects the city to the county court path that may matter if an insurance claim becomes a lawsuit."],
+        ["Claim deadlines", "The guides keep state filing periods and public-entity warning signs visible before a claim gets delayed."],
+        ["Documentation", "Readers get practical reminders about medical records, photos, bills, claim numbers, wage loss, and insurer letters."],
+      ];
+  const topics = isDui
+    ? ["court path", "license consequences", "arresting agencies", "official sources", "state-specific DUI/DWI terminology"]
+    : ["car accidents", "truck accidents", "slip and fall injuries", "pedestrian and bicycle accidents", "wrongful death"];
+
+  return `<section class="section">
+    <div class="container split-grid">
+      <div>
+        <div class="section-head">
+          <p class="eyebrow">How to use these guides</p>
+          <h2>${escapeHtml(isDui ? "Start with the state, then narrow to the city." : "Start with the incident location, then find the local records path.")}</h2>
+        </div>
+        <div class="prose-block">
+          <p>${escapeHtml(
+            isDui
+              ? "DUI and DWI cases are local in practice even when the legal rules come from state law. A reader may need to understand the county court, the city or state agency that made the stop, the license agency, and the official sources that explain penalties or administrative deadlines. These hub pages help readers move from the broad practice area to the city where the stop, arrest, or court date is connected."
+              : "Personal injury claims are often organized around the place where the crash, fall, or incident happened. The useful first questions are practical: which agency may have the report, which court would handle a lawsuit, what deadline applies, what insurance documents exist, and what evidence should be preserved. These hub pages help readers choose the city guide that matches the records and court path."
+          )}</p>
+          <p>${escapeHtml(
+            isDui
+              ? "Use the state and region first, then choose the city closest to where the stop happened. Illinois generally uses DUI language, while Missouri and North Carolina commonly use DWI in official materials. People still search both terms, so the guides use clear local terminology and explain which official sources should be checked before decisions are made."
+              : "Use the region first, then choose the city where the incident happened or where the responding agency is located. The guides are not a substitute for legal advice, but they can help readers organize accident reports, court references, insurance documents, claim deadlines, and local agency contacts before speaking with an insurer or attorney."
+          )}</p>
+        </div>
+      </div>
+      <div class="card-grid two-up">${cards.map((item) => `<article class="info-card"><h3>${escapeHtml(item[0])}</h3><p>${escapeHtml(item[1])}</p></article>`).join("")}</div>
+    </div>
+    <div class="container">
+      <div class="source-chip-row topic-chip-row" aria-label="Common topics">
+        <span>Common topics:</span>
+        ${topics.map((topic) => `<span>${escapeHtml(topic)}</span>`).join("")}
+      </div>
+    </div>
+  </section>`;
+}
+
 function practicePage(practice) {
   const regionCards = siteData.regions
     .map((region) => {
@@ -1666,6 +1924,7 @@ function practicePage(practice) {
       </aside>
     </div>
   </section>
+  ${practiceHubContent(practice)}
   <section class="section">
     <div class="container">
       <div class="section-head">
@@ -1826,6 +2085,34 @@ function regionPage(region) {
     .map((item) => `<article class="info-card"><h3>${escapeHtml(item[0])}</h3><p>${escapeHtml(item[1])}</p></article>`)
     .join("");
 
+  const sponsorInventoryRows = siteData.practiceAreas
+    .map(
+      (practice) => `<tr>
+        <td>${escapeHtml(practice.label)}</td>
+        <td>${escapeHtml(packageInfo.status === "sponsored" ? "Sponsored" : "Available")}</td>
+        <td>${escapeHtml(formatCurrency(packageInfo.annualPriceUsd))}/year</td>
+        <td>${escapeHtml(packageInfo.termLabel)}</td>
+        <td><a class="text-link" href="/sponsorships/" ${trackingAttrs("claim_package_click", {
+          region: region.slug,
+          practice: practice.slug,
+          placement: "cluster_inventory",
+          status: packageInfo.status,
+        })}>Reserve ${escapeHtml(practice.label)}</a></td>
+      </tr>`
+    )
+    .join("");
+
+  const sponsorReasons = [
+    "Covers nearby city guides in one county-level territory.",
+    "Built around county court and agency references that real readers need.",
+    "Uses clear attorney advertising disclosure.",
+    "No competing sponsor in the same practice-area inventory slot.",
+    "Annual flat fee structure, not pay-per-lead.",
+    "Sponsor placement appears next to useful local information instead of inside a generic ad directory.",
+  ]
+    .map((item) => `<li>${escapeHtml(item)}</li>`)
+    .join("");
+
   return `<section class="hero hero-tight">
     <div class="container hero-grid">
       <div class="hero-copy">
@@ -1921,12 +2208,24 @@ function regionPage(region) {
           <h2>What the regional sponsor gets.</h2>
         </div>
         <div class="card-grid three-up">${sponsorPackageDetails}</div>
+        <div class="section-head section-head-compact">
+          <p class="eyebrow">Inventory</p>
+          <h2>Sponsorship inventory for this territory.</h2>
+        </div>
+        <div class="responsive-table"><table>
+          <thead><tr><th>Practice Area</th><th>Status</th><th>Founding Price</th><th>Term</th><th>CTA</th></tr></thead>
+          <tbody>${sponsorInventoryRows}</tbody>
+        </table></div>
       </div>
       <div>
         ${sponsorProfileCard(region, packageInfo, "cluster")}
         <div class="sponsor-disclosure">
           <strong>Included city coverage</strong>
           <ul class="sponsor-coverage-list">${sponsorCoverage}</ul>
+        </div>
+        <div class="sponsor-disclosure">
+          <strong>Why lawyers sponsor this territory</strong>
+          <ul class="sponsor-coverage-list">${sponsorReasons}</ul>
         </div>
       </div>
     </div>
@@ -1994,6 +2293,141 @@ function sponsorshipPage() {
     title: "Request a regional package",
     intro: "Send a prefilled sponsorship inquiry for the cluster you want to reserve.",
   })}`;
+}
+
+const resourcePages = {
+  "/resources/illinois-dui-license-suspension/": {
+    title: "Illinois DUI License Suspension Guide",
+    description:
+      "Illinois DUI license suspension resource covering statutory summary suspension, refusal consequences, reinstatement sources, and official Secretary of State references.",
+    body: resourcePage({
+      eyebrow: "Illinois DUI resource",
+      title: "Illinois DUI license suspension guide.",
+      intro:
+        "Illinois DUI cases can involve a criminal court file and a separate driver-license track. This resource explains the practical source path readers should understand before assuming the court date is the only deadline that matters.",
+      cards: [
+        ["Separate license track", "A statutory summary suspension can move separately from the criminal DUI case, and deadlines can be strict."],
+        ["Refusal consequences", "Refusing chemical testing can create separate administrative consequences that should be checked against official state sources."],
+        ["Reinstatement issues", "Reinstatement may involve state forms, fees, evaluations, hearings, or proof of eligibility depending on the case history."],
+      ],
+      bullets: [
+        "Find the court paperwork and ticket number.",
+        "Keep any Secretary of State notice.",
+        "Confirm whether a hearing, petition, or reinstatement step has a separate deadline.",
+        "Use official state sources and seek legal advice before missing a license deadline.",
+      ],
+      sources: [
+        { label: "Illinois Secretary of State", href: "https://www.ilsos.gov/" },
+        { label: "Illinois Compiled Statutes", href: "https://www.ilga.gov/legislation/ilcs/ilcs.asp" },
+      ],
+    }),
+  },
+  "/resources/madison-county-dui-process/": {
+    title: "Madison County DUI Process Guide",
+    description:
+      "Madison County DUI process resource covering arrest paperwork, first court date, discovery, license issues, and official county references.",
+    body: resourcePage({
+      eyebrow: "Madison County DUI resource",
+      title: "Madison County DUI process guide.",
+      intro:
+        "DUI cases connected to Edwardsville and nearby Madison County communities often involve local police or sheriff paperwork, a county court date, and a separate license track. This resource gives readers a neutral process overview before choosing a city guide.",
+      cards: [
+        ["First paperwork", "Tickets, bond forms, release paperwork, test documents, and tow or impound records can all matter."],
+        ["County court path", "The first Madison County court date is usually the next visible step, but it may not be the only deadline."],
+        ["Evidence review", "Discovery, reports, test records, video, and crash information may shape later plea, hearing, trial, or dismissal questions."],
+      ],
+      bullets: processTimeline(true),
+      sources: [
+        { label: "Madison County Circuit Clerk", href: "https://www.madisoncountyil.gov/departments/circuit_clerk/index.php" },
+        { label: "Madison County Courthouse", href: "https://www.madisoncountyil.gov/departments/courts/index.php" },
+      ],
+    }),
+  },
+  "/resources/illinois-personal-injury-deadlines/": {
+    title: "Illinois Personal Injury Deadlines Guide",
+    description:
+      "Illinois personal injury deadline resource covering ordinary injury filing periods, evidence preservation, government notice warnings, and official sources.",
+    body: resourcePage({
+      eyebrow: "Illinois injury resource",
+      title: "Illinois personal injury deadlines guide.",
+      intro:
+        "Illinois injury claims depend on facts, defendants, insurance coverage, medical proof, and deadlines. This resource helps readers separate ordinary claim timing from issues that can require faster attention.",
+      cards: [
+        ["General filing period", "Many injury claims have a two-year filing period, but readers should verify the specific claim type and facts."],
+        ["Government warnings", "Claims involving public vehicles, public property, or public agencies can involve special notice rules or shorter practical deadlines."],
+        ["Evidence preservation", "Photos, reports, medical records, bills, wage records, and insurer letters are easier to organize early than reconstruct later."],
+      ],
+      bullets: documentChecklist(false),
+      sources: [
+        { label: "Illinois Compiled Statutes", href: "https://www.ilga.gov/legislation/ilcs/ilcs.asp" },
+        { label: "Illinois Courts", href: "https://www.illinoiscourts.gov/" },
+      ],
+    }),
+  },
+  "/resources/madison-county-accident-report-guide/": {
+    title: "Madison County Accident Report Guide",
+    description:
+      "Madison County accident report resource covering city police reports, county sheriff records, Illinois State Police reports, and documents to gather.",
+    body: resourcePage({
+      eyebrow: "Madison County records resource",
+      title: "Madison County accident report guide.",
+      intro:
+        "Accident and incident reports usually start with the agency that handled the scene. For Edwardsville and nearby Madison County communities, that may be city police, the Madison County Sheriff, or Illinois State Police depending on where the crash happened.",
+      cards: [
+        ["Inside city limits", "Start with the city police department if the crash or incident was handled by municipal officers."],
+        ["Outside city limits", "The county sheriff or Illinois State Police may be the correct source for county roads, highways, or interstate crashes."],
+        ["Report details", "Date, location, report number, involved drivers, vehicle information, and responding agency details can make the request easier."],
+      ],
+      bullets: documentChecklist(false),
+      sources: [
+        { label: "Edwardsville Police", href: "https://www.cityofedwardsville.com/217/Police" },
+        { label: "Madison County Sheriff", href: "https://www.madisoncountyil.gov/departments/sheriff/index.php" },
+        { label: "Illinois State Police", href: "https://isp.illinois.gov/" },
+      ],
+    }),
+  },
+};
+
+function resourcePage({ eyebrow, title, intro, cards, bullets, sources }) {
+  return `<section class="hero hero-tight">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">${escapeHtml(eyebrow)}</p>
+        <h1>${escapeHtml(title)}</h1>
+        <p class="lede">${escapeHtml(intro)}</p>
+      </div>
+      <aside class="hero-card">
+        <div class="hero-card-header">
+          <span class="pill">Resource guide</span>
+          <span class="pill pill-muted">Official-source oriented</span>
+        </div>
+        <p class="note">Use this resource with the related city guide for local court, police, and records contacts.</p>
+      </aside>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      <div class="card-grid three-up">${cards.map((item) => `<article class="info-card"><h3>${escapeHtml(item[0])}</h3><p>${escapeHtml(item[1])}</p></article>`).join("")}</div>
+    </div>
+  </section>
+  <section class="section section-alt">
+    <div class="container split-grid">
+      <div>
+        <div class="section-head">
+          <p class="eyebrow">Checklist</p>
+          <h2>Practical items to review.</h2>
+        </div>
+        <ul class="checklist-grid">${bullets.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+      </div>
+      <div>
+        <div class="section-head">
+          <p class="eyebrow">Sources</p>
+          <h2>Official references.</h2>
+        </div>
+        <div class="source-grid">${sourceCards(sources)}</div>
+      </div>
+    </div>
+  </section>`;
 }
 
 function pricingPage() {
@@ -2219,13 +2653,13 @@ function contactPage() {
   return infoPage(
     "Contact",
     `Contact ${siteData.siteName}`,
-    `Use the right inbox so your question reaches the right person quickly.`,
+    `Ask about a $1,000 founding territory sponsorship, source updates, legal corrections, or privacy questions.`,
     `<div class="container card-grid three-up">
       <article class="info-card"><h3>Legal and compliance</h3><p><a class="text-link" href="mailto:${siteData.legalEmail}">${siteData.legalEmail}</a></p></article>
       <article class="info-card"><h3>Privacy questions</h3><p><a class="text-link" href="mailto:${siteData.privacyEmail}">${siteData.privacyEmail}</a></p></article>
       <article class="info-card"><h3>Sponsorship inquiries</h3><p><a class="text-link" href="mailto:${siteData.sponsorsEmail}">${siteData.sponsorsEmail}</a></p></article>
     </div>${sponsorInquiryForm({
-      title: "Prefer a guided sponsorship inquiry?",
+      title: "Ask about a $1,000 founding territory sponsorship.",
       intro: "Use the form to open a prefilled email draft with the cluster, contact details, and notes already organized.",
     })}`
   );
@@ -2364,6 +2798,7 @@ function renderRegion(region) {
 
 function renderStaticPages() {
   const pages = {
+    ...resourcePages,
     "/sponsorships/": {
       title: `Sponsorships | ${siteData.siteName}`,
       description: `${siteData.siteName} sponsorship details for regional cluster packages and related city-page attorney placements.`,
@@ -2418,14 +2853,14 @@ function renderStaticPages() {
   return {
     ...Object.fromEntries(
       Object.entries(pages).map(([route, page]) => {
-        const breadcrumbs = [{ name: "Home", href: "/" }, { name: page.crumbs[0], href: route }];
+        const breadcrumbs = [{ name: "Home", href: "/" }, { name: page.crumbs?.[0] ?? page.title, href: route }];
         return [
           route,
           pageShell({
             title: page.title,
             description: page.description,
             body: `${breadcrumbTrail(breadcrumbs)}${page.body}`,
-            active: page.active,
+            active: page.active ?? "",
             route,
             schema: [
               webPageSchema({ title: page.title, description: page.description, route }),
@@ -2451,6 +2886,7 @@ function sitemapEntries() {
     "/terms/",
     "/privacy/",
     "/contact/",
+    ...Object.keys(resourcePages),
   ];
 
   for (const region of siteData.regions) {

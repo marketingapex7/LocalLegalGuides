@@ -29,28 +29,39 @@ function emitSponsorEvent(eventName, payload) {
 
 document.addEventListener("click", (event) => {
   const target = event.target.closest("[data-track='true']");
-  if (!target) {
-    return;
-  }
+  if (target) {
+    const eventName = target.getAttribute("data-track-event");
+    const payloadRaw = target.getAttribute("data-track-payload");
 
-  const eventName = target.getAttribute("data-track-event");
-  const payloadRaw = target.getAttribute("data-track-payload");
-
-  if (!eventName) {
-    return;
-  }
-
-  let payload = {};
-
-  if (payloadRaw) {
-    try {
-      payload = JSON.parse(payloadRaw);
-    } catch {
-      payload = { raw: payloadRaw };
+    if (!eventName) {
+      return;
     }
+
+    let payload = {};
+
+    if (payloadRaw) {
+      try {
+        payload = JSON.parse(payloadRaw);
+      } catch {
+        payload = { raw: payloadRaw };
+      }
+    }
+
+    emitSponsorEvent(eventName, payload);
+    return;
   }
 
-  emitSponsorEvent(eventName, payload);
+  const link = event.target.closest("a[href]");
+  if (!link) {
+    return;
+  }
+
+  const href = link.getAttribute("href") || "";
+  if (href.startsWith("mailto:")) {
+    emitSponsorEvent("email_click", { href });
+  } else if (href.startsWith("tel:")) {
+    emitSponsorEvent("phone_click", { href });
+  }
 });
 
 document.addEventListener("submit", (event) => {
@@ -95,3 +106,10 @@ document.addEventListener("submit", (event) => {
 
   window.location.href = `mailto:${targetEmail}?subject=${subject}&body=${body}`;
 });
+
+const path = window.location.pathname;
+if (/^\/clusters\/[^/]+\/?$/.test(path)) {
+  emitSponsorEvent("region_page_view", { path });
+} else if (/^\/(dui|personal-injury)\/[^/]+\/?$/.test(path)) {
+  emitSponsorEvent("city_page_view", { path });
+}
