@@ -1147,6 +1147,63 @@ tr:last-child td {
   background: var(--green);
 }
 
+.data-panel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.data-card {
+  background: #fffdf8;
+}
+
+.data-kicker {
+  display: block;
+  margin-bottom: 0.75rem;
+  color: var(--accent-strong);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.plain-list {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.plain-list li + li {
+  margin-top: 0.65rem;
+}
+
+.source-note {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.compact-definition-list {
+  margin: 1rem 0 0;
+}
+
+.compact-definition-list dt {
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.compact-definition-list dd {
+  margin: 0 0 0.75rem;
+  color: var(--muted);
+}
+
+.data-availability {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--muted);
+}
+
 .timeline-list {
   display: grid;
   gap: 0.7rem;

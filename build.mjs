@@ -1097,11 +1097,162 @@ function webPageSchema({ title, description, route, modifiedDate = siteData.last
   };
 }
 
-function cityToc(isDui, region) {
+function duiLocalDataFor(city) {
+  const data = city.dui_local_data ?? city.duiLocalData ?? null;
+  if (!data) return null;
+
+  const hasCampaigns = Array.isArray(data.past_campaigns) && data.past_campaigns.length > 0;
+  const hasRoads = Array.isArray(data.local_roads) && data.local_roads.length > 0;
+  const hasJurisdictions = Array.isArray(data.jurisdiction_notes) && data.jurisdiction_notes.length > 0;
+  const hasContent =
+    data.enforcement_snapshot?.summary ||
+    hasCampaigns ||
+    data.arrest_data?.summary ||
+    data.crash_context?.summary ||
+    hasRoads ||
+    hasJurisdictions ||
+    data.data_availability_note;
+
+  return hasContent ? data : null;
+}
+
+function localDuiDataSources(data) {
+  if (!data) return [];
+
+  const sources = [
+    data.enforcement_snapshot?.source_name && data.enforcement_snapshot?.source_url
+      ? {
+          label: data.enforcement_snapshot.source_name,
+          href: data.enforcement_snapshot.source_url,
+        }
+      : null,
+    data.arrest_data?.source_name && data.arrest_data?.source_url
+      ? {
+          label: data.arrest_data.source_name,
+          href: data.arrest_data.source_url,
+        }
+      : null,
+    data.crash_context?.source_name && data.crash_context?.source_url
+      ? {
+          label: data.crash_context.source_name,
+          href: data.crash_context.source_url,
+        }
+      : null,
+    ...(data.past_campaigns ?? [])
+      .filter((campaign) => campaign.source_name && campaign.source_url)
+      .map((campaign) => ({
+        label: campaign.source_name,
+        href: campaign.source_url,
+      })),
+  ].filter(Boolean);
+
+  const seen = new Set();
+  return sources.filter((source) => {
+    const key = source.href;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function localDuiDataSection(city) {
+  const data = duiLocalDataFor(city);
+  if (!data) return "";
+
+  const snapshot = data.enforcement_snapshot;
+  const campaigns = data.past_campaigns ?? [];
+  const arrestData = data.arrest_data;
+  const crashContext = data.crash_context;
+  const roads = data.local_roads ?? [];
+  const jurisdictions = data.jurisdiction_notes ?? [];
+  const sources = localDuiDataSources(data);
+  const safetyText =
+    "Local Legal Guides reports historical public enforcement data only. We do not publish upcoming checkpoint locations, patrol locations, or information intended to help drivers avoid law enforcement.";
+
+  return `<section class="section section-alt" id="dui-local-data">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Hyper-local DUI context</p>
+        <h2>Local DUI enforcement and roadway context for ${escapeHtml(city.name)}.</h2>
+        <p>${escapeHtml(safetyText)}</p>
+      </div>
+      <div class="data-panel-grid">
+        ${
+          snapshot?.summary
+            ? `<article class="info-card data-card">
+          <span class="data-kicker">Local enforcement snapshot</span>
+          <p>${escapeHtml(snapshot.summary)}</p>
+          ${
+            snapshot.source_name
+              ? `<p class="source-note">Source: ${
+                  snapshot.source_url
+                    ? `<a href="${escapeHtml(snapshot.source_url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(snapshot.source_name)}</a>`
+                    : escapeHtml(snapshot.source_name)
+                }${snapshot.source_date ? `, ${escapeHtml(snapshot.source_date)}` : ""}</p>`
+              : ""
+          }
+        </article>`
+            : ""
+        }
+        ${
+          campaigns.length
+            ? `<article class="info-card data-card">
+          <span class="data-kicker">Past impaired-driving campaigns</span>
+          <ul class="plain-list">${campaigns
+            .map(
+              (campaign) => `<li><strong>${escapeHtml(campaign.campaign_name ?? "Past campaign")}</strong>${
+                campaign.date_range ? ` <span>(${escapeHtml(campaign.date_range)})</span>` : ""
+              }: ${escapeHtml(campaign.results_summary ?? "")}</li>`
+            )
+            .join("")}</ul>
+        </article>`
+            : ""
+        }
+        ${
+          arrestData?.summary || crashContext?.summary
+            ? `<article class="info-card data-card">
+          <span class="data-kicker">Arrest and crash context</span>
+          ${arrestData?.summary ? `<p>${escapeHtml(arrestData.summary)}${arrestData.year ? ` (${escapeHtml(String(arrestData.year))})` : ""}</p>` : ""}
+          ${crashContext?.summary ? `<p>${escapeHtml(crashContext.summary)}</p>` : ""}
+        </article>`
+            : ""
+        }
+        ${
+          roads.length || jurisdictions.length
+            ? `<article class="info-card data-card">
+          <span class="data-kicker">Local roads and agencies</span>
+          ${roads.length ? `<p>Local roadway context includes ${escapeHtml(roads.join(", "))}.</p>` : ""}
+          ${
+            jurisdictions.length
+              ? `<dl class="compact-definition-list">${jurisdictions
+                  .map(
+                    (item) => `<dt>${escapeHtml(item.agency ?? "Agency")}</dt><dd><strong>${escapeHtml(item.role ?? "Role")}</strong>${
+                      item.notes ? `: ${escapeHtml(item.notes)}` : ""
+                    }</dd>`
+                  )
+                  .join("")}</dl>`
+              : ""
+          }
+        </article>`
+            : ""
+        }
+      </div>
+      ${
+        data.data_availability_note
+          ? `<aside class="data-availability"><strong>Data availability note:</strong> ${escapeHtml(data.data_availability_note)}</aside>`
+          : ""
+      }
+      ${sources.length ? `<div class="source-chip-row">${sources.map((source) => `<a href="${escapeHtml(source.href)}" target="_blank" rel="noopener noreferrer">Source: ${escapeHtml(source.label)}</a>`).join("")}</div>` : ""}
+    </div>
+  </section>`;
+}
+
+function cityToc(isDui, region, hasLocalDuiData = false) {
   const items = [
     ["Local directory", "#directory"],
     ["Map", "#map"],
     ["Local details", "#local"],
+    ...(isDui && hasLocalDuiData ? [["Local DUI data", "#dui-local-data"]] : []),
     ["Key deadlines", "#deadlines"],
     ["Documents", "#documents"],
     [isDui ? "DUI law" : "Injury law", "#state-law"],
@@ -1301,6 +1452,7 @@ function cityShell(city, region, practice) {
   const courtOffices = region.courtOffices ?? [court];
   const enforcementOffices = [city.police, ...(region.sharedEnforcement ?? [])].filter(Boolean);
   const licenseOffice = city.licenseOfficeOverride ?? region.licenseOffice;
+  const localDuiData = isDui ? duiLocalDataFor(city) : null;
   const caseName = isDui ? basics.duiName : "personal injury";
   const quickActions = quickActionCards({ city, region, court, licenseOffice, isDui, basics });
   const title = isDui
@@ -1506,7 +1658,7 @@ function cityShell(city, region, practice) {
     </div>
   </section>
 
-  ${cityToc(isDui, region)}
+  ${cityToc(isDui, region, Boolean(localDuiData))}
 
   <section class="section section-directory" id="directory">
     <div class="container">
@@ -1566,6 +1718,8 @@ function cityShell(city, region, practice) {
         .join("")}</div>
     </div>
   </section>
+
+  ${isDui ? localDuiDataSection(city) : ""}
 
   <section class="section" id="deadlines">
     <div class="container">

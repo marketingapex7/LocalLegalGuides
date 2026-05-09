@@ -936,6 +936,59 @@ export const siteData = {
             href: "https://www.cityofedwardsville.com/police",
             note: "For city police records, local crash reports, and municipal law-enforcement questions.",
           },
+          dui_local_data: {
+            enforcement_snapshot: {
+              summary:
+                "Edwardsville Police have participated in Illinois impaired-driving enforcement campaigns such as Drive Sober or Get Pulled Over and Drive High, Get a DUI.",
+              source_name: "Edwardsville Police St. Patrick's Day enforcement results",
+              source_url: "https://www.theintelligencer.com/news/article/edwardsville-il-st-patricks-enforcement-results-22096075.php",
+              source_date: "March 2026",
+            },
+            past_campaigns: [
+              {
+                campaign_name: "St. Patrick's Day traffic safety campaign",
+                date_range: "March 13-23, 2026",
+                results_summary:
+                  "Edwardsville Police reported 32 traffic stops, 31 citations, and three arrests, including one impaired-driving arrest.",
+                source_name: "The Edwardsville Intelligencer",
+                source_url: "https://www.theintelligencer.com/news/article/edwardsville-il-st-patricks-enforcement-results-22096075.php",
+              },
+            ],
+            crash_context: {
+              summary:
+                "The Illinois Secretary of State's DUI Fact Book reported 21,245 DUI arrests and 288 alcohol-related crash deaths statewide in the most recent statewide reporting year.",
+              source_name: "Illinois Secretary of State DUI Fact Book 2025",
+              source_url: "https://www.ilsos.gov/content/dam/publications/pdf_publications/dsd_a118.pdf",
+            },
+            local_roads: [
+              "I-55",
+              "I-70",
+              "I-255",
+              "Illinois Route 157",
+              "Illinois Route 159",
+              "Governors' Parkway",
+              "Troy Road",
+            ],
+            jurisdiction_notes: [
+              {
+                agency: "Edwardsville Police Department",
+                role: "Municipal police",
+                notes: "Handles local city traffic stops and crash reports within Edwardsville.",
+              },
+              {
+                agency: "Madison County Sheriff's Office",
+                role: "County sheriff",
+                notes: "May be involved in county-level enforcement or incidents outside city limits.",
+              },
+              {
+                agency: "Illinois State Police",
+                role: "State police",
+                notes: "May handle impaired-driving enforcement and crashes on state highways and interstates.",
+              },
+            ],
+            data_availability_note:
+              "City-level DUI arrest data is not published consistently across every police department. This guide uses local campaign results, official state sources, and county/state context when city-level data is unavailable.",
+          },
         },
         {
           slug: "glen-carbon-il",

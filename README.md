@@ -33,7 +33,21 @@ See `DEPLOYMENT.md` for the deployment checklist.
 - `server.mjs`: local preview server for `dist`
 - `styles.css`: shared site styles
 - `app.js`: small client-side enhancements only
+- `LOCAL_DATA_RULES.md`: sourcing and safety rules for hyper-local DUI data
 - `dist/`: generated production site
+
+## Hyper-local DUI data
+
+City records can include optional `dui_local_data` for historical public enforcement data, local roads, campaign results, crash context, and jurisdiction notes.
+
+Rules:
+
+- Use official, public, historical sources.
+- Do not publish upcoming checkpoint locations, expected checkpoint times, patrol locations, or avoidance advice.
+- Do not name private individuals from routine arrest records.
+- Label city, county, and state data clearly so the page does not imply statewide data is city-specific.
+
+See `LOCAL_DATA_RULES.md` before adding new DUI local-data fields.
 
 ## Sponsorship model
 
