@@ -1,3 +1,590 @@
+const makeAvailableSponsorPackage = (coverageLabel) => ({
+  status: "available",
+  annualPriceUsd: 1000,
+  termLabel: "12-month exclusive package",
+  coverageLabel,
+  sponsor: {
+    firmName: "",
+    attorneyName: "",
+    phone: "",
+    ctaUrl: "",
+    officeAddress: "",
+    serviceArea: "",
+    shortBio: "",
+    photoUrl: "",
+    disclaimer: "Attorney Advertising. Sponsorship does not imply endorsement.",
+  },
+});
+
+const expansionSponsorPackages = Object.fromEntries(
+  [
+    ["st-clair-county-core-il", "5 Illinois cities across DUI and personal injury pages"],
+    ["jefferson-county-gateway-mo", "5 Missouri cities across DWI and personal injury pages"],
+    ["south-county-mo", "5 Missouri cities across DWI and personal injury pages"],
+    ["north-county-mo", "5 Missouri cities across DWI and personal injury pages"],
+    ["mid-county-clayton-corridor-mo", "5 Missouri cities across DWI and personal injury pages"],
+    ["franklin-county-i44-mo", "5 Missouri cities across DWI and personal injury pages"],
+    ["lincoln-county-growth-corridor-mo", "5 Missouri cities across DWI and personal injury pages"],
+    ["boone-county-columbia-mo", "5 Missouri cities across DWI and personal injury pages"],
+    ["springfield-suburban-ring-mo", "5 Missouri cities across DWI and personal injury pages"],
+    ["kansas-city-northland-mo", "5 Missouri cities across DWI and personal injury pages"],
+  ].map(([slug, coverageLabel]) => [slug, makeAvailableSponsorPackage(coverageLabel)])
+);
+
+const moDorLocator = "https://dor.mo.gov/license-office-locator/";
+const ilFacilityFinder = "https://www.ilsos.gov/departments/drivers/facilities/home.html";
+const confirmHours = "Confirm current hours and available services with the agency before visiting.";
+
+const office = ({ name, type, address, phone, hours, courtSystem, href, note }) => ({
+  name,
+  type,
+  address,
+  phone,
+  hours,
+  courtSystem,
+  href,
+  note,
+});
+
+const police = (name, address, phone, href, note, type = "Municipal Police") =>
+  office({ name, type, address, phone, href, note });
+
+const city = ({ slug, name, agency, police: cityPolice, courtOverride, personalInjuryCourtOverride, licenseOfficeOverride }) => ({
+  slug,
+  name,
+  agency,
+  police: cityPolice,
+  courtOverride,
+  personalInjuryCourtOverride,
+  licenseOfficeOverride,
+});
+
+const stLouisCountyCourt = office({
+  name: "St. Louis County Circuit Court",
+  address: "105 S. Central Avenue, Clayton, MO 63105",
+  phone: "(314) 615-8029",
+  hours: "Monday-Friday, 8:00 am-5:00 pm",
+  courtSystem: "21st Judicial Circuit",
+  href: "https://stlcountycourts.com/",
+});
+
+const clayCountyCourt = office({
+  name: "Clay County Circuit Court",
+  address: "11 S. Water Street, Liberty, MO 64068",
+  phone: "(816) 407-3900",
+  hours: "Confirm current hours with the circuit clerk before visiting.",
+  courtSystem: "7th Judicial Circuit",
+  href: "https://www.courts.mo.gov/page.jsp?id=99494",
+});
+
+const platteCountyCourt = office({
+  name: "Platte County Circuit Court",
+  address: "415 Third Street, Platte City, MO 64079",
+  phone: "(816) 858-2232",
+  hours: "Confirm current hours with the circuit clerk before visiting.",
+  courtSystem: "6th Judicial Circuit",
+  href: "https://www.courts.mo.gov/page.jsp?id=99493",
+});
+
+const christianCountyCourt = office({
+  name: "Christian County Circuit Court",
+  address: "110 W. Elm Street, Ozark, MO 65721",
+  phone: "(417) 582-5120",
+  hours: "Confirm current hours with the circuit clerk before visiting.",
+  courtSystem: "38th Judicial Circuit",
+  href: "https://www.courts.mo.gov/page.jsp?id=124650",
+});
+
+const greeneCountyCourt = office({
+  name: "Greene County Circuit Court",
+  address: "1010 N. Boonville Avenue, Springfield, MO 65802",
+  phone: "(417) 868-4074",
+  hours: "Confirm current hours with the circuit clerk before visiting.",
+  courtSystem: "31st Judicial Circuit",
+  href: "https://www.courts.mo.gov/page.jsp?id=124636",
+});
+
+const stLouisCountyLicense = office({
+  name: "Missouri Department of Revenue License Office Locator",
+  type: "Missouri License Office Locator",
+  address: "Use the Missouri DOR locator for the nearest current office.",
+  phone: "(573) 526-2407",
+  hours: confirmHours,
+  href: moDorLocator,
+  note: "Missouri license-office locations and hours can change; use the official DOR locator before visiting.",
+});
+
+const expansionRegions = [
+  {
+    slug: "st-clair-county-core-il",
+    name: "St. Clair County Core",
+    state: "Illinois",
+    stateCode: "IL",
+    teaser: "Belleville, O'Fallon, and nearby Metro East city guides tied to St. Clair County court and agency records.",
+    urgentDeadline: {
+      headline: "St. Clair County cases move through a county court system, even when the stop or crash starts locally.",
+      body: "Readers should identify the police agency first, then verify the court date, records office, and Secretary of State license track separately.",
+    },
+    regionHighlights: [
+      {
+        title: "Belleville anchors the courthouse market",
+        body: "Belleville gives this cluster county-seat relevance while O'Fallon, Fairview Heights, Shiloh, and Swansea add suburban search intent.",
+      },
+      {
+        title: "Metro East traffic corridors matter",
+        body: "I-64, Illinois Route 159, Green Mount Road, and nearby commercial corridors create practical DUI, crash-report, and injury-document questions.",
+      },
+      {
+        title: "Useful for DUI and PI sponsors",
+        body: "The cluster is dense enough for attorney outreach while still being more targeted than a broad Metro East or St. Louis campaign.",
+      },
+    ],
+    processNotes: [
+      {
+        label: "Local stop",
+        title: "Start with the agency named on the paperwork",
+        body: "A Belleville, O'Fallon, Fairview Heights, Shiloh, Swansea, county, or state-police contact can change where records requests begin.",
+      },
+      {
+        label: "County court",
+        title: "Court records point back to Belleville",
+        body: "DUI and civil filings tied to this cluster usually require checking the St. Clair County court system rather than only a city office.",
+      },
+      {
+        label: "License track",
+        title: "Illinois Secretary of State issues are separate",
+        body: "Driver-license questions should be confirmed through Secretary of State resources, not assumed from the criminal case alone.",
+      },
+    ],
+    court: office({
+      name: "St. Clair County Courthouse",
+      address: "10 Public Square, Belleville, IL 62220",
+      phone: "(618) 277-6600",
+      hours: "Monday-Friday, 8:30 am-4:30 pm",
+      courtSystem: "20th Judicial Circuit",
+      href: "https://www.illinoiscourts.gov/courts-directory/109/St-Clair-County-Courthouse/court/",
+    }),
+    licenseOffice: office({
+      name: "Illinois Secretary of State Driver Services Facility - Belleville",
+      type: "Driver Services",
+      address: "400 W. Main Street, Belleville, IL 62220",
+      phone: "(618) 236-8750",
+      hours: confirmHours,
+      href: ilFacilityFinder,
+      note: "Use the Illinois Secretary of State facility finder to verify appointments, services, and current hours.",
+    }),
+    sharedEnforcement: [
+      police(
+        "St. Clair County Sheriff's Department",
+        "700 N. 5th Street, Belleville, IL 62220",
+        "(618) 277-3505",
+        "https://www.stclaircountyil.gov/departments/sheriff",
+        "County enforcement and records source for incidents handled outside city-police jurisdiction.",
+        "County Sheriff"
+      ),
+    ],
+    cities: [
+      city({
+        slug: "belleville-il",
+        name: "Belleville",
+        agency: "Belleville Police Department",
+        police: police("Belleville Police Department", "720 W. Main Street, Belleville, IL 62220", "(618) 234-1212", "https://www.belleville.net/355/Police", "For Belleville police reports, crash records, and local enforcement questions."),
+      }),
+      city({
+        slug: "ofallon-il",
+        name: "O'Fallon",
+        agency: "O'Fallon Police Department",
+        police: police("O'Fallon Police Department", "285 N. Seven Hills Road, O'Fallon, IL 62269", "(618) 624-4545", "https://www.ofallon.org/253/Police", "For O'Fallon police records, traffic crash reports, and local enforcement questions."),
+      }),
+      city({
+        slug: "fairview-heights-il",
+        name: "Fairview Heights",
+        agency: "Fairview Heights Police Department",
+        police: police("Fairview Heights Police Department", "10027 Bunkum Road, Fairview Heights, IL 62208", "(618) 489-2100", "https://fhpd.org/contact-us/", "For Fairview Heights police reports, crash records, and local enforcement questions."),
+      }),
+      city({
+        slug: "shiloh-il",
+        name: "Shiloh",
+        agency: "Shiloh Police Department",
+        police: police("Shiloh Police Department", "3498 Lebanon Avenue, Shiloh, IL 62221", "(618) 632-9047", "https://shilohil.org/village-hall/police-department/", "For Shiloh records, police reports, and local enforcement questions."),
+      }),
+      city({
+        slug: "swansea-il",
+        name: "Swansea",
+        agency: "Swansea Police Department",
+        police: police("Swansea Police Department", "1400 N. Illinois Street, Swansea, IL 62226", "(618) 233-8114", "https://www.swanseail.org/1086/Police-Department", "For Swansea police reports, crash records, and local enforcement questions."),
+      }),
+    ],
+  },
+  {
+    slug: "jefferson-county-gateway-mo",
+    name: "Jefferson County Gateway",
+    state: "Missouri",
+    stateCode: "MO",
+    teaser: "Arnold, Festus, Crystal City, Herculaneum, and Hillsboro guides built around Jefferson County court and commuter corridors.",
+    urgentDeadline: {
+      headline: "Jefferson County DWI and crash questions often begin on local roads and end at the county courthouse.",
+      body: "Drivers and injury claimants should keep the ticket, report number, agency name, court notice, and insurance paperwork together.",
+    },
+    regionHighlights: [
+      { title: "Highway-driven legal intent", body: "I-55, Highway 67, and county commuter traffic make this a strong DUI-first territory with a real injury-claim angle." },
+      { title: "Hillsboro creates the courthouse anchor", body: "The county-seat page connects the city pages to Jefferson County court records instead of treating each suburb as isolated." },
+      { title: "Good founding sponsor fit", body: "The cluster is specific enough for a local attorney to own without competing for a broad St. Louis keyword." },
+    ],
+    processNotes: [
+      { label: "Agency first", title: "Confirm who handled the stop or crash", body: "Arnold, Festus, Crystal City, Herculaneum, Hillsboro, county deputies, and Missouri State Highway Patrol may all appear in records." },
+      { label: "County filing", title: "Court questions generally route through Jefferson County", body: "DWI, traffic, and civil filings should be checked through the circuit court or the notice on the paperwork." },
+      { label: "License issue", title: "Missouri DOR runs a separate administrative process", body: "A DWI arrest can create license deadlines apart from what happens in the criminal case." },
+    ],
+    court: office({
+      name: "Jefferson County Circuit Court",
+      address: "300 Main Street, Hillsboro, MO 63050",
+      phone: "(636) 797-5443",
+      hours: "Confirm current hours with the circuit clerk before visiting.",
+      courtSystem: "23rd Judicial Circuit",
+      href: "https://www.courts.mo.gov/page.jsp?id=124615",
+    }),
+    licenseOffice: office({
+      name: "Arnold License Office",
+      type: "Missouri License Office",
+      address: "3540 Jeffco Boulevard, Suite 120, Arnold, MO 63010",
+      phone: "(636) 461-0846",
+      hours: confirmHours,
+      href: moDorLocator,
+      note: "Use the Missouri DOR locator to confirm office services and current hours.",
+    }),
+    sharedEnforcement: [
+      police("Jefferson County Sheriff's Office", "400 First Street, Hillsboro, MO 63050", "(636) 797-5000", "https://www.jeffcomo.org/209/Sheriff", "County records source for incidents handled by Jefferson County deputies.", "County Sheriff"),
+    ],
+    cities: [
+      city({ slug: "arnold-mo", name: "Arnold", agency: "Arnold Police Department", police: police("Arnold Police Department", "2101 Jeffco Boulevard, Arnold, MO 63010", "(636) 296-3204", "https://www.arnoldmo.org/government/police/", "For Arnold police reports, crash records, and local enforcement questions.") }),
+      city({ slug: "festus-mo", name: "Festus", agency: "Festus Police Department", police: police("Festus Police Department", "100 Park Avenue, Festus, MO 63028", "(636) 937-3646", "https://www.festusmo.gov/180/Police", "For Festus police reports, crash records, and local enforcement questions.") }),
+      city({ slug: "crystal-city-mo", name: "Crystal City", agency: "Crystal City Police Department", police: police("Crystal City Police Department", "130 Mississippi Avenue, Crystal City, MO 63019", "(636) 937-4601", "https://www.crystalcitymo.org/", "For Crystal City records and local police-report questions, verify the current department contact before visiting.") }),
+      city({ slug: "herculaneum-mo", name: "Herculaneum", agency: "Herculaneum Police Department", police: police("Herculaneum Police Department", "1 Parkwood Court, Herculaneum, MO 63048", "(636) 479-4791", "https://www.cityofherculaneum.org/", "For Herculaneum police reports, crash records, and local enforcement questions.") }),
+      city({ slug: "hillsboro-mo", name: "Hillsboro", agency: "Hillsboro Police Department", police: police("Hillsboro Police Department", "101 Main Street, Hillsboro, MO 63050", "(636) 797-5229", "https://www.hillsboromo.org/", "For Hillsboro police and county-seat records questions, confirm the current records contact before visiting.") }),
+    ],
+  },
+  {
+    slug: "south-county-mo",
+    name: "South County",
+    state: "Missouri",
+    stateCode: "MO",
+    teaser: "South St. Louis County guides for Mehlville, Oakville, Affton, Lemay, and Concord.",
+    urgentDeadline: {
+      headline: "South County legal questions often depend on which county precinct handled the incident.",
+      body: "Many communities in this cluster are unincorporated, so county police precinct contacts can matter more than a city hall listing.",
+    },
+    regionHighlights: [
+      { title: "Avoids overbroad St. Louis targeting", body: "The cluster gives attorneys South County visibility without trying to rank a generic St. Louis lawyer page first." },
+      { title: "Precinct-based records are important", body: "Readers need practical guidance on South County and Affton-Southwest police contacts, not just courthouse information." },
+      { title: "DUI and PI both fit", body: "I-55, Lindbergh, Telegraph, Gravois, and Lemay Ferry create both traffic-stop and crash-report search intent." },
+    ],
+    processNotes: [
+      { label: "County precincts", title: "Unincorporated communities need precinct-specific guidance", body: "South County readers may need St. Louis County Police records rather than a municipal police department." },
+      { label: "Clayton court", title: "The court layer points back to Clayton", body: "Criminal and civil case information usually ties into the St. Louis County Circuit Court system." },
+      { label: "Local documents", title: "Report numbers and agency names matter", body: "For PI and DWI pages, the first practical step is identifying the report source before calling the wrong office." },
+    ],
+    court: stLouisCountyCourt,
+    licenseOffice: stLouisCountyLicense,
+    sharedEnforcement: [
+      police("St. Louis County Police Department - South County Precinct", "323 Sappington Barracks Road, St. Louis, MO 63125", "(314) 615-0162", "https://www.stlouiscountypolice.com/precincts/south-county-precinct/", "County precinct serving areas of unincorporated South St. Louis County.", "County Police"),
+      police("St. Louis County Police Department - Affton Southwest Precinct", "11500 Gravois Road, St. Louis, MO 63126", "(314) 638-5550", "https://stlouiscountypolice.com/precincts/affton-southwest/", "County precinct serving Affton and surrounding southwest county communities.", "County Police"),
+    ],
+    cities: [
+      city({ slug: "mehlville-mo", name: "Mehlville", agency: "St. Louis County Police Department", police: police("St. Louis County Police Department - South County Precinct", "323 Sappington Barracks Road, St. Louis, MO 63125", "(314) 615-0162", "https://www.stlouiscountypolice.com/precincts/south-county-precinct/", "Mehlville is served through county-police coverage rather than a standalone municipal police department.", "County Police") }),
+      city({ slug: "oakville-mo", name: "Oakville", agency: "St. Louis County Police Department", police: police("St. Louis County Police Department - South County Precinct", "323 Sappington Barracks Road, St. Louis, MO 63125", "(314) 615-0162", "https://www.stlouiscountypolice.com/precincts/south-county-precinct/", "Oakville police-report questions generally begin with the South County Precinct.", "County Police") }),
+      city({ slug: "affton-mo", name: "Affton", agency: "St. Louis County Police Department", police: police("St. Louis County Police Department - Affton Southwest Precinct", "11500 Gravois Road, St. Louis, MO 63126", "(314) 638-5550", "https://stlouiscountypolice.com/precincts/affton-southwest/", "Affton is served by St. Louis County Police through the Affton-Southwest Precinct.", "County Police") }),
+      city({ slug: "lemay-mo", name: "Lemay", agency: "St. Louis County Police Department", police: police("St. Louis County Police Department - South County Precinct", "323 Sappington Barracks Road, St. Louis, MO 63125", "(314) 615-0162", "https://www.stlouiscountypolice.com/precincts/south-county-precinct/", "Lemay readers should confirm whether South County Precinct or another agency handled the report.", "County Police") }),
+      city({ slug: "concord-mo", name: "Concord", agency: "St. Louis County Police Department", police: police("St. Louis County Police Department - South County Precinct", "323 Sappington Barracks Road, St. Louis, MO 63125", "(314) 615-0162", "https://www.stlouiscountypolice.com/precincts/south-county-precinct/", "Concord police-report questions usually begin with St. Louis County Police.", "County Police") }),
+    ],
+  },
+  {
+    slug: "north-county-mo",
+    name: "North County",
+    state: "Missouri",
+    stateCode: "MO",
+    teaser: "North St. Louis County guides for Florissant, Hazelwood, Bridgeton, Spanish Lake, and Black Jack.",
+    urgentDeadline: {
+      headline: "North County pages need city-police and county-precinct distinctions.",
+      body: "Florissant, Hazelwood, and Bridgeton have municipal departments, while Spanish Lake and Black Jack route many questions through county police.",
+    },
+    regionHighlights: [
+      { title: "Recognizable local territory", body: "North County is a real service area with enough search intent for DUI-first and PI-follow-up sponsorships." },
+      { title: "County court connection", body: "The cluster keeps the Clayton court path visible while still making each city page locally useful." },
+      { title: "Agency split is the value", body: "Clear police-contact differences help the pages answer practical user questions instead of reading like generic SEO pages." },
+    ],
+    processNotes: [
+      { label: "Municipal or county", title: "Check the agency before requesting records", body: "A Florissant or Hazelwood report is not requested the same way as a Spanish Lake or Black Jack county-police report." },
+      { label: "Court path", title: "Court notices still matter more than assumptions", body: "Use the ticket, summons, or civil filing notice to confirm which division or court date applies." },
+      { label: "Sponsor value", title: "A sponsor gets a coherent territory", body: "The package is narrow enough for North County outreach while still covering five distinct local pages." },
+    ],
+    court: stLouisCountyCourt,
+    licenseOffice: stLouisCountyLicense,
+    sharedEnforcement: [
+      police("St. Louis County Police Department - North County Precinct", "2225 Dunn Road, St. Louis, MO 63136", "(314) 615-4297", "https://www.stlouiscountypolice.com/precincts/north-county-precinct/", "County precinct serving Spanish Lake, Black Jack, and other unincorporated North County areas.", "County Police"),
+    ],
+    cities: [
+      city({ slug: "florissant-mo", name: "Florissant", agency: "Florissant Police Department", police: police("Florissant Police Department", "1700 N. Highway 67, Florissant, MO 63033", "(314) 831-7000", "https://www.florissantmo.com/egov/apps/locations/facilities.egov?id=8&view=detail", "For Florissant police reports, crash records, and local enforcement questions.") }),
+      city({ slug: "hazelwood-mo", name: "Hazelwood", agency: "Hazelwood Police Department", police: police("Hazelwood Police Department", "415 Elm Grove Lane, Hazelwood, MO 63042", "(314) 838-5000", "https://www.hazelwoodmo.org/220/Office-of-the-Chief-of-Police", "For Hazelwood police reports, crash records, and local enforcement questions.") }),
+      city({ slug: "bridgeton-mo", name: "Bridgeton", agency: "Bridgeton Police Department", police: police("Bridgeton Police Department", "12355 Natural Bridge Road, Bridgeton, MO 63044", "(314) 739-7557", "https://www.bridgetonmo.com/396/Police", "For Bridgeton police reports, crash records, and local enforcement questions.") }),
+      city({ slug: "spanish-lake-mo", name: "Spanish Lake", agency: "St. Louis County Police Department", police: police("St. Louis County Police Department - North County Precinct", "2225 Dunn Road, St. Louis, MO 63136", "(314) 615-4297", "https://www.stlouiscountypolice.com/precincts/north-county-precinct/", "Spanish Lake police-report questions generally begin with the North County Precinct.", "County Police") }),
+      city({ slug: "black-jack-mo", name: "Black Jack", agency: "St. Louis County Police Department", police: police("St. Louis County Police Department - North County Precinct", "2225 Dunn Road, St. Louis, MO 63136", "(314) 615-4297", "https://www.stlouiscountypolice.com/precincts/north-county-precinct/", "Black Jack is listed by St. Louis County Police as part of the North County Precinct service area.", "County Police") }),
+    ],
+  },
+  {
+    slug: "mid-county-clayton-corridor-mo",
+    name: "Mid County / Clayton Corridor",
+    state: "Missouri",
+    stateCode: "MO",
+    teaser: "Clayton-corridor guides for court-adjacent suburbs with strong personal injury and DWI sponsor value.",
+    urgentDeadline: {
+      headline: "Clayton gives this cluster courthouse credibility, but each city still has its own records path.",
+      body: "Readers should separate St. Louis County court information from municipal police or accident-report requests.",
+    },
+    regionHighlights: [
+      { title: "Courthouse-adjacent territory", body: "Clayton is the county legal hub, making this a high-credibility cluster for PI-first sponsorship sales." },
+      { title: "Dense suburban search intent", body: "University City, Maplewood, Richmond Heights, and Brentwood add compact local pages around major commuter roads." },
+      { title: "Strong attorney fit", body: "A sponsor can present as local to the court corridor rather than buying a broad St. Louis ad placement." },
+    ],
+    processNotes: [
+      { label: "Court hub", title: "County court access is the organizing idea", body: "The cluster should frame Clayton as the legal hub while city pages handle police records and local incident details." },
+      { label: "PI priority", title: "Injury claims benefit from records clarity", body: "Crash reports, medical records, insurer letters, and lawsuit deadlines should be gathered early." },
+      { label: "DWI fit", title: "DWI pages still matter", body: "Traffic stops on I-64, I-170, Hanley, Brentwood, Manchester, and Delmar can create local DWI search demand." },
+    ],
+    court: stLouisCountyCourt,
+    licenseOffice: stLouisCountyLicense,
+    cities: [
+      city({ slug: "clayton-mo", name: "Clayton", agency: "Clayton Police Department", police: police("Clayton Police Department", "10 S. Brentwood Boulevard, Clayton, MO 63105", "(314) 645-3000", "https://www.claytonmo.gov/police", "For Clayton police reports, crash records, and court-corridor enforcement questions.") }),
+      city({ slug: "university-city-mo", name: "University City", agency: "University City Police Department", police: police("University City Police Department", "6801 Delmar Boulevard, University City, MO 63130", "(314) 725-2211", "https://www.ucitymo.org/78/Police-Department", "For University City police reports, crash records, and local enforcement questions.") }),
+      city({ slug: "maplewood-mo", name: "Maplewood", agency: "Maplewood Police Department", police: police("Maplewood Police Department", "7601 Manchester Road, Maplewood, MO 63143", "(314) 645-4880", "https://www.cityofmaplewood.com/", "For Maplewood records and police-report questions, confirm the current records contact before visiting.") }),
+      city({ slug: "richmond-heights-mo", name: "Richmond Heights", agency: "Richmond Heights Police Department", police: police("Richmond Heights Police Department", "7447 Dale Avenue, Richmond Heights, MO 63117", "(314) 655-3630", "https://rhpolice.org/contact-us/general-contact-information/", "For Richmond Heights police reports, crash records, and local enforcement questions.") }),
+      city({ slug: "brentwood-mo", name: "Brentwood", agency: "Brentwood Police Department", police: police("Brentwood Police Department", "272 Hanley Industrial Court, Brentwood, MO 63144", "(314) 644-7100", "https://brentwoodmo.org/13/Police", "For Brentwood police reports, crash records, and local enforcement questions.") }),
+    ],
+  },
+  {
+    slug: "franklin-county-i44-mo",
+    name: "Franklin County / I-44 Corridor",
+    state: "Missouri",
+    stateCode: "MO",
+    teaser: "Washington, Union, Pacific, Sullivan, and St. Clair guides built around Franklin County and I-44 traffic.",
+    urgentDeadline: {
+      headline: "Franklin County's I-44 corridor creates practical DWI, traffic, and crash-document questions.",
+      body: "Union provides the county-court anchor while the city pages identify local police and records contacts.",
+    },
+    regionHighlights: [
+      { title: "Clean county identity", body: "The territory has a clear courthouse, county identity, and highway-corridor story." },
+      { title: "DUI-first sponsor target", body: "I-44, Highway 100, and Highway 47 make DWI and traffic-defense outreach especially natural." },
+      { title: "PI is still useful", body: "Crash-report and insurance-document sections let the same cluster support injury sponsorships as the market grows." },
+    ],
+    processNotes: [
+      { label: "I-44 corridor", title: "Highway stops and crashes can involve multiple agencies", body: "City police, Franklin County deputies, and Missouri State Highway Patrol may all appear in paperwork." },
+      { label: "Union court", title: "County court questions point toward Union", body: "Use official court notices and Case.net-linked resources for current case information." },
+      { label: "License documents", title: "DOR issues stay separate", body: "A DWI license suspension or reinstatement issue should be checked through Missouri DOR sources." },
+    ],
+    court: office({
+      name: "Franklin County Circuit Court",
+      address: "401 E. Main Street, Union, MO 63084",
+      phone: "(636) 583-7365",
+      hours: "Confirm current hours with the circuit clerk before visiting.",
+      courtSystem: "20th Judicial Circuit",
+      href: "https://www.courts.mo.gov/page.jsp?id=124614",
+    }),
+    licenseOffice: office({
+      name: "Union License Office",
+      type: "Missouri License Office",
+      address: "105 S. Oak Street, Union, MO 63084",
+      phone: "(636) 583-3282",
+      hours: "Monday-Friday, 8:30 am-4:30 pm; confirm before visiting.",
+      href: moDorLocator,
+      note: "Use the Missouri DOR locator to confirm current services and hours.",
+    }),
+    sharedEnforcement: [
+      police("Franklin County Sheriff's Office", "1 Bruns Lane, Union, MO 63084", "(636) 583-2560", "https://www.franklinmo.org/sheriff", "County records source for incidents handled by Franklin County deputies.", "County Sheriff"),
+    ],
+    cities: [
+      city({ slug: "washington-mo", name: "Washington", agency: "Washington Police Department", police: police("Washington Police Department", "301 Jefferson Street, Washington, MO 63090", "(636) 390-1050", "https://washmo.gov/", "For Washington police reports, crash records, and local enforcement questions.") }),
+      city({ slug: "union-mo", name: "Union", agency: "Union Police Department", police: police("Union Police Department", "119 S. Church Street, Union, MO 63084", "(636) 583-3700", "https://www.unionmissouri.gov/", "For Union police reports, crash records, and county-seat enforcement questions.") }),
+      city({ slug: "pacific-mo", name: "Pacific", agency: "Pacific Police Department", police: police("Pacific Police Department", "300 Hoven Drive, Pacific, MO 63069", "(636) 257-2424", "https://www.pacificmissouri.com/", "For Pacific police reports, crash records, and local enforcement questions.") }),
+      city({ slug: "sullivan-mo", name: "Sullivan", agency: "Sullivan Police Department", police: police("Sullivan Police Department", "106 Progress Drive, Sullivan, MO 63080", "(573) 468-8001", "https://www.sullivan.mo.us/", "For Sullivan police reports, crash records, and local enforcement questions.") }),
+      city({ slug: "st-clair-mo", name: "St. Clair", agency: "St. Clair Police Department", police: police("St. Clair Police Department", "1 Paul Parks Drive, St. Clair, MO 63077", "(636) 629-1313", "https://stclairmo.us/", "For St. Clair police reports, crash records, and local enforcement questions.") }),
+    ],
+  },
+  {
+    slug: "lincoln-county-growth-corridor-mo",
+    name: "Lincoln County Growth Corridor",
+    state: "Missouri",
+    stateCode: "MO",
+    teaser: "Troy, Moscow Mills, Winfield, Elsberry, and Hawk Point guides for a growing St. Louis-orbit county.",
+    urgentDeadline: {
+      headline: "Lincoln County is an early-growth legal territory with a clear courthouse anchor in Troy.",
+      body: "The pages emphasize local police contacts, county-court routing, and license-document separation for DWI readers.",
+    },
+    regionHighlights: [
+      { title: "Early sponsor territory", body: "Lincoln County is less competitive than St. Charles County but still close enough to the metro to interest growth-minded firms." },
+      { title: "Troy anchors the cluster", body: "Troy gives the package a courthouse and attorney-market center while smaller city pages create local search reach." },
+      { title: "DUI-first fit", body: "County roads and commuter movement make DWI and traffic-defense content the strongest first pitch." },
+    ],
+    processNotes: [
+      { label: "County growth", title: "Smaller cities still need specific pages", body: "Moscow Mills, Winfield, Elsberry, and Hawk Point should not be treated as Troy-only searches." },
+      { label: "Court path", title: "Court records route through Lincoln County", body: "DWI and civil filing questions should be checked through the circuit clerk or official court resources." },
+      { label: "Records", title: "Confirm the exact agency before requesting a report", body: "Police, sheriff, and highway-patrol records can differ depending on where the incident happened." },
+    ],
+    court: office({
+      name: "Lincoln County Circuit Court",
+      address: "45 Business Park Drive, Troy, MO 63379",
+      phone: "(636) 528-6300",
+      hours: "Confirm current hours with the circuit clerk before visiting.",
+      courtSystem: "45th Judicial Circuit",
+      href: "https://www.courts.mo.gov/page.jsp?id=124796",
+    }),
+    licenseOffice: office({
+      name: "Troy License Office",
+      type: "Missouri License Office",
+      address: "850 E. Cherry Street, Troy, MO 63379",
+      phone: "(636) 622-7090",
+      hours: confirmHours,
+      href: moDorLocator,
+      note: "Use the Missouri DOR locator to confirm current services and hours.",
+    }),
+    sharedEnforcement: [
+      police("Lincoln County Sheriff's Office", "65 Business Park Drive, Troy, MO 63379", "(636) 528-8546", "https://lcsomo.gov/", "County records source for incidents handled by Lincoln County deputies.", "County Sheriff"),
+    ],
+    cities: [
+      city({ slug: "troy-mo", name: "Troy", agency: "Troy Police Department", police: police("Troy Police Department", "800 Cap Au Gris Street, Troy, MO 63379", "(636) 528-4725", "https://www.cityoftroymissouri.com/", "For Troy police reports, crash records, and county-seat enforcement questions.") }),
+      city({ slug: "moscow-mills-mo", name: "Moscow Mills", agency: "Moscow Mills Police Department", police: police("Moscow Mills Police Department", "500 Highway MM, Moscow Mills, MO 63362", "(636) 356-4612", "https://moscowmillsmo.com/", "For Moscow Mills police reports and local records, confirm the current records contact before visiting.") }),
+      city({ slug: "winfield-mo", name: "Winfield", agency: "Winfield Police Department", police: police("Winfield Police Department", "51 Harry's Way, Winfield, MO 63389", "(636) 668-8100", "https://cityofwinfieldmo.com/", "For Winfield police reports and local records, confirm the current records contact before visiting.") }),
+      city({ slug: "elsberry-mo", name: "Elsberry", agency: "Elsberry Police Department", police: police("Elsberry Police Department", "201 Broadway Street, Elsberry, MO 63343", "(573) 898-5456", "https://www.elsberrymo.org/", "For Elsberry police reports and local enforcement questions.") }),
+      city({ slug: "hawk-point-mo", name: "Hawk Point", agency: "Hawk Point Police Department", police: police("Hawk Point Police Department", "161 W. Lincoln Street, Hawk Point, MO 63349", "(636) 338-4377", "https://hawkpointmo.com/", "For Hawk Point police reports and local records, confirm the current records contact before visiting.") }),
+    ],
+  },
+  {
+    slug: "boone-county-columbia-mo",
+    name: "Columbia / Boone County",
+    state: "Missouri",
+    stateCode: "MO",
+    teaser: "Columbia and Boone County community guides with college-town, courthouse, DWI, and injury-claim relevance.",
+    urgentDeadline: {
+      headline: "Columbia's legal market combines city enforcement, Boone County courts, and university-area traffic.",
+      body: "Readers should identify whether Columbia Police, Boone County deputies, campus police, or another agency generated the paperwork.",
+    },
+    regionHighlights: [
+      { title: "Strong city identity", body: "Columbia is large enough to carry search demand while still being more targeted than Kansas City or St. Louis." },
+      { title: "DUI-first college-town angle", body: "University-area traffic, nightlife, and local enforcement make DWI content a natural starting point." },
+      { title: "PI pages add durable value", body: "Crash reports, medical documentation, and insurance steps help the pages serve injury searches beyond criminal-defense intent." },
+    ],
+    processNotes: [
+      { label: "Agency mix", title: "Columbia-area records can start with different agencies", body: "City police, county deputies, and university-area agencies can each create different report paths." },
+      { label: "Boone court", title: "Boone County court is the central court layer", body: "Court dates and civil filings should be verified through the 13th Judicial Circuit or official notices." },
+      { label: "Documentation", title: "Students and commuters both need paperwork clarity", body: "The pages should make report, citation, medical, insurer, and license documents easy to gather." },
+    ],
+    court: office({
+      name: "Boone County Circuit Court",
+      address: "705 E. Walnut Street, Columbia, MO 65201",
+      phone: "(573) 886-4000",
+      hours: "Monday-Friday, 8:00 am-5:00 pm",
+      courtSystem: "13th Judicial Circuit",
+      href: "https://www.courts.mo.gov/hosted/circuit13/other/contact.htm",
+    }),
+    licenseOffice: office({
+      name: "Columbia License Office",
+      type: "Missouri License Office",
+      address: "403 Vandiver Drive, Columbia, MO 65202",
+      phone: "(573) 474-4700",
+      hours: confirmHours,
+      href: moDorLocator,
+      note: "Use the Missouri DOR locator to confirm current services and hours.",
+    }),
+    sharedEnforcement: [
+      police("Boone County Sheriff's Office", "2121 County Drive, Columbia, MO 65202", "(573) 875-1111", "https://www.showmeboone.com/sheriff/", "County records source for incidents handled by Boone County deputies.", "County Sheriff"),
+    ],
+    cities: [
+      city({ slug: "columbia-mo", name: "Columbia", agency: "Columbia Police Department", police: police("Columbia Police Department", "600 E. Walnut Street, Columbia, MO 65201", "(573) 874-7652", "https://www.como.gov/police/", "For Columbia police reports, crash records, and local enforcement questions.") }),
+      city({ slug: "ashland-mo", name: "Ashland", agency: "Ashland Police Department", police: police("Ashland Police Department", "109 E. Broadway, Ashland, MO 65010", "(573) 657-9062", "https://www.ashlandmo.us/", "For Ashland police reports, crash records, and local enforcement questions.") }),
+      city({ slug: "hallsville-mo", name: "Hallsville", agency: "Hallsville Police Department", police: police("Hallsville Police Department", "202 Highway 124 E., Hallsville, MO 65255", "(573) 696-3838", "https://hallsvillemo.org/", "For Hallsville police reports and local enforcement questions.") }),
+      city({ slug: "centralia-mo", name: "Centralia", agency: "Centralia Police Department", police: police("Centralia Police Department", "114 S. Rollins Street, Centralia, MO 65240", "(573) 682-2132", "https://www.centraliamo.org/", "For Centralia police reports, crash records, and local enforcement questions.") }),
+      city({ slug: "rocheport-mo", name: "Rocheport", agency: "Boone County Sheriff's Office", police: police("Boone County Sheriff's Office", "2121 County Drive, Columbia, MO 65202", "(573) 875-1111", "https://www.showmeboone.com/sheriff/", "Rocheport readers should confirm whether Boone County deputies or another agency handled the report.", "County Sheriff") }),
+    ],
+  },
+  {
+    slug: "springfield-suburban-ring-mo",
+    name: "Springfield Suburban Ring",
+    state: "Missouri",
+    stateCode: "MO",
+    teaser: "Nixa, Ozark, Republic, Willard, and Battlefield guides around the Springfield-area suburban ring.",
+    urgentDeadline: {
+      headline: "This cluster crosses Christian and Greene counties, so the correct court depends on the city.",
+      body: "Nixa and Ozark point toward Christian County, while Republic, Willard, and Battlefield point toward Greene County court resources.",
+    },
+    regionHighlights: [
+      { title: "Suburban-first strategy", body: "The pages avoid a broad Springfield keyword and instead target nearby communities where local intent is clearer." },
+      { title: "Two-county accuracy matters", body: "Correct court routing is the key quality signal for this cluster because it spans Christian and Greene counties." },
+      { title: "DUI and PI both sell", body: "Springfield-area lawyers often serve the surrounding suburbs, making this package a practical lower-cost territory." },
+    ],
+    processNotes: [
+      { label: "County split", title: "The city determines the court path", body: "Use the city page and official court notice to separate Christian County from Greene County routing." },
+      { label: "Records", title: "Police reports stay local first", body: "Crash and incident reports usually begin with the municipal police department that handled the scene." },
+      { label: "Sponsor package", title: "A sponsor can cover the ring instead of Springfield proper", body: "This keeps the pitch more affordable and more exclusive for suburban legal visibility." },
+    ],
+    court: christianCountyCourt,
+    courtOffices: [christianCountyCourt, greeneCountyCourt],
+    licenseOffice: office({
+      name: "Ozark License Office",
+      type: "Missouri License Office",
+      address: "103 W. Church Street, Ozark, MO 65721",
+      phone: "(417) 581-2955",
+      hours: confirmHours,
+      href: moDorLocator,
+      note: "Use the Missouri DOR locator to confirm current services and hours.",
+    }),
+    cities: [
+      city({ slug: "nixa-mo", name: "Nixa", agency: "Nixa Police Department", police: police("Nixa Police Department", "715 W. Center Circle, Nixa, MO 65714", "(417) 725-2510", "https://www.nixa.com/departments/police-department/", "For Nixa police reports, crash records, and local enforcement questions.") }),
+      city({ slug: "ozark-mo", name: "Ozark", agency: "Ozark Police Department", police: police("Ozark Police Department", "201 E. Brick Street, Ozark, MO 65721", "(417) 581-6600", "https://www.ozarkmissouri.com/125/Police-Department", "For Ozark police reports, crash records, and Christian County court-adjacent questions.") }),
+      city({ slug: "republic-mo", name: "Republic", agency: "Republic Police Department", police: police("Republic Police Department", "540 Civic Boulevard, Republic, MO 65738", "(417) 732-3900", "https://www.republicmo.com/", "For Republic police reports, crash records, and local enforcement questions."), courtOverride: greeneCountyCourt, personalInjuryCourtOverride: greeneCountyCourt }),
+      city({ slug: "willard-mo", name: "Willard", agency: "Willard Police Department", police: police("Willard Police Department", "795 Hughes Road, Willard, MO 65781", "(417) 742-3077", "https://www.cityofwillard.org/", "For Willard police reports, crash records, and local enforcement questions."), courtOverride: greeneCountyCourt, personalInjuryCourtOverride: greeneCountyCourt }),
+      city({ slug: "battlefield-mo", name: "Battlefield", agency: "Battlefield Police Department", police: police("Battlefield Police Department", "5021 S. State Highway FF, Battlefield, MO 65619", "(417) 890-9876", "https://www.battlefieldmo.gov/page/police", "For Battlefield police reports, crash records, and local enforcement questions."), courtOverride: greeneCountyCourt, personalInjuryCourtOverride: greeneCountyCourt }),
+    ],
+  },
+  {
+    slug: "kansas-city-northland-mo",
+    name: "Kansas City Northland",
+    state: "Missouri",
+    stateCode: "MO",
+    teaser: "Northland guides for Liberty, Gladstone, North Kansas City, Parkville, and Riverside.",
+    urgentDeadline: {
+      headline: "Kansas City Northland pages need county-aware routing because the cluster spans Clay and Platte counties.",
+      body: "Liberty, Gladstone, and North Kansas City point toward Clay County, while Parkville and Riverside commonly point toward Platte County resources.",
+    },
+    regionHighlights: [
+      { title: "Avoids Kansas City proper first", body: "The Northland is easier to frame as an exclusive attorney territory than a broad Kansas City lawyer campaign." },
+      { title: "Two-county structure", body: "The region page explains Clay and Platte court routing while city pages keep police and record contacts specific." },
+      { title: "Strong DUI-first fit", body: "I-35, I-29, Highway 9, and river-corridor traffic support DUI and crash-report search intent." },
+    ],
+    processNotes: [
+      { label: "Court split", title: "Clay or Platte County may control the court path", body: "Parkville and Riverside pages include Platte County overrides so readers do not assume everything goes through Liberty." },
+      { label: "Local agency", title: "Police reports stay city-specific", body: "The right records contact depends on whether Liberty, Gladstone, North Kansas City, Parkville, or Riverside handled the incident." },
+      { label: "Sponsor value", title: "Northland visibility is coherent and sellable", body: "A KC-area attorney can sponsor a recognizable suburban territory without buying an entire metro campaign." },
+    ],
+    court: clayCountyCourt,
+    courtOffices: [clayCountyCourt, platteCountyCourt],
+    licenseOffice: office({
+      name: "Liberty License Office",
+      type: "Missouri License Office",
+      address: "137 N. Stewart Road, Liberty, MO 64068",
+      phone: "(816) 407-9186",
+      hours: confirmHours,
+      href: moDorLocator,
+      note: "Use the Missouri DOR locator to confirm current services and hours.",
+    }),
+    cities: [
+      city({ slug: "liberty-mo", name: "Liberty", agency: "Liberty Police Department", police: police("Liberty Police Department", "1908 Plumber's Way, Suite 400, Liberty, MO 64068", "(816) 439-4701", "https://www.libertymissouri.gov/police", "For Liberty police reports, crash records, and Clay County court-adjacent questions.") }),
+      city({ slug: "gladstone-mo", name: "Gladstone", agency: "Gladstone Police Department", police: police("Gladstone Police Department", "7010 N. Holmes Street, Gladstone, MO 64118", "(816) 436-3550", "https://www.gladstone.mo.us/Police/", "For Gladstone police reports, crash records, and local enforcement questions.") }),
+      city({ slug: "north-kansas-city-mo", name: "North Kansas City", agency: "North Kansas City Police Department", police: police("North Kansas City Police Department", "2020 Howell Street, North Kansas City, MO 64116", "(816) 274-6013", "https://www.nkc.org/", "For North Kansas City police reports, crash records, and local enforcement questions.") }),
+      city({ slug: "parkville-mo", name: "Parkville", agency: "Parkville Police Department", police: police("Parkville Police Department", "8880 Clark Avenue, Parkville, MO 64152", "(816) 741-4454", "https://parkvillemo.gov/", "For Parkville police reports, crash records, and Platte County routing questions."), courtOverride: platteCountyCourt, personalInjuryCourtOverride: platteCountyCourt }),
+      city({ slug: "riverside-mo", name: "Riverside", agency: "Riverside Public Safety Department", police: police("Riverside Public Safety Department", "2990 NW Vivion Road, Riverside, MO 64150", "(816) 741-1191", "https://www.riversidemo.gov/", "For Riverside public-safety reports, crash records, and Platte County routing questions.", "Public Safety Department"), courtOverride: platteCountyCourt, personalInjuryCourtOverride: platteCountyCourt }),
+    ],
+  },
+];
+
 export const siteData = {
   siteName: "Local Legal Guides",
   siteTagline: "Local legal guides by city",
@@ -113,6 +700,7 @@ export const siteData = {
         disclaimer: "Attorney Advertising. Sponsorship does not imply endorsement.",
       },
     },
+    ...expansionSponsorPackages,
   },
   legalBasics: {
     IL: {
@@ -1114,5 +1702,6 @@ export const siteData = {
         },
       ],
     },
+    ...expansionRegions,
   ],
 };
