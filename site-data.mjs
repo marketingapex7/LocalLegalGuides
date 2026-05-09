@@ -18,16 +18,16 @@ const makeAvailableSponsorPackage = (coverageLabel) => ({
 
 const expansionSponsorPackages = Object.fromEntries(
   [
-    ["st-clair-county-core-il", "5 Illinois cities across DUI and personal injury pages"],
-    ["jefferson-county-gateway-mo", "5 Missouri cities across DWI and personal injury pages"],
-    ["south-county-mo", "5 Missouri cities across DWI and personal injury pages"],
-    ["north-county-mo", "5 Missouri cities across DWI and personal injury pages"],
-    ["mid-county-clayton-corridor-mo", "5 Missouri cities across DWI and personal injury pages"],
-    ["franklin-county-i44-mo", "5 Missouri cities across DWI and personal injury pages"],
-    ["lincoln-county-growth-corridor-mo", "5 Missouri cities across DWI and personal injury pages"],
-    ["boone-county-columbia-mo", "5 Missouri cities across DWI and personal injury pages"],
-    ["springfield-suburban-ring-mo", "5 Missouri cities across DWI and personal injury pages"],
-    ["kansas-city-northland-mo", "5 Missouri cities across DWI and personal injury pages"],
+    ["st-clair-county-core-il", "5 Illinois city pages for one selected practice area"],
+    ["jefferson-county-gateway-mo", "5 Missouri city pages for one selected practice area"],
+    ["south-county-mo", "5 Missouri city pages for one selected practice area"],
+    ["north-county-mo", "5 Missouri city pages for one selected practice area"],
+    ["mid-county-clayton-corridor-mo", "5 Missouri city pages for one selected practice area"],
+    ["franklin-county-i44-mo", "5 Missouri city pages for one selected practice area"],
+    ["lincoln-county-growth-corridor-mo", "5 Missouri city pages for one selected practice area"],
+    ["boone-county-columbia-mo", "5 Missouri city pages for one selected practice area"],
+    ["springfield-suburban-ring-mo", "5 Missouri city pages for one selected practice area"],
+    ["kansas-city-northland-mo", "5 Missouri city pages for one selected practice area"],
   ].map(([slug, coverageLabel]) => [slug, makeAvailableSponsorPackage(coverageLabel)])
 );
 
@@ -664,7 +664,7 @@ export const siteData = {
       status: "available",
       annualPriceUsd: 1000,
       termLabel: "12-month exclusive package",
-      coverageLabel: "5 Illinois cities across DUI and personal injury pages",
+      coverageLabel: "5 Illinois city pages for one selected practice area",
       sponsor: {
         firmName: "",
         attorneyName: "",
@@ -681,7 +681,7 @@ export const siteData = {
       status: "preview",
       annualPriceUsd: 1000,
       termLabel: "12-month exclusive package",
-      coverageLabel: "5 Missouri cities across DWI and personal injury pages",
+      coverageLabel: "5 Missouri city pages for one selected practice area",
       sponsor: {
         firmName: "Your Firm Here",
         attorneyName: "Sponsor Preview",
@@ -699,7 +699,7 @@ export const siteData = {
       status: "available",
       annualPriceUsd: 1000,
       termLabel: "12-month exclusive package",
-      coverageLabel: "5 Missouri cities across DWI and personal injury pages",
+      coverageLabel: "5 Missouri city pages for one selected practice area",
       sponsor: {
         firmName: "",
         attorneyName: "",
@@ -716,7 +716,7 @@ export const siteData = {
       status: "available",
       annualPriceUsd: 1000,
       termLabel: "12-month exclusive package",
-      coverageLabel: "4 North Carolina cities across DWI and personal injury pages",
+      coverageLabel: "4 North Carolina city pages for one selected practice area",
       sponsor: {
         firmName: "",
         attorneyName: "",
@@ -733,7 +733,7 @@ export const siteData = {
       status: "available",
       annualPriceUsd: 1000,
       termLabel: "12-month exclusive package",
-      coverageLabel: "4 North Carolina cities across DWI and personal injury pages",
+      coverageLabel: "4 North Carolina city pages for one selected practice area",
       sponsor: {
         firmName: "",
         attorneyName: "",
@@ -750,7 +750,7 @@ export const siteData = {
       status: "available",
       annualPriceUsd: 1000,
       termLabel: "12-month exclusive package",
-      coverageLabel: "4 North Carolina cities across DWI and personal injury pages",
+      coverageLabel: "4 North Carolina city pages for one selected practice area",
       sponsor: {
         firmName: "",
         attorneyName: "",
