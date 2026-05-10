@@ -1404,18 +1404,21 @@ function pageShell({ title, description, body, active = "", route = "/", schema 
             <span>${siteData.siteTagline}</span>
           </span>
         </a>
-        <nav class="nav">${nav}</nav>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">
+          <span class="menu-toggle-lines" aria-hidden="true"></span>
+          <span class="menu-toggle-label">Menu</span>
+        </button>
+        <nav class="nav" id="primary-nav" aria-label="Primary navigation">${nav}</nav>
       </div>
     </header>
 
     <main>
+      ${body}
       <section class="page-status-band">
         <div class="container page-status-inner">
           <span class="page-status-pill">Last verified: ${escapeHtml(formatDisplayDate(lastVerified))}</span>
-          <span class="page-status-copy">Official links, court details, and sponsor package structure were reviewed for this build.</span>
         </div>
       </section>
-      ${body}
     </main>
 
     <footer class="site-footer">
