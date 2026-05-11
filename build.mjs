@@ -78,10 +78,31 @@ function guideCount(region) {
   return region.cities.length * siteData.practiceAreas.length;
 }
 
+function cityGuideCountForPractice(region) {
+  return region.cities.length;
+}
+
+function articleFor(word) {
+  return /^[aeiou]/i.test(String(word ?? "").trim()) ? "an" : "a";
+}
+
+function sampleSponsorCard() {
+  return `<aside class="sample-sponsor-card" aria-label="Sample sponsor placement">
+    <p class="eyebrow">Sample placement</p>
+    <div class="sample-sponsor-badge">Featured Local Sponsor</div>
+    <h3>Smith Law Firm</h3>
+    <p class="sample-sponsor-focus">DUI Defense in Madison County</p>
+    <p><strong>Call:</strong> (618) XXX-XXXX</p>
+    <a class="button button-primary" href="/sponsorships/">Visit Website</a>
+    <p class="sponsor-note">Attorney Advertising</p>
+    <p class="sample-sponsor-caption">This is a sample placement. Sponsor information appears on the regional page and related city guides for the selected practice area.</p>
+  </aside>`;
+}
+
 function sponsorMetrics(region, packageInfo = sponsorPackage(region)) {
   return [
     ["Cities included", String(region.cities.length)],
-    ["Coverage per slot", `${region.cities.length} city pages`],
+    ["Coverage per slot", `${cityGuideCountForPractice(region)} city pages`],
     ["Practice inventory", `${siteData.practiceAreas.map((practice) => practice.label).join(" and ")} sold separately`],
     ["Sponsor slots", `${siteData.practiceAreas.length} practice-area slots`],
     ["Launch price", `${formatCurrency(packageInfo.annualPriceUsd)} / year per practice area`],
@@ -478,6 +499,30 @@ function accidentReportSection(city, region) {
         <h3>Records tip</h3>
         <p>Use the report number, date, location, involved vehicles, and responding agency name when asking for a report. If the crash involved public property or a public vehicle, ask about any shorter notice requirements.</p>
       </aside>
+    </div>
+  </section>`;
+}
+
+function personalInjuryLocalContextSection(city, region) {
+  const localData = duiLocalDataFor(city);
+  const roads = localData?.local_roads ?? [];
+  const roadText = roads.length
+    ? `${city.name} injury claims may involve crashes or incidents around ${roads.join(", ")}.`
+    : `${city.name} injury claims may involve local commuter roads, neighborhood streets, business entrances, parking lots, public sidewalks, and roads near the county court market.`;
+
+  return `<section class="section section-alt" id="local-injury-context">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Local injury context</p>
+        <h2>Where ${escapeHtml(city.name)} injury records and issues may start.</h2>
+        <p>${escapeHtml("This section gives local examples without recommending a provider, predicting a claim value, or replacing legal advice.")}</p>
+      </div>
+      <div class="card-grid four-up">
+        <article class="info-card"><h3>Common local accident corridors</h3><p>${escapeHtml(roadText)}</p></article>
+        <article class="info-card"><h3>Where reports may come from</h3><p>${escapeHtml(`${city.agency} may hold reports for incidents it handled. If the crash happened outside city limits, the county sheriff or state police may be the correct records source.`)}</p></article>
+        <article class="info-card"><h3>Medical documentation</h3><p>Injury claims often involve emergency-room records, urgent-care records, ambulance records, imaging, physical therapy notes, bills, and follow-up treatment documentation.</p></article>
+        <article class="info-card"><h3>Government-property warning</h3><p>${escapeHtml(`If an injury involves ${articleFor(city.name)} ${city.name} vehicle, public sidewalk, public school, courthouse area, county vehicle, or other public property, shorter notice rules or different procedures may apply.`)}</p></article>
+      </div>
     </div>
   </section>`;
 }
@@ -1280,13 +1325,40 @@ function cityToc(isDui, region, hasLocalDuiData = false) {
   </section>`;
 }
 
+function fastNeedBox({ city, region, court, isDui, basics }) {
+  const steps = isDui
+    ? [
+        "Confirm the court date.",
+        region.stateCode === "IL"
+          ? "Check the 46-day suspension issue."
+          : region.stateCode === "MO"
+            ? "Check the DOR administrative hearing window."
+            : "Check civil revocation and DMV timing.",
+        "Request police records.",
+        `Speak with ${articleFor(region.state)} ${region.state} ${basics.duiName} attorney before missing deadlines.`,
+      ]
+    : [
+        "Get medical care and keep follow-up records.",
+        "Confirm which agency has the crash or incident report.",
+        "Save photos, videos, insurance letters, bills, and witness names.",
+        `Speak with ${articleFor(city.name)} ${city.name} personal injury attorney before giving recorded statements or signing releases.`,
+      ];
+
+  return `<aside class="fast-need-box">
+    <p class="eyebrow">Need this fast?</p>
+    <h2>${escapeHtml(isDui ? `If you were arrested for ${basics.duiName} in ${city.name}` : `If you were injured in ${city.name}`)}.</h2>
+    <ol>${steps.map((step) => `<li>${escapeHtml(step)}</li>`).join("")}</ol>
+    <p>${escapeHtml(isDui ? `${court.name} and the license agency can move on separate timelines.` : "The report source, medical documentation, insurance communications, and filing deadline can all matter at the same time.")}</p>
+  </aside>`;
+}
+
 function attorneyQuestionSection({ city, region, isDui, basics }) {
   const title = isDui
     ? `Do I need a ${basics.duiName} attorney in ${city.name}?`
     : `Do I need a personal injury attorney in ${city.name}?`;
   const intro = isDui
     ? `${basics.duiName} is a serious offense that can carry serious consequences if it is not handled correctly. People often search for "${city.name} DUI attorney" even when ${region.state} uses ${basics.duiName} as the formal offense name. Because a case can affect criminal penalties, driving privileges, insurance, employment, commercial driving status, immigration status, or a professional license, seeking legal advice from a licensed ${region.state} attorney is strongly recommended.`
-    : `A personal injury claim can have serious financial and legal consequences if deadlines, evidence, medical documentation, insurance issues, or settlement terms are handled incorrectly. People often consider talking with a ${city.name} personal injury attorney when injuries are serious, fault is disputed, medical bills are growing, an insurer asks for a recorded statement, or a government vehicle or public property may be involved. Seeking legal advice from a licensed ${region.state} attorney is strongly recommended before making decisions that could affect a claim.`;
+    : `A personal injury claim can have serious financial and legal consequences if deadlines, evidence, medical documentation, insurance issues, or settlement terms are handled incorrectly. People often consider talking with ${articleFor(city.name)} ${city.name} personal injury attorney when injuries are serious, fault is disputed, medical bills are growing, an insurer asks for a recorded statement, or a government vehicle or public property may be involved. Seeking legal advice from a licensed ${region.state} attorney is strongly recommended before making decisions that could affect a claim.`;
   const cards = isDui
     ? [
         ["Criminal consequences", `${basics.duiName} cases can involve criminal court, plea options, sentencing conditions, fines, probation terms, and local court procedures.`],
@@ -1640,6 +1712,12 @@ function cityShell(city, region, practice) {
 
   ${citySponsorAvailabilityBox(region, packageInfo, practice)}
 
+  <section class="section section-fast">
+    <div class="container">
+      ${fastNeedBox({ city, region, court, isDui, basics })}
+    </div>
+  </section>
+
   <section class="quick-start" id="start-here">
     <div class="container quick-start-grid">
       <div class="quick-start-intro">
@@ -1831,6 +1909,8 @@ function cityShell(city, region, practice) {
         .join("")}</div>
     </div>
   </section>
+
+  ${isDui ? "" : personalInjuryLocalContextSection(city, region)}
 
   ${isDui ? "" : accidentReportSection(city, region)}
 
@@ -2140,6 +2220,30 @@ function homePage() {
     </div>
   </section>
 
+  <section class="section section-attorney-cta">
+    <div class="container split-grid">
+      <div>
+        <div class="section-head">
+          <p class="eyebrow">For attorneys</p>
+          <h2>Own a regional legal guide sponsorship.</h2>
+          <p>One attorney per practice area. One local cluster. Clear attorney advertising disclosure. Starter packages are available at $1,000/year per practice area.</p>
+        </div>
+        <div class="hero-actions">
+          <a class="button button-primary" href="/sponsor-media-kit/">View available markets</a>
+          <a class="button button-secondary" href="/sponsorships/">Claim a sponsorship</a>
+        </div>
+      </div>
+      <div>
+        ${metricsGrid([
+          ["Current regions", String(siteData.regions.length)],
+          ["Cities live", String(cityCount)],
+          ["City guides", String(siteData.regions.reduce((sum, region) => sum + guideCount(region), 0))],
+          ["Starter price", "$1,000/year per practice"],
+        ], "metric-grid metric-grid-compact")}
+      </div>
+    </div>
+  </section>
+
   <section class="section">
     <div class="container">
       <div class="section-head">
@@ -2222,6 +2326,26 @@ function regionPage(region) {
     )
     .join("");
 
+  const claimablePracticeCards = siteData.practiceAreas
+    .map(
+      (practice) => `<article class="claimable-sponsor-card">
+        <p class="eyebrow">${escapeHtml(practice.label)} sponsorship available</p>
+        <h3>${escapeHtml(region.name)} ${escapeHtml(practice.label)} Sponsorship Available</h3>
+        <p>Appears on ${region.cities.length} city pages / ${region.cities.length} ${escapeHtml(practice.label)} guides.</p>
+        <dl class="mini-stat-list">
+          <dt>Starter price</dt><dd>${escapeHtml(formatCurrency(packageInfo.annualPriceUsd))}/year</dd>
+          <dt>Term</dt><dd>${escapeHtml(packageInfo.termLabel)}</dd>
+        </dl>
+        <a class="button button-primary" href="/sponsorships/" ${trackingAttrs("claim_package_click", {
+          region: region.slug,
+          practice: practice.slug,
+          placement: "cluster_top_claim",
+          status: packageInfo.status,
+        })}>Claim this ${escapeHtml(practice.label)} region</a>
+      </article>`
+    )
+    .join("");
+
   const sponsorCoverage = region.cities
     .map((city) => `<li>${escapeHtml(city.name)} city page for the selected practice area.</li>`)
     .join("");
@@ -2288,6 +2412,17 @@ function regionPage(region) {
         </div>
         <p class="note">This market has separate sponsorship inventory for each practice area and future pages.</p>
       </aside>
+    </div>
+  </section>
+
+  <section class="section section-claimable">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Claimable sponsorship inventory</p>
+        <h2>Reserve one practice area in this region.</h2>
+        <p>DUI/DWI and Personal Injury are sold separately so one attorney can own the relevant practice-area placement without paying for the other slot.</p>
+      </div>
+      <div class="card-grid two-up">${claimablePracticeCards}</div>
     </div>
   </section>
 
@@ -2380,6 +2515,7 @@ function regionPage(region) {
       </div>
       <div>
         ${sponsorProfileCard(region, packageInfo, "cluster")}
+        ${sampleSponsorCard()}
         <div class="sponsor-disclosure">
           <strong>Included city coverage</strong>
           <ul class="sponsor-coverage-list">${sponsorCoverage}</ul>
@@ -2610,8 +2746,8 @@ function pricingPage() {
   </section>
   <section class="section">
     <div class="container card-grid three-up">
-      <article class="price-card"><h3>Regional launch</h3><p>Start at $1,000 per year for one exclusive sponsor across a 3-5 city cluster.</p></article>
-      <article class="price-card"><h3>City-page coverage</h3><p>The regional package can include matching sponsor visibility on the related city guides in that cluster.</p></article>
+      <article class="price-card"><h3>Regional launch</h3><p>Start at $1,000 per year for one exclusive practice-area sponsor across a 3-5 city cluster.</p></article>
+      <article class="price-card"><h3>City-page coverage</h3><p>The regional package includes matching sponsor visibility on the related city guides for the selected practice area in that cluster.</p></article>
       <article class="price-card"><h3>Future expansion</h3><p>If a market performs, pricing can later branch into larger regions, additional practices, or premium placements.</p></article>
     </div>
   </section>`;
@@ -2626,7 +2762,7 @@ function mediaKitPage() {
         <td>${escapeHtml(region.state)}</td>
         <td>${region.cities.length}</td>
         <td>${guideCount(region)}</td>
-        <td>${escapeHtml(formatCurrency(packageInfo.annualPriceUsd))}</td>
+        <td>${escapeHtml(formatCurrency(packageInfo.annualPriceUsd))}/year per practice area</td>
         <td>${escapeHtml(packageInfo.status === "preview" ? "Preview" : packageInfo.status === "sponsored" ? "Sponsored" : "Available")}</td>
       </tr>`;
     })
@@ -2637,15 +2773,32 @@ function mediaKitPage() {
       <div class="hero-copy">
         <p class="eyebrow">Sponsor media kit</p>
         <h1>Regional sponsorship inventory for local attorneys.</h1>
-        <p class="lede">Each package gives one attorney or firm a clearly labeled sponsor position across a local cluster page and the related city guides. The guide content remains neutral, source-backed, and useful without a sponsor.</p>
+        <p class="lede">Each package gives one attorney or firm a clearly labeled sponsor position across a local cluster page and the related city guides for one selected practice area. The guide content remains neutral, source-backed, and useful without a sponsor.</p>
       </div>
       <aside class="hero-card">
         <div class="hero-card-header">
           <span class="pill">Launch offer</span>
-          <span class="pill pill-muted">$1,000/year starter</span>
+          <span class="pill pill-muted">$1,000/year per practice area</span>
         </div>
         <p class="note">Use this page when discussing available regional inventory with attorneys.</p>
       </aside>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container split-grid">
+      <div>
+        <div class="section-head">
+          <p class="eyebrow">Who this is for</p>
+          <h2>Small and mid-sized local firms that want suburban visibility.</h2>
+          <p>Local Legal Guides is built for attorneys who want focused local exposure without buying into a crowded directory, shared lead form, or broad metro campaign.</p>
+        </div>
+        <div class="card-grid two-up">
+          <article class="info-card"><h3>What makes this different</h3><p>Not a ranking directory. No bidding against other lawyers on the same page. No shared lead form competing with the sponsor placement.</p></article>
+          <article class="info-card"><h3>Launch pricing</h3><p>Starter packages are $1,000/year per practice area per region. Each region can have one DUI/DWI sponsor and one Personal Injury sponsor.</p></article>
+        </div>
+      </div>
+      <div>${sampleSponsorCard()}</div>
     </div>
   </section>
 
@@ -2657,8 +2810,8 @@ function mediaKitPage() {
       </div>
       <div class="card-grid four-up">
         <article class="info-card"><h3>Cluster page feature</h3><p>A featured attorney card on the regional page with firm name, phone, CTA, service area, and advertising disclosure.</p></article>
-        <article class="info-card"><h3>City page visibility</h3><p>Matching sponsor visibility on every included city page in the purchased cluster.</p></article>
-        <article class="info-card"><h3>Exclusive slot</h3><p>One sponsor per regional package during the term, so the placement is easy to explain and sell.</p></article>
+        <article class="info-card"><h3>City page visibility</h3><p>Matching sponsor visibility on every included city page for the purchased practice area in the cluster.</p></article>
+        <article class="info-card"><h3>Exclusive slot</h3><p>One sponsor per practice area during the term, so the placement is easy to explain and sell.</p></article>
         <article class="info-card"><h3>Tracking-ready CTAs</h3><p>Sponsor clicks, calls, claim clicks, contact clicks, and form submits already emit tracking events for analytics.</p></article>
       </div>
     </div>
@@ -2673,7 +2826,7 @@ function mediaKitPage() {
       </div>
       <div class="responsive-table">
         <table>
-          <thead><tr><th>Cluster</th><th>State</th><th>Cities</th><th>Guides</th><th>Starter price</th><th>Status</th></tr></thead>
+          <thead><tr><th>Cluster</th><th>State</th><th>Cities</th><th>Total Guides</th><th>Starter price</th><th>Status</th></tr></thead>
           <tbody>${regionRows}</tbody>
         </table>
       </div>
