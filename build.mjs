@@ -106,17 +106,6 @@ function sampleSponsorCard() {
   </aside>`;
 }
 
-function sponsorMetrics(region, packageInfo = sponsorPackage(region)) {
-  return [
-    ["Cities included", String(region.cities.length)],
-    ["Coverage per slot", `${cityGuideCountForPractice(region)} city pages`],
-    ["Practice inventory", `${siteData.practiceAreas.map((practice) => practice.label).join(" and ")} sold separately`],
-    ["Sponsor slots", `${siteData.practiceAreas.length} practice-area slots`],
-    ["Launch price", `${formatCurrency(packageInfo.annualPriceUsd)} / year per practice area`],
-    ["Term", packageInfo.termLabel],
-  ];
-}
-
 function metricsGrid(items, className = "metric-grid") {
   return `<div class="${className}">${items
     .map((item) => `<div class="metric-card"><span>${escapeHtml(item[0])}</span><strong>${escapeHtml(item[1])}</strong></div>`)
@@ -589,7 +578,7 @@ function firstStepsSection({ city, region, isDui, basics }) {
 
   return `<section class="section section-fast" id="start-here">
     <div class="container">
-      <aside class="fast-need-box urgent-checklist-box">
+      <aside class="fast-need-box">
         <p class="eyebrow">First 24-72 hours</p>
         <h2>${escapeHtml(title)}.</h2>
         <ol>${steps.map((step) => `<li>${escapeHtml(step)}</li>`).join("")}</ol>
@@ -1569,33 +1558,6 @@ function cityToc(isDui, region, hasLocalDuiData = false) {
   </section>`;
 }
 
-function fastNeedBox({ city, region, court, isDui, basics }) {
-  const steps = isDui
-    ? [
-        "Confirm the court date.",
-        region.stateCode === "IL"
-          ? "Check the 46-day suspension issue."
-          : region.stateCode === "MO"
-            ? "Check the DOR administrative hearing window."
-            : "Check civil revocation and DMV timing.",
-        "Request police records.",
-        `Speak with ${articleFor(region.state)} ${region.state} ${basics.duiName} attorney before missing deadlines.`,
-      ]
-    : [
-        "Get medical care and keep follow-up records.",
-        "Confirm which agency has the crash or incident report.",
-        "Save photos, videos, insurance letters, bills, and witness names.",
-        `Speak with ${articleFor(city.name)} ${city.name} personal injury attorney before giving recorded statements or signing releases.`,
-      ];
-
-  return `<aside class="fast-need-box">
-    <p class="eyebrow">Need this fast?</p>
-    <h2>${escapeHtml(isDui ? `If you were arrested for ${basics.duiName} in ${city.name}` : `If you were injured in ${city.name}`)}.</h2>
-    <ol>${steps.map((step) => `<li>${escapeHtml(step)}</li>`).join("")}</ol>
-    <p>${escapeHtml(isDui ? `${court.name} and the license agency can move on separate timelines.` : "The report source, medical documentation, insurance communications, and filing deadline can all matter at the same time.")}</p>
-  </aside>`;
-}
-
 function attorneyQuestionSection({ city, region, isDui, basics }) {
   const stateArticle = articleFor(region.state);
   const title = isDui
@@ -1892,6 +1854,9 @@ function cityShell(city, region, practice) {
   const sponsor = activeSponsor(packageInfo);
   const practiceSponsorLabel = isDui ? practiceSeoLabel(practice, region) : practice.label;
   const heroSponsorCta = sponsor ? `Contact Featured ${practiceSponsorLabel} Sponsor` : `${practiceSponsorLabel} Sponsor Available`;
+  const mapQuery = isDui
+    ? `${city.name} ${region.stateCode} police courthouse driver services`
+    : `${city.name} ${region.stateCode} police courthouse records`;
   const snapshot = isDui
     ? [
         { label: "State threshold", value: basics.duiThreshold },
@@ -2137,9 +2102,13 @@ function cityShell(city, region, practice) {
         <p>The map is a quick orientation tool. Confirm the right office and hours before traveling.</p>
       </div>
       <div class="map-shell">
-        <iframe title="${escapeHtml(city.name)} local legal office map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="${mapEmbedHref(
-          isDui ? `${city.name} ${region.stateCode} police courthouse driver services` : `${city.name} ${region.stateCode} police courthouse records`
-        )}"></iframe>
+        <div class="map-placeholder" data-map-src="${escapeHtml(mapEmbedHref(mapQuery))}" data-map-title="${escapeHtml(`${city.name} local legal office map`)}">
+          <p>Map embed is held until requested so the page loads faster.</p>
+          <div class="hero-actions">
+            <button class="button button-secondary" type="button" data-load-map="true">Load office map</button>
+            <a class="text-link" href="${escapeHtml(mapsHref(mapQuery))}" target="_blank" rel="noopener noreferrer">Open in Google Maps</a>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -2343,101 +2312,6 @@ function cityShell(city, region, practice) {
     breadcrumbs,
     offices: [...courtOffices, ...enforcementOffices, ...(isDui ? [licenseOffice] : [])].filter(Boolean),
   };
-}
-
-function duiEdwardsvillePage(city, region, guide) {
-  const snapshotCards = guide.snapshot
-    .map(
-      (item) => `<div class="stat-card"><span>${escapeHtml(item.label)}</span><strong>${escapeHtml(item.value)}</strong></div>`
-    )
-    .join("");
-
-  const localCards = guide.localCards
-    .map(
-      (item) => `<article class="info-card"><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.body)}</p></article>`
-    )
-    .join("");
-
-  const processItems = guide.process
-    .map((item) => `<li>${escapeHtml(item)}</li>`)
-    .join("");
-
-  const sources = guide.sources
-    .map(
-      (item) =>
-        `<a class="source-card" href="${escapeHtml(item.href)}" target="_blank" rel="noopener noreferrer"><span>${escapeHtml(
-          item.label
-        )}</span><strong>Official source</strong></a>`
-    )
-    .join("");
-
-  const faq = guide.faq
-    .map(
-      (item, index) => `<details class="faq-item"${index === 0 ? " open" : ""}><summary>${escapeHtml(item.q)}</summary><p>${escapeHtml(
-        item.a
-      )}</p></details>`
-    )
-    .join("");
-
-  return `<section class="hero">
-    <div class="container hero-grid">
-      <div class="hero-copy">
-        <p class="eyebrow">${escapeHtml(region.state)} | Verified local guide</p>
-        <h1>${escapeHtml(city.name)} DUI guide built from official Illinois sources.</h1>
-        <p class="lede">${escapeHtml(guide.intro)}</p>
-        <div class="hero-actions">
-          <a class="button button-primary" href="#details">See the details</a>
-          <a class="button button-secondary" href="#sources">Jump to sources</a>
-        </div>
-      </div>
-      <aside class="hero-card">
-        <div class="hero-card-header">
-          <span class="pill">${escapeHtml(guide.badge)}</span>
-          <span class="pill pill-muted">${escapeHtml(region.name)}</span>
-        </div>
-        <div class="stat-grid">${snapshotCards}</div>
-      </aside>
-    </div>
-  </section>
-
-  <section class="section" id="details">
-    <div class="container">
-      <div class="section-head">
-        <p class="eyebrow">Local snapshot</p>
-        <h2>The core Edwardsville facts, cleaned up.</h2>
-      </div>
-      <div class="card-grid three-up">${localCards}</div>
-    </div>
-  </section>
-
-  <section class="section section-alt">
-    <div class="container split-grid">
-      <div>
-        <div class="section-head">
-          <p class="eyebrow">Process</p>
-          <h2>What usually happens after a DUI arrest.</h2>
-        </div>
-        <ol class="bulleted-list">${processItems}</ol>
-      </div>
-      <div>
-        <div class="section-head">
-          <p class="eyebrow">Official sources</p>
-          <h2>Everything on this page is sourced.</h2>
-        </div>
-        <div class="source-grid" id="sources">${sources}</div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container">
-      <div class="section-head">
-        <p class="eyebrow">FAQ</p>
-        <h2>Common questions people ask first.</h2>
-      </div>
-      <div class="faq-grid">${faq}</div>
-    </div>
-  </section>`;
 }
 
 function practiceHubContent(practice) {

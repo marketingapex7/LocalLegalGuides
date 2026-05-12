@@ -612,12 +612,10 @@ h3 {
   font-weight: 800;
 }
 
-.section-attorney-cta,
-.section-claimable {
+.section-attorney-cta {
   background: #fffaf0;
 }
 
-.claimable-sponsor-card,
 .sample-sponsor-card {
   padding: 1.2rem;
   border: 1px solid rgba(126, 45, 52, 0.24);
@@ -628,29 +626,8 @@ h3 {
   box-shadow: var(--shadow);
 }
 
-.claimable-sponsor-card h3,
 .sample-sponsor-card h3 {
   margin-top: 0.25rem;
-}
-
-.mini-stat-list {
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  gap: 0.25rem 0.7rem;
-  margin: 1rem 0;
-}
-
-.mini-stat-list dt {
-  color: var(--muted);
-  font-size: 0.82rem;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-.mini-stat-list dd {
-  margin: 0;
-  color: var(--ink);
-  font-weight: 800;
 }
 
 .sample-sponsor-badge {
@@ -908,6 +885,24 @@ h3 {
   border-radius: var(--radius);
   background: var(--surface);
   box-shadow: var(--shadow);
+}
+
+.map-placeholder {
+  display: grid;
+  place-items: center;
+  min-height: 320px;
+  padding: 2rem;
+  text-align: center;
+  background:
+    radial-gradient(circle at 18% 22%, rgba(185, 133, 46, 0.14), transparent 34%),
+    linear-gradient(135deg, rgba(23, 36, 56, 0.06), rgba(126, 45, 52, 0.08)),
+    var(--surface);
+}
+
+.map-placeholder p {
+  max-width: 520px;
+  margin: 0;
+  color: var(--muted);
 }
 
 .map-shell iframe {

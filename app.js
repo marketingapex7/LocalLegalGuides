@@ -1,10 +1,3 @@
-const yearTargets = document.querySelectorAll("[data-year]");
-const currentYear = new Date().getFullYear();
-
-for (const node of yearTargets) {
-  node.textContent = String(currentYear);
-}
-
 const menuToggle = document.querySelector(".menu-toggle");
 const primaryNav = document.querySelector("#primary-nav");
 
@@ -41,13 +34,27 @@ function emitSponsorEvent(eventName, payload) {
   if (typeof window.gtag === "function") {
     window.gtag("event", eventName, payload);
   }
-
-  if (typeof window.plausible === "function") {
-    window.plausible(eventName, { props: payload });
-  }
 }
 
 document.addEventListener("click", (event) => {
+  const mapButton = event.target.closest("[data-load-map='true']");
+  if (mapButton) {
+    const placeholder = mapButton.closest("[data-map-src]");
+    const mapSrc = placeholder?.getAttribute("data-map-src");
+
+    if (!placeholder || !mapSrc) {
+      return;
+    }
+
+    const iframe = document.createElement("iframe");
+    iframe.title = placeholder.getAttribute("data-map-title") || "Local office map";
+    iframe.loading = "lazy";
+    iframe.referrerPolicy = "no-referrer-when-downgrade";
+    iframe.src = mapSrc;
+    placeholder.replaceWith(iframe);
+    return;
+  }
+
   const target = event.target.closest("[data-track='true']");
   if (target) {
     const eventName = target.getAttribute("data-track-event");
