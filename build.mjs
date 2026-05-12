@@ -232,13 +232,15 @@ function sponsorProfileCard(region, packageInfo, placement = "cluster") {
 
 function citySponsorNotice(region, packageInfo, practice) {
   const sponsor = activeSponsor(packageInfo);
-  const practiceLabel = practice?.label ?? "selected practice area";
+  const isDui = practice?.slug === "dui";
+  const practiceLabel = isDui ? practiceSeoLabel(practice, region) : practice?.label ?? "selected practice area";
+  const includedCities = region.cities.map((city) => city.name).join(", ");
 
   if (sponsor) {
-    return `<aside class="sponsor-panel">
-      <p class="eyebrow">Attorney Advertising</p>
+    return `<aside class="sponsor-panel sponsor-panel-strong">
+      <p class="eyebrow">Featured ${escapeHtml(practiceLabel)} Sponsor</p>
       ${sponsorIdentityBlock(sponsor)}
-      <p>This attorney sponsor is part of the ${escapeHtml(region.name)} ${escapeHtml(practiceLabel)} regional package. Official court, police, and DMV information on this page remains separate from advertising.</p>
+      <p>${escapeHtml(sponsor.serviceArea || `${practiceLabel} help for ${region.name} cases.`)}</p>
       <div class="hero-actions">
         <a class="button button-primary" href="${escapeHtml(sponsor.ctaUrl)}" ${trackingAttrs("city_sponsor_cta_click", {
           region: region.slug,
@@ -249,18 +251,27 @@ function citySponsorNotice(region, packageInfo, practice) {
         <a class="button button-secondary" href="${sponsorPackageHref(region)}">View regional package</a>
       </div>
       <p class="sponsor-note">${escapeHtml(sponsor.disclaimer || "Attorney Advertising. Sponsorship does not imply endorsement.")}</p>
+      <p class="sponsor-note">Official court, police, records, and public-agency information on this page remains separate from advertising.</p>
     </aside>`;
   }
 
-  return `<aside class="sponsor-panel">
-    <p class="eyebrow">Regional sponsor package</p>
-    <h2>Part of the ${escapeHtml(region.name)} ${escapeHtml(practiceLabel)} sponsor package.</h2>
-    <p>This city guide is included in the regional ${escapeHtml(practiceLabel)} sponsorship package for ${escapeHtml(region.name)}. DUI/DWI and Personal Injury are sold as separate practice-area packages, and package terms live on the cluster page so this city page can stay focused on local legal information.</p>
+  return `<aside class="sponsor-panel sponsor-panel-strong">
+    <p class="eyebrow">Attorney Advertising Position Available</p>
+    <h2>Featured ${escapeHtml(practiceLabel)} Sponsor for ${escapeHtml(region.name)}.</h2>
+    <p>This attorney advertising position is currently available for one ${escapeHtml(
+      isDui ? `${practiceLabel} defense attorney or law firm` : "personal injury attorney or law firm"
+    )} serving ${escapeHtml(includedCities)}.</p>
+    <ul class="sponsor-list">
+      <li>${escapeHtml(region.cities.length)} city ${escapeHtml(practiceLabel)} guides plus regional placement.</li>
+      <li>Phone/link CTA placement on related city guides for this practice area.</li>
+      <li>${escapeHtml(packageInfo.termLabel)} with no competing sponsor in the same practice-area slot.</li>
+      <li>Launch price: ${escapeHtml(formatCurrency(packageInfo.annualPriceUsd))}/year per practice area.</li>
+    </ul>
     <div class="hero-actions">
-      <a class="button button-primary" href="${sponsorPackageHref(region)}">View regional sponsor package</a>
+      <a class="button button-primary" href="${sponsorPackageHref(region)}">Claim This ${escapeHtml(practiceLabel)} Sponsorship</a>
       <a class="button button-secondary" href="/sponsorships/">Ask about sponsorship</a>
     </div>
-    <p class="sponsor-note">Attorney Advertising. Future sponsor placements remain separate from official court, police, records, and public-agency references.</p>
+    <p class="sponsor-note">Attorney Advertising. Sponsorship does not imply endorsement or legal recommendation. Official court, police, records, and public-agency references remain separate.</p>
   </aside>`;
 }
 
@@ -370,10 +381,10 @@ function practiceSeoLabel(practice, region) {
 function cityPageTitle(city, region, practice) {
   if (practice.slug === "dui") {
     const label = practiceSeoLabel(practice, region);
-    return `${city.name}, ${region.stateCode} ${label} Guide: Arrest, Court, License & Next Steps | ${siteData.siteName}`;
+    return `Arrested for ${label} in ${city.name}, ${region.stateCode}? What to Do Next | ${siteData.siteName}`;
   }
 
-  return `${city.name}, ${region.stateCode} Personal Injury Guide: Accident Claims, Insurance & Next Steps | ${siteData.siteName}`;
+  return `Injured in ${city.name}, ${region.stateCode}? What to Do Before Talking to Insurance | ${siteData.siteName}`;
 }
 
 function cityPageDescription(city, region, practice) {
@@ -540,10 +551,10 @@ function cityRiskFactors(city, isDui) {
 
 function heroTitleForCity(city, region, isDui, basics) {
   if (isDui) {
-    return `Arrested for ${basics.duiName} in ${city.name}, ${region.stateCode}? Here's what to do next.`;
+    return `Arrested for ${basics.duiName} in ${city.name}, ${region.stateCode}? What to Do Next.`;
   }
 
-  return `Injured in an accident in ${city.name}, ${region.stateCode}? Here's what to do before dealing with insurance.`;
+  return `Injured in ${city.name}, ${region.stateCode}? What to Do Before Talking to Insurance.`;
 }
 
 function heroIntroForCity(city, region, isDui, basics) {
@@ -794,23 +805,23 @@ function relatedResourceLinks(region, isDui) {
 function citySponsorAvailabilityBox(region, packageInfo, practice) {
   const isDui = practice?.slug === "dui";
   const practiceLabel = isDui ? practiceSeoLabel(practice, region) : practice?.label ?? "practice area";
+  const includedCities = region.cities.map((city) => city.name).join(", ");
   return `<section class="sponsor-availability-band" aria-label="Sponsor availability">
     <div class="container sponsor-availability-inner">
       <div>
-        <p class="eyebrow">Attorney sponsorship</p>
-        <h2>${escapeHtml(region.name)} ${escapeHtml(practiceLabel)} sponsor package ${packageInfo.status === "sponsored" ? "is sponsored" : "is available"}.</h2>
+        <p class="eyebrow">Featured ${escapeHtml(practiceLabel)} Sponsor ${packageInfo.status === "sponsored" ? "" : "Available"}</p>
+        <h2>${escapeHtml(packageInfo.status === "sponsored" ? `${region.name} ${practiceLabel} sponsor.` : `Featured ${practiceLabel} Sponsor for ${region.name}.`)}</h2>
         <p>${escapeHtml(
           packageInfo.status === "sponsored"
             ? `This clearly labeled attorney advertising placement appears near urgent ${practiceLabel} next-step guidance and remains separate from official source information.`
-            : `This placement is available to one ${isDui ? "DUI/DWI defense attorney or law firm" : "personal injury attorney or law firm"} serving this region. Starter sponsorship is ${formatCurrency(packageInfo.annualPriceUsd)}/year per practice area.`
+            : `Available to one ${isDui ? `${practiceLabel} defense attorney or law firm` : "personal injury attorney or law firm"} serving ${includedCities}. Includes ${region.cities.length} city guides, regional placement, phone/link CTA, and ${packageInfo.termLabel.toLowerCase()}. Launch price: ${formatCurrency(packageInfo.annualPriceUsd)}/year.`
         )}</p>
-        <p>This guide is built to remain useful with or without a sponsor, which helps the sponsor placement appear next to credible local information rather than inside a generic ad directory.</p>
       </div>
       <a class="button button-primary" href="${sponsorPackageHref(region)}" ${trackingAttrs("claim_package_click", {
         region: region.slug,
         placement: "city_top",
         status: packageInfo.status,
-      })}>${escapeHtml(packageInfo.status === "sponsored" ? "View sponsor package" : `Claim this ${practiceLabel} sponsorship`)}</a>
+      })}>${escapeHtml(packageInfo.status === "sponsored" ? "View sponsor package" : `Claim This ${practiceLabel} Sponsorship`)}</a>
     </div>
   </section>`;
 }
@@ -1521,10 +1532,11 @@ function localDuiDataSection(city) {
 }
 
 function cityToc(isDui, region, hasLocalDuiData = false) {
+  const lawyerLabel = isDui ? `${region.stateCode === "IL" ? "DUI" : "DWI"} lawyer` : "Injury lawyer";
   const items = [
     ["Start here", "#start-here"],
     ["What happens next", "#what-happens-next"],
-    [isDui ? "When to call a DUI lawyer" : "When to call an injury lawyer", "#when-to-call-lawyer"],
+    [`When to call a ${lawyerLabel}`, "#when-to-call-lawyer"],
     ["Local directory", "#directory"],
     ["Map", "#map"],
     ["Local details", "#local"],
@@ -1538,7 +1550,7 @@ function cityToc(isDui, region, hasLocalDuiData = false) {
     [isDui ? "Implied consent" : "Fault and proof", "#implied-consent"],
     [isDui ? "License restoration" : "Insurance and settlement", "#restoration"],
     ...(isDui ? [] : [["Reports", "#accident-report"]]),
-    [isDui ? "DUI attorney" : "Injury attorney", "#attorney-question"],
+    [isDui ? `${region.stateCode === "IL" ? "DUI" : "DWI"} attorney` : "Injury attorney", "#attorney-question"],
     ["Questions to ask", "#questions-to-ask"],
     ...(region?.stateCode === "IL" ? [["Resources", "#related-resources"]] : []),
     ["Official sources", "#sources"],
@@ -1583,6 +1595,7 @@ function fastNeedBox({ city, region, court, isDui, basics }) {
 }
 
 function attorneyQuestionSection({ city, region, isDui, basics }) {
+  const stateArticle = articleFor(region.state);
   const title = isDui
     ? `Do I need a ${basics.duiName} attorney in ${city.name}?`
     : `Do I need a personal injury attorney in ${city.name}?`;
@@ -1601,10 +1614,10 @@ function attorneyQuestionSection({ city, region, isDui, basics }) {
         ["Records to gather", "Useful records may include the crash or incident report, photographs, medical records, bills, wage documents, insurance letters, claim numbers, and repair estimates."],
       ];
   const closing = isDui
-    ? `This page does not recommend a specific lawyer and is not legal advice. It is meant to help you identify the local court, police agency, and license contacts that may matter before you contact a ${region.state} ${
+    ? `This page does not recommend a specific lawyer and is not legal advice. It is meant to help you identify the local court, police agency, and license contacts that may matter before you contact ${stateArticle} ${region.state} ${
         basics.duiName === "DUI" ? "DUI attorney" : `${basics.duiName} or DUI attorney`
       }.`
-    : `This page does not recommend a specific lawyer and is not legal advice. It is meant to help you identify the local court, records, and insurance context that may matter before you contact a ${region.state} personal injury attorney.`;
+    : `This page does not recommend a specific lawyer and is not legal advice. It is meant to help you identify the local court, records, and insurance context that may matter before you contact ${stateArticle} ${region.state} personal injury attorney.`;
 
   return `<section class="section section-attorney-question" id="attorney-question">
     <div class="container">
@@ -2264,7 +2277,7 @@ function cityShell(city, region, practice) {
   ${relatedResourceLinks(region, isDui)}
 
   <section class="section section-alt" id="related-guides">
-    <div class="container split-grid">
+    <div class="container">
       <div>
         <div class="section-head">
           <p class="eyebrow">More guides for ${escapeHtml(city.name)}</p>
@@ -2277,9 +2290,6 @@ function cityShell(city, region, practice) {
           <article class="related-card muted-card"><span>Coming next</span><strong>Traffic Violations</strong><p>Speeding, reckless driving, and license points in local court.</p></article>
           <article class="related-card muted-card"><span>Coming next</span><strong>Criminal Defense</strong><p>Misdemeanor and felony court process for local cases.</p></article>
         </div>
-      </div>
-      <div>
-        ${citySponsorNotice(region, packageInfo, practice)}
       </div>
     </div>
   </section>
@@ -2570,20 +2580,20 @@ function homePage() {
       <div>
         <div class="section-head">
           <p class="eyebrow">For attorneys</p>
-          <h2>Own a regional legal guide sponsorship.</h2>
-          <p>One attorney per practice area. One local cluster. Clear attorney advertising disclosure. Starter packages are available at $1,000/year per practice area.</p>
+          <h2>Attorneys: regional sponsorships are open.</h2>
+          <p>Local Legal Guides offers one clearly labeled attorney sponsor slot per practice area in each regional market. DUI/DWI and Personal Injury are sold separately.</p>
         </div>
         <div class="hero-actions">
-          <a class="button button-primary" href="/sponsor-media-kit/">View available markets</a>
-          <a class="button button-secondary" href="/sponsorships/">Claim a sponsorship</a>
+          <a class="button button-primary" href="/sponsorships/">View Available Sponsorships</a>
+          <a class="button button-secondary" href="/sponsor-media-kit/">See Media Kit</a>
         </div>
       </div>
       <div>
         ${metricsGrid([
-          ["Current regions", String(siteData.regions.length)],
-          ["Cities live", String(cityCount)],
+          ["Markets", String(siteData.regions.length)],
+          ["Cities", String(cityCount)],
           ["City guides", String(siteData.regions.reduce((sum, region) => sum + guideCount(region), 0))],
-          ["Starter price", "$1,000/year per practice"],
+          ["Starter packages", "$1,000/year"],
         ], "metric-grid metric-grid-compact")}
       </div>
     </div>
