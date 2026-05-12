@@ -2686,46 +2686,15 @@ function regionPage(region) {
     )
     .join("");
 
-  const claimablePracticeCards = siteData.practiceAreas
-    .map(
-      (practice) => `<article class="claimable-sponsor-card">
-        <p class="eyebrow">${escapeHtml(practice.label)} sponsorship available</p>
-        <h3>${escapeHtml(region.name)} ${escapeHtml(practice.label)} Sponsorship Available</h3>
-        <p>Appears on ${region.cities.length} city pages / ${region.cities.length} ${escapeHtml(practice.label)} guides.</p>
-        <dl class="mini-stat-list">
-          <dt>Starter price</dt><dd>${escapeHtml(formatCurrency(packageInfo.annualPriceUsd))}/year</dd>
-          <dt>Term</dt><dd>${escapeHtml(packageInfo.termLabel)}</dd>
-        </dl>
-        <a class="button button-primary" href="/sponsorships/" ${trackingAttrs("claim_package_click", {
-          region: region.slug,
-          practice: practice.slug,
-          placement: "cluster_top_claim",
-          status: packageInfo.status,
-        })}>Claim this ${escapeHtml(practice.label)} region</a>
-      </article>`
-    )
-    .join("");
-
   const sponsorCoverage = region.cities
     .map((city) => `<li>${escapeHtml(city.name)} city page for the selected practice area.</li>`)
     .join("");
 
-  const sponsorFeatureCards = [
-    ["Exclusive practice-area visibility", `One attorney sponsor can cover all ${region.cities.length} cities in ${region.name} for one selected practice area.`],
-    ["Related city-page placement", "Each included city page for the selected practice area can reference the same regional sponsor package with clear disclosure."],
-    ["Official data stays separate", "Court, police, sheriff, and DMV contacts remain neutral and distinct from the ad placement."],
-  ]
-    .map((item) => `<article class="info-card"><h3>${escapeHtml(item[0])}</h3><p>${escapeHtml(item[1])}</p></article>`)
-    .join("");
-
   const sponsorPackageDetails = [
-    ["Package term", `${packageInfo.termLabel} at ${formatCurrency(packageInfo.annualPriceUsd)} per year to start, per practice area.`],
-    ["Cluster ownership", `One sponsor position covers the full ${region.name} cluster for the selected practice area instead of selling city-by-city.`],
-    ["City-page presence", `Matching sponsor notices appear across ${region.cities.length} city guides for the selected practice area and link back to this package section.`],
-    ["Separate inventory", "DUI/DWI and Personal Injury are separate sponsorship slots. Buying one does not include the other unless a separate package is reserved."],
-    ["Disclosure standard", "Every sponsor placement is labeled as attorney advertising and kept separate from official public-agency resources."],
-    ["Conversion path", `Interested attorneys can claim the package from this page or email ${siteData.sponsorsEmail} with the target region.`],
-    ["Content independence", "The legal guides stay useful even without a sponsor, which protects trust and makes the ad placement feel cleaner."],
+    ["Regional placement", `Featured sponsor placement on this ${region.name} cluster page for the selected practice area.`],
+    ["City-page placement", `Sponsor visibility across ${region.cities.length} related city guides for the selected practice area.`],
+    ["Clear disclosure", "Attorney advertising is labeled and kept separate from official court, police, records, and DMV information."],
+    ["Flat annual package", `${packageInfo.termLabel} at ${formatCurrency(packageInfo.annualPriceUsd)} per year to start, per practice area.`],
   ]
     .map((item) => `<article class="info-card"><h3>${escapeHtml(item[0])}</h3><p>${escapeHtml(item[1])}</p></article>`)
     .join("");
@@ -2748,12 +2717,10 @@ function regionPage(region) {
     .join("");
 
   const sponsorReasons = [
-    "Covers nearby city guides in one county-level territory.",
-    "Built around county court and agency references that real readers need.",
-    "Uses clear attorney advertising disclosure.",
-    "No competing sponsor in the same practice-area inventory slot.",
-    "Annual flat fee structure, not pay-per-lead.",
-    "Sponsor placement appears next to useful local information instead of inside a generic ad directory.",
+    "Nearby city guides are grouped into one practical local territory.",
+    "Pages are built around court, police, records, license, and insurance questions readers actually search.",
+    "No competing sponsor appears in the same practice-area inventory slot during the term.",
+    "The sponsor sits beside useful local information instead of inside a crowded lawyer directory.",
   ]
     .map((item) => `<li>${escapeHtml(item)}</li>`)
     .join("");
@@ -2775,32 +2742,50 @@ function regionPage(region) {
     </div>
   </section>
 
-  <section class="section section-claimable">
-    <div class="container">
-      <div class="section-head">
-        <p class="eyebrow">Claimable sponsorship inventory</p>
-        <h2>Reserve one practice area in this region.</h2>
-        <p>DUI/DWI and Personal Injury are sold separately so one attorney can own the relevant practice-area placement without paying for the other slot.</p>
-      </div>
-      <div class="card-grid two-up">${claimablePracticeCards}</div>
-    </div>
-  </section>
-
   <section class="section">
     <div class="container split-grid">
       <div>
         <div class="section-head">
-          <p class="eyebrow">Cities</p>
-          <h2>City pages in this region.</h2>
+          <p class="eyebrow">City coverage</p>
+          <h2>${escapeHtml(region.name)} city coverage.</h2>
+          <p>Each sponsor package covers the selected practice area across the city guides in this region.</p>
         </div>
         <div class="chip-grid">${cityLinks}</div>
       </div>
       <div>
         <div class="section-head">
           <p class="eyebrow">Practice areas</p>
-          <h2>Same region, multiple topics.</h2>
+          <h2>DUI/DWI and Personal Injury are sold separately.</h2>
         </div>
         <div class="chip-grid">${practiceLinks}</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="regional-sponsor">
+    <div class="container split-grid">
+      <div>
+        <div class="section-head">
+          <p class="eyebrow">Practice-area inventory</p>
+          <h2>Reserve one practice area in ${escapeHtml(region.name)}.</h2>
+          <p>DUI/DWI and Personal Injury are separate annual sponsorship slots. Buying one practice area does not include the other unless a separate package is reserved.</p>
+        </div>
+        <div class="responsive-table"><table>
+          <thead><tr><th>Practice Area</th><th>Status</th><th>Founding Price</th><th>Term</th><th>CTA</th></tr></thead>
+          <tbody>${sponsorInventoryRows}</tbody>
+        </table></div>
+        <div class="section-head section-head-compact">
+          <p class="eyebrow">What the sponsor gets</p>
+          <h2>A focused regional placement.</h2>
+        </div>
+        <div class="card-grid two-up">${sponsorPackageDetails}</div>
+      </div>
+      <div>
+        ${sponsorProfileCard(region, packageInfo, "cluster")}
+        <div class="sponsor-disclosure">
+          <strong>Included city coverage</strong>
+          <ul class="sponsor-coverage-list">${sponsorCoverage}</ul>
+        </div>
       </div>
     </div>
   </section>
@@ -2832,10 +2817,14 @@ function regionPage(region) {
   <section class="section">
     <div class="container">
       <div class="section-head">
-        <p class="eyebrow">Why this region matters</p>
-        <h2>County-level context before the city details.</h2>
+        <p class="eyebrow">Why this market matters</p>
+        <h2>Local legal intent in one county-level territory.</h2>
       </div>
       <div class="card-grid four-up">${regionWhyItMatters(region, court, licenseOffice, enforcement)}</div>
+      <div class="sponsor-disclosure sponsor-disclosure-inline">
+        <strong>Why lawyers sponsor this territory</strong>
+        <ul class="sponsor-coverage-list">${sponsorReasons}</ul>
+      </div>
     </div>
   </section>
 
@@ -2846,45 +2835,6 @@ function regionPage(region) {
         <h2>How people usually use this page before choosing a city guide.</h2>
       </div>
       <div class="deadline-grid">${regionProcessCards(region, court)}</div>
-    </div>
-  </section>
-
-  <section class="section section-alt" id="regional-sponsor">
-    <div class="container split-grid">
-      <div>
-        <div class="section-head">
-          <p class="eyebrow">Regional sponsorship</p>
-          <h2>Featured attorney packages for ${escapeHtml(region.name)}.</h2>
-          <p>These are practice-area sponsor positions for the full ${escapeHtml(region.name)} cluster. The founding price applies to one practice area at a time, so DUI/DWI and Personal Injury are separate annual packages.</p>
-        </div>
-        ${metricsGrid(sponsorMetrics(region, packageInfo), "metric-grid metric-grid-compact")}
-        <div class="card-grid three-up">${sponsorFeatureCards}</div>
-        <div class="section-head section-head-compact">
-          <p class="eyebrow">Package details</p>
-          <h2>What the regional sponsor gets.</h2>
-        </div>
-        <div class="card-grid three-up">${sponsorPackageDetails}</div>
-        <div class="section-head section-head-compact">
-          <p class="eyebrow">Inventory</p>
-          <h2>Sponsorship inventory for this territory.</h2>
-        </div>
-        <div class="responsive-table"><table>
-          <thead><tr><th>Practice Area</th><th>Status</th><th>Founding Price Per Practice Area</th><th>Term</th><th>CTA</th></tr></thead>
-          <tbody>${sponsorInventoryRows}</tbody>
-        </table></div>
-      </div>
-      <div>
-        ${sponsorProfileCard(region, packageInfo, "cluster")}
-        ${sampleSponsorCard()}
-        <div class="sponsor-disclosure">
-          <strong>Included city coverage</strong>
-          <ul class="sponsor-coverage-list">${sponsorCoverage}</ul>
-        </div>
-        <div class="sponsor-disclosure">
-          <strong>Why lawyers sponsor this territory</strong>
-          <ul class="sponsor-coverage-list">${sponsorReasons}</ul>
-        </div>
-      </div>
     </div>
   </section>
 
