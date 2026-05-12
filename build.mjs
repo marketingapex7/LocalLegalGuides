@@ -370,11 +370,10 @@ function practiceSeoLabel(practice, region) {
 function cityPageTitle(city, region, practice) {
   if (practice.slug === "dui") {
     const label = practiceSeoLabel(practice, region);
-    const license = region.stateCode === "IL" ? "License Suspension" : "License Help";
-    return `${city.name}, ${region.stateCode} ${label}: Court, Police & ${license} | ${siteData.siteName}`;
+    return `${city.name}, ${region.stateCode} ${label} Guide: Arrest, Court, License & Next Steps | ${siteData.siteName}`;
   }
 
-  return `${city.name}, ${region.stateCode} Personal Injury: Court, Police Reports & Deadlines | ${siteData.siteName}`;
+  return `${city.name}, ${region.stateCode} Personal Injury Guide: Accident Claims, Insurance & Next Steps | ${siteData.siteName}`;
 }
 
 function cityPageDescription(city, region, practice) {
@@ -382,12 +381,12 @@ function cityPageDescription(city, region, practice) {
   if (practice.slug === "dui") {
     const label = practiceSeoLabel(practice, region);
     return compactDescription(
-      `${city.name} ${label} guide with ${court.name}, ${city.agency}, license deadlines, penalties, implied consent rules, nearby offices, FAQs, and official sources.`
+      `Arrested for ${label} in ${city.name}? Learn what to do next, court and license deadlines, local police records, questions to ask a ${label} attorney, and official sources.`
     );
   }
 
   return compactDescription(
-    `${city.name} personal injury guide with ${court.name}, police report contacts, filing deadlines, insurance steps, nearby offices, FAQs, and official sources.`
+    `Injured in ${city.name}? Learn what to do before dealing with insurance, how to document a claim, where reports may come from, deadlines, and official sources.`
   );
 }
 
@@ -501,6 +500,14 @@ function timelineList(isDui) {
 }
 
 function cityLocalFlavor(city, region, isDui) {
+  if (isDui && city.local_context_intro) {
+    return city.local_context_intro;
+  }
+
+  if (!isDui && city.local_accident_context) {
+    return city.local_accident_context;
+  }
+
   if (city.slug === "edwardsville-il" && isDui) {
     return "This guide focuses on DUI cases connected to Edwardsville and nearby Madison County communities, including traffic stops handled by Edwardsville Police, Madison County deputies, or Illinois State Police around I-55, I-70, I-255, Route 157, Route 159, and local roads near the courthouse district.";
   }
@@ -512,6 +519,186 @@ function cityLocalFlavor(city, region, isDui) {
   return isDui
     ? `This guide focuses on ${stateBasics(region).duiName} cases connected to ${city.name} and nearby ${region.name} communities, including stops handled by city police, county agencies, or state officers on local roads and commuter routes.`
     : `This guide focuses on injury claims connected to ${city.name} roads, businesses, public property, and local court filings. It is designed to help readers identify where reports, court records, and insurance-related documents may come from.`;
+}
+
+function cityRoadContext(city, isDui) {
+  const localData = duiLocalDataFor(city);
+  const roads = isDui
+    ? city.common_roads ?? localData?.local_roads ?? []
+    : city.common_accident_locations ?? city.common_roads ?? localData?.local_roads ?? [];
+
+  return Array.isArray(roads) ? roads.filter(Boolean) : [];
+}
+
+function cityRiskFactors(city, isDui) {
+  const defaults = isDui
+    ? ["weekend enforcement periods", "holiday impaired-driving campaigns", "commuter routes", "downtown or entertainment-area traffic"]
+    : ["insurance adjuster contact shortly after the accident", "unclear report source", "missed work", "medical documentation gaps"];
+  const configured = isDui ? city.local_risk_factors : city.local_claim_issues;
+  return Array.isArray(configured) && configured.length ? configured : defaults;
+}
+
+function heroTitleForCity(city, region, isDui, basics) {
+  if (isDui) {
+    return `Arrested for ${basics.duiName} in ${city.name}, ${region.stateCode}? Here's what to do next.`;
+  }
+
+  return `Injured in an accident in ${city.name}, ${region.stateCode}? Here's what to do before dealing with insurance.`;
+}
+
+function heroIntroForCity(city, region, isDui, basics) {
+  if (isDui) {
+    return `A ${basics.duiName} arrest can trigger two separate problems: the criminal court case and the driver's license consequences. This guide explains the local process, common deadlines, court location, police agencies, and questions to ask before speaking with a ${basics.duiName} attorney.`;
+  }
+
+  return "After a crash, fall, or injury, the first steps matter. This guide explains how to document the accident, where reports may come from, what deadlines may apply, and when it may make sense to speak with a personal injury attorney.";
+}
+
+function firstStepsSection({ city, region, isDui, basics }) {
+  const title = isDui
+    ? `If you were just arrested for ${basics.duiName} in ${city.name}`
+    : `If you were injured in ${city.name}`;
+  const steps = isDui
+    ? [
+        "Write down everything you remember while it is fresh.",
+        "Save your ticket, bond paperwork, court date, and police paperwork.",
+        "Do not miss your first court appearance.",
+        "Look for any driver's license suspension or administrative hearing deadline.",
+        "Do not call the prosecutor or court clerk expecting legal advice.",
+        `Speak with ${articleFor(region.state)} ${region.state} ${basics.duiName} defense attorney before making decisions in court.`,
+      ]
+    : [
+        "Get medical care and follow treatment instructions.",
+        "Save photos, videos, names, insurance information, and police report details.",
+        "Do not give a recorded statement without understanding your rights.",
+        "Do not accept a quick settlement before knowing the full injury impact.",
+        "Track missed work, medical bills, pain, limitations, and transportation costs.",
+        "Talk with a personal injury attorney if injuries, medical bills, disputed fault, or insurance pressure are involved.",
+      ];
+
+  return `<section class="section section-fast" id="start-here">
+    <div class="container">
+      <aside class="fast-need-box urgent-checklist-box">
+        <p class="eyebrow">First 24-72 hours</p>
+        <h2>${escapeHtml(title)}.</h2>
+        <ol>${steps.map((step) => `<li>${escapeHtml(step)}</li>`).join("")}</ol>
+      </aside>
+    </div>
+  </section>`;
+}
+
+function whatHappensNextSection({ city, region, isDui, basics }) {
+  const cards = isDui
+    ? [
+        ["Criminal charge", `The ${basics.duiName} case can involve court dates, discovery, plea negotiations, hearings, trial settings, or sentencing conditions.`],
+        ["License consequences", "The driver-license track can move separately from the criminal case, so court paperwork is not the only deadline to watch."],
+        ["Practical fallout", "Insurance, employment, commercial driving status, professional licensing, immigration issues, and background checks may all become part of the decision."],
+      ]
+    : [
+        ["Medical care and documentation", "Treatment records, bills, follow-up instructions, and symptom tracking can become the backbone of the claim."],
+        ["Insurance pressure", "An adjuster may ask for recorded statements, broad authorizations, or a fast settlement before the full injury picture is clear."],
+        ["Report and deadline issues", "The responding agency, fault dispute, available coverage, and filing deadline can all affect what happens next."],
+      ];
+
+  return `<section class="section" id="what-happens-next">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">What happens next</p>
+        <h2>${escapeHtml(isDui ? `After a ${basics.duiName} arrest, you may be dealing with more than one problem.` : "After an injury, the claim can start before you feel ready.")}</h2>
+        <p>${escapeHtml(
+          isDui
+            ? `${city.name} cases can involve the local court, the arresting agency, and the state license agency at the same time.`
+            : `${articleFor(city.name) === "an" ? "An" : "A"} ${city.name} injury claim may involve medical providers, police or incident reports, insurance adjusters, employer records, and court deadlines.`
+        )}</p>
+      </div>
+      <div class="card-grid three-up">${cards.map((item) => `<article class="info-card"><h3>${escapeHtml(item[0])}</h3><p>${escapeHtml(item[1])}</p></article>`).join("")}</div>
+    </div>
+  </section>`;
+}
+
+function whenToCallLawyerSection({ city, region, isDui, basics }) {
+  const items = isDui
+    ? [
+        "You are worried about jail, probation, fines, or a criminal record.",
+        "You refused testing or had a test over the legal limit.",
+        "You need to understand license suspension, restricted driving, or reinstatement.",
+        "There was a crash, injury, child passenger, prior offense, or commercial license issue.",
+        "You are unsure what to say or do at the first court date.",
+      ]
+    : [
+        "You went to the ER, urgent care, or needed follow-up care.",
+        "You missed work or expect future medical treatment.",
+        "The insurance company is blaming you or pushing a fast settlement.",
+        "The other driver was uninsured, underinsured, or driving a commercial vehicle.",
+        "A government vehicle, public road defect, public school, sidewalk, or public property may be involved.",
+        "Your pain is getting worse after the accident.",
+      ];
+
+  return `<section class="section section-attorney-question" id="when-to-call-lawyer">
+    <div class="container split-grid">
+      <div class="section-head">
+        <p class="eyebrow">${escapeHtml(isDui ? "When to call a DUI lawyer" : "When to call an injury lawyer")}</p>
+        <h2>${escapeHtml(isDui ? `When talking to ${articleFor(city.name)} ${city.name} ${basics.duiName} attorney may make sense.` : `When talking to ${articleFor(city.name)} ${city.name} personal injury attorney may make sense.`)}</h2>
+        <p>${escapeHtml(
+          isDui
+            ? `${basics.duiName} is serious, and legal advice is strongly recommended before you make court or license decisions that could affect the outcome.`
+            : "Personal injury claims can be affected by evidence, insurance strategy, deadlines, medical proof, liens, and release language."
+        )}</p>
+      </div>
+      <ul class="checklist-grid">${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+    </div>
+  </section>`;
+}
+
+function insuranceRealitySection(city) {
+  return `<section class="section section-alt" id="insurance-warning">
+    <div class="container split-grid">
+      <div class="section-head">
+        <p class="eyebrow">Insurance warning</p>
+        <h2>Insurance companies are not neutral.</h2>
+        <p>After an accident in ${escapeHtml(city.name)}, the insurance company may seem helpful, but its job is to limit what it pays. Adjusters may ask for recorded statements, broad medical authorizations, or quick settlements before the full injury picture is clear.</p>
+      </div>
+      <aside class="info-card callout-card">
+        <h3>Before you respond</h3>
+        <p>Keep claim numbers, letters, emails, medical bills, photos, and missed-work notes together. If injuries, disputed fault, or settlement pressure are involved, consider legal advice before signing releases or giving broad recorded statements.</p>
+      </aside>
+    </div>
+  </section>`;
+}
+
+function questionsToAskAttorneySection({ city, region, isDui, basics }) {
+  const questions = isDui
+    ? [
+        `How often do you handle ${basics.duiName} cases in ${region.name}?`,
+        "Will you review the police report, bodycam, dashcam, and test records?",
+        "Can you explain my license suspension or administrative hearing risk?",
+        "What happens if I refused testing?",
+        "Are there options to challenge the stop, arrest, or chemical test?",
+        "What are the likely court dates and deadlines?",
+        "What are the possible outcomes for a first offense or repeat offense?",
+        "What should I avoid doing before court?",
+      ]
+    : [
+        "Do you handle accident and injury claims in this county?",
+        "How do fees and case costs work?",
+        "What documents should I collect before speaking with insurance?",
+        "How do medical bills, liens, and health insurance affect settlement?",
+        "What if the insurance company says I was partly at fault?",
+        "What if a commercial vehicle, public property, or government vehicle was involved?",
+        "How do you evaluate settlement versus filing a lawsuit?",
+        "What should I avoid signing or saying before the claim is reviewed?",
+      ];
+
+  return `<section class="section" id="questions-to-ask">
+    <div class="container split-grid">
+      <div class="section-head">
+        <p class="eyebrow">Questions to ask an attorney</p>
+        <h2>${escapeHtml(isDui ? `Questions to ask before hiring a ${basics.duiName} lawyer in ${city.name}.` : `Questions to ask before hiring a personal injury lawyer in ${city.name}.`)}</h2>
+        <p>These questions help readers have a more useful consultation without turning this guide into legal advice or a lawyer ranking page.</p>
+      </div>
+      <ul class="checklist-grid">${questions.map((question) => `<li>${escapeHtml(question)}</li>`).join("")}</ul>
+    </div>
+  </section>`;
 }
 
 function accidentReportSection(city, region) {
@@ -531,11 +718,11 @@ function accidentReportSection(city, region) {
 }
 
 function personalInjuryLocalContextSection(city, region) {
-  const localData = duiLocalDataFor(city);
-  const roads = localData?.local_roads ?? [];
+  const roads = cityRoadContext(city, false);
   const roadText = roads.length
     ? `${city.name} injury claims may involve crashes or incidents around ${roads.join(", ")}.`
     : `${city.name} injury claims may involve local commuter roads, neighborhood streets, business entrances, parking lots, public sidewalks, and roads near the county court market.`;
+  const localIssues = cityRiskFactors(city, false);
 
   return `<section class="section section-alt" id="local-injury-context">
     <div class="container">
@@ -548,7 +735,11 @@ function personalInjuryLocalContextSection(city, region) {
         <article class="info-card"><h3>Common local accident corridors</h3><p>${escapeHtml(roadText)}</p></article>
         <article class="info-card"><h3>Where reports may come from</h3><p>${escapeHtml(`${city.agency} may hold reports for incidents it handled. If the crash happened outside city limits, the county sheriff or state police may be the correct records source.`)}</p></article>
         <article class="info-card"><h3>Medical documentation</h3><p>Injury claims often involve emergency-room records, urgent-care records, ambulance records, imaging, physical therapy notes, bills, and follow-up treatment documentation.</p></article>
-        <article class="info-card"><h3>Government-property warning</h3><p>${escapeHtml(`If an injury involves ${articleFor(city.name)} ${city.name} vehicle, public sidewalk, public school, courthouse area, county vehicle, or other public property, shorter notice rules or different procedures may apply.`)}</p></article>
+        <article class="info-card"><h3>Government-property warning</h3><p>${escapeHtml(`If an injury involves a public vehicle, public sidewalk, public school, courthouse area, county vehicle, or other public property in ${city.name}, shorter notice rules or different procedures may apply.`)}</p></article>
+      </div>
+      <div class="source-chip-row topic-chip-row" aria-label="Local claim issues">
+        <span>Local claim issues:</span>
+        ${localIssues.map((item) => `<span>${escapeHtml(item)}</span>`).join("")}
       </div>
     </div>
   </section>`;
@@ -601,19 +792,25 @@ function relatedResourceLinks(region, isDui) {
 }
 
 function citySponsorAvailabilityBox(region, packageInfo, practice) {
-  const practiceLabel = practice?.label ?? "practice area";
+  const isDui = practice?.slug === "dui";
+  const practiceLabel = isDui ? practiceSeoLabel(practice, region) : practice?.label ?? "practice area";
   return `<section class="sponsor-availability-band" aria-label="Sponsor availability">
     <div class="container sponsor-availability-inner">
       <div>
         <p class="eyebrow">Attorney sponsorship</p>
         <h2>${escapeHtml(region.name)} ${escapeHtml(practiceLabel)} sponsor package ${packageInfo.status === "sponsored" ? "is sponsored" : "is available"}.</h2>
-        <p>This guide is built to remain useful with or without a sponsor. Sponsorship is sold by practice area, so a ${escapeHtml(practiceLabel)} package is separate from any other practice-area inventory in this region.</p>
+        <p>${escapeHtml(
+          packageInfo.status === "sponsored"
+            ? `This clearly labeled attorney advertising placement appears near urgent ${practiceLabel} next-step guidance and remains separate from official source information.`
+            : `This placement is available to one ${isDui ? "DUI/DWI defense attorney or law firm" : "personal injury attorney or law firm"} serving this region. Starter sponsorship is ${formatCurrency(packageInfo.annualPriceUsd)}/year per practice area.`
+        )}</p>
+        <p>This guide is built to remain useful with or without a sponsor, which helps the sponsor placement appear next to credible local information rather than inside a generic ad directory.</p>
       </div>
       <a class="button button-primary" href="${sponsorPackageHref(region)}" ${trackingAttrs("claim_package_click", {
         region: region.slug,
         placement: "city_top",
         status: packageInfo.status,
-      })}>View sponsor package</a>
+      })}>${escapeHtml(packageInfo.status === "sponsored" ? "View sponsor package" : `Claim this ${practiceLabel} sponsorship`)}</a>
     </div>
   </section>`;
 }
@@ -1325,10 +1522,14 @@ function localDuiDataSection(city) {
 
 function cityToc(isDui, region, hasLocalDuiData = false) {
   const items = [
+    ["Start here", "#start-here"],
+    ["What happens next", "#what-happens-next"],
+    [isDui ? "When to call a DUI lawyer" : "When to call an injury lawyer", "#when-to-call-lawyer"],
     ["Local directory", "#directory"],
     ["Map", "#map"],
     ["Local details", "#local"],
     ...(isDui && hasLocalDuiData ? [["Local DUI data", "#dui-local-data"]] : []),
+    ...(isDui ? [] : [["Insurance warning", "#insurance-warning"]]),
     ["Key deadlines", "#deadlines"],
     ["Documents", "#documents"],
     [isDui ? "DUI law" : "Injury law", "#state-law"],
@@ -1338,6 +1539,7 @@ function cityToc(isDui, region, hasLocalDuiData = false) {
     [isDui ? "License restoration" : "Insurance and settlement", "#restoration"],
     ...(isDui ? [] : [["Reports", "#accident-report"]]),
     [isDui ? "DUI attorney" : "Injury attorney", "#attorney-question"],
+    ["Questions to ask", "#questions-to-ask"],
     ...(region?.stateCode === "IL" ? [["Resources", "#related-resources"]] : []),
     ["Official sources", "#sources"],
     ["Common questions", "#faq"],
@@ -1670,12 +1872,8 @@ function cityShell(city, region, practice) {
   const localDuiData = isDui ? duiLocalDataFor(city) : null;
   const caseName = isDui ? basics.duiName : "personal injury";
   const quickActions = quickActionCards({ city, region, court, licenseOffice, isDui, basics });
-  const title = isDui
-    ? `${city.name} ${basics.duiName} court and license guide`
-    : `${city.name} personal injury court guide`;
-  const intro = isDui
-    ? `${region.state} uses ${basics.duiThreshold} as the per se alcohol threshold. This page ties that state rule to the local court and agencies most relevant to ${city.name}.`
-    : `${region.state} injury claims depend on filing deadlines, venue, insurance issues, and proof. This page connects the statewide deadline to the local court path for ${city.name}.`;
+  const title = heroTitleForCity(city, region, isDui, basics);
+  const intro = heroIntroForCity(city, region, isDui, basics);
   const snapshot = isDui
     ? [
         { label: "State threshold", value: basics.duiThreshold },
@@ -1821,8 +2019,8 @@ function cityShell(city, region, practice) {
         <p class="lede">${escapeHtml(intro)}</p>
         <p class="hero-note">${escapeHtml(cityLocalFlavor(city, region, isDui))}</p>
         <div class="hero-actions">
-          <a class="button button-primary" href="#local">Local details</a>
-          <a class="button button-secondary" href="#sources">Official sources</a>
+          <a class="button button-primary" href="${sponsorPackageHref(region)}">${escapeHtml(isDui ? `Talk to a local ${basics.duiName} sponsor` : "Talk to a local injury sponsor")}</a>
+          <a class="button button-secondary" href="#start-here">See what to do next</a>
         </div>
       </div>
       <aside class="hero-card">
@@ -1847,19 +2045,19 @@ function cityShell(city, region, practice) {
       : ""
   }
 
+  ${firstStepsSection({ city, region, isDui, basics })}
+
   ${citySponsorAvailabilityBox(region, packageInfo, practice)}
 
-  <section class="section section-fast">
-    <div class="container">
-      ${fastNeedBox({ city, region, court, isDui, basics })}
-    </div>
-  </section>
+  ${whatHappensNextSection({ city, region, isDui, basics })}
 
-  <section class="quick-start" id="start-here">
+  ${whenToCallLawyerSection({ city, region, isDui, basics })}
+
+  <section class="quick-start" id="quick-local-path">
     <div class="container quick-start-grid">
       <div class="quick-start-intro">
-        <p class="eyebrow">Start here</p>
-        <h2>Fast path for ${escapeHtml(city.name)}.</h2>
+        <p class="eyebrow">Local process</p>
+        <h2>Fast local path for ${escapeHtml(city.name)}.</h2>
         <p>${escapeHtml(
           isDui
             ? "If you only have a few minutes, use this block to find the court, license, and records steps that usually matter first."
@@ -2049,9 +2247,19 @@ function cityShell(city, region, practice) {
 
   ${isDui ? "" : personalInjuryLocalContextSection(city, region)}
 
+  ${isDui ? "" : insuranceRealitySection(city)}
+
   ${isDui ? "" : accidentReportSection(city, region)}
 
   ${attorneyQuestionSection({ city, region, isDui, basics })}
+
+  ${questionsToAskAttorneySection({ city, region, isDui, basics })}
+
+  <section class="section section-attorney-cta">
+    <div class="container">
+      ${citySponsorNotice(region, packageInfo, practice)}
+    </div>
+  </section>
 
   ${relatedResourceLinks(region, isDui)}
 
