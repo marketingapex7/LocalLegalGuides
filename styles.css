@@ -695,7 +695,14 @@ h3 {
   display: flex;
   flex-wrap: wrap;
   gap: 0.55rem;
+  margin: 0;
+  padding-left: 0;
   padding-bottom: 0.1rem;
+  list-style: none;
+}
+
+.toc-list li {
+  display: flex;
 }
 
 .toc-list a {
