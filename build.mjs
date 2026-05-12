@@ -6,6 +6,9 @@ const root = process.cwd();
 const outputRoot = path.join(root, "dist");
 const practiceBySlug = new Map(siteData.practiceAreas.map((p) => [p.slug, p]));
 const googleAnalyticsId = "G-VLQC2KYC9E";
+const brandIconPath = "/favicon.svg";
+const brandLogoPath = "/logo.svg";
+const brandSocialImagePath = "/og-image.svg";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -37,6 +40,10 @@ function escapeScriptJson(value) {
 
 function absoluteUrl(route) {
   return `${siteOrigin}${route}`;
+}
+
+function brandAssetUrl(route) {
+  return absoluteUrl(route);
 }
 
 function formatDisplayDate(value) {
@@ -313,8 +320,28 @@ function publisherSchema() {
   return {
     "@type": "Organization",
     name: siteData.siteName,
+    alternateName: "LocalLegalGuides",
     url: siteOrigin,
     email: `mailto:${siteData.legalEmail}`,
+    logo: {
+      "@type": "ImageObject",
+      url: brandAssetUrl(brandLogoPath),
+      width: 512,
+      height: 512,
+    },
+    image: brandAssetUrl(brandSocialImagePath),
+  };
+}
+
+function webSiteSchema({ description } = {}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: siteData.siteName,
+    alternateName: "LocalLegalGuides",
+    url: siteOrigin,
+    description: description ?? siteData.siteDescription,
+    publisher: publisherSchema(),
   };
 }
 
@@ -1140,6 +1167,7 @@ function webPageSchema({ title, description, route, modifiedDate = siteData.last
     isPartOf: {
       "@type": "WebSite",
       name: siteData.siteName,
+      alternateName: "LocalLegalGuides",
       url: siteOrigin,
     },
   };
@@ -1419,6 +1447,97 @@ async function copyStaticAssets() {
   await copyFile(path.join(root, "app.js"), path.join(outputRoot, "app.js"));
 }
 
+function brandFaviconSvg() {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <title>${escapeHtml(siteData.siteName)} icon</title>
+  <rect width="512" height="512" rx="96" fill="#172438"/>
+  <rect x="86" y="86" width="340" height="340" rx="72" fill="#fff8ea"/>
+  <text x="256" y="326" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="236" font-weight="700" fill="#172438">L</text>
+  <path d="M160 370h192" stroke="#9b2f38" stroke-width="28" stroke-linecap="round"/>
+  <path d="M186 132h140" stroke="#c69234" stroke-width="18" stroke-linecap="round"/>
+</svg>
+`;
+}
+
+function brandLogoSvg() {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <title>${escapeHtml(siteData.siteName)} logo</title>
+  <rect width="512" height="512" rx="88" fill="#172438"/>
+  <circle cx="256" cy="256" r="174" fill="#fff8ea"/>
+  <text x="256" y="308" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="190" font-weight="700" fill="#172438">L</text>
+  <path d="M158 356h196" stroke="#9b2f38" stroke-width="24" stroke-linecap="round"/>
+  <path d="M192 156h128" stroke="#c69234" stroke-width="16" stroke-linecap="round"/>
+</svg>
+`;
+}
+
+function brandSocialImageSvg() {
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <title>${escapeHtml(siteData.siteName)} social preview</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#172438"/>
+      <stop offset="0.62" stop-color="#251f29"/>
+      <stop offset="1" stop-color="#7f2730"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(900 120) rotate(138) scale(620 480)">
+      <stop stop-color="#d6a247" stop-opacity="0.38"/>
+      <stop offset="1" stop-color="#d6a247" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <rect x="72" y="76" width="118" height="118" rx="28" fill="#fff8ea"/>
+  <text x="131" y="154" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="82" font-weight="700" fill="#172438">L</text>
+  <path d="M103 169h56" stroke="#9b2f38" stroke-width="9" stroke-linecap="round"/>
+  <text x="220" y="124" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" letter-spacing="4" fill="#d6a247">LOCAL LEGAL GUIDES</text>
+  <text x="72" y="300" font-family="Georgia, 'Times New Roman', serif" font-size="78" font-weight="700" fill="#fff8ea">Know the local legal</text>
+  <text x="72" y="388" font-family="Georgia, 'Times New Roman', serif" font-size="78" font-weight="700" fill="#fff8ea">system, one city at a time.</text>
+  <text x="76" y="468" font-family="Arial, Helvetica, sans-serif" font-size="30" fill="#efe5d0">DUI, DWI, personal injury, court, police, and official-source guides by city.</text>
+  <rect x="74" y="518" width="324" height="46" rx="23" fill="#fff8ea" opacity="0.14"/>
+  <text x="100" y="549" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" fill="#fff8ea">locallegalguides.com</text>
+</svg>
+`;
+}
+
+function siteWebManifest() {
+  return `${JSON.stringify(
+    {
+      name: siteData.siteName,
+      short_name: "Local Legal Guides",
+      description: siteData.siteDescription,
+      start_url: "/",
+      scope: "/",
+      display: "standalone",
+      background_color: "#f7f1e7",
+      theme_color: "#172438",
+      icons: [
+        {
+          src: brandIconPath,
+          sizes: "any",
+          type: "image/svg+xml",
+          purpose: "any",
+        },
+        {
+          src: brandLogoPath,
+          sizes: "512x512",
+          type: "image/svg+xml",
+          purpose: "any maskable",
+        },
+      ],
+    },
+    null,
+    2
+  )}\n`;
+}
+
+async function writeBrandAssets() {
+  await writeTarget("favicon.svg", brandFaviconSvg());
+  await writeTarget("logo.svg", brandLogoSvg());
+  await writeTarget("og-image.svg", brandSocialImageSvg());
+  await writeTarget("site.webmanifest", siteWebManifest());
+}
+
 function pageShell({ title, description, body, active = "", route = "/", schema = [], lastVerified = siteData.lastVerified }) {
   const nav = navLinks
     .map((item) => {
@@ -1437,6 +1556,7 @@ function pageShell({ title, description, body, active = "", route = "/", schema 
     .filter(Boolean)
     .map((item) => `<script type="application/ld+json">${escapeScriptJson(item)}</script>`)
     .join("\n    ");
+  const socialImage = brandAssetUrl(brandSocialImagePath);
 
   return `<!doctype html>
 <html lang="en">
@@ -1444,13 +1564,30 @@ function pageShell({ title, description, body, active = "", route = "/", schema 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="${escapeHtml(description)}" />
+    <meta name="application-name" content="${escapeHtml(siteData.siteName)}" />
+    <meta name="apple-mobile-web-app-title" content="${escapeHtml(siteData.siteName)}" />
+    <meta name="theme-color" content="#172438" />
     <link rel="canonical" href="${absoluteUrl(route)}" />
+    <link rel="icon" href="${brandIconPath}" type="image/svg+xml" sizes="any" />
+    <link rel="shortcut icon" href="${brandIconPath}" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="${brandLogoPath}" />
+    <link rel="manifest" href="/site.webmanifest" />
     <meta property="og:title" content="${escapeHtml(title)}" />
     <meta property="og:description" content="${escapeHtml(description)}" />
     <meta property="og:url" content="${absoluteUrl(route)}" />
     <meta property="og:site_name" content="${escapeHtml(siteData.siteName)}" />
     <meta property="og:type" content="website" />
+    <meta property="og:image" content="${socialImage}" />
+    <meta property="og:image:secure_url" content="${socialImage}" />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="${escapeHtml(siteData.siteName)} local legal guide preview" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="${escapeHtml(title)}" />
+    <meta name="twitter:description" content="${escapeHtml(description)}" />
+    <meta name="twitter:image" content="${socialImage}" />
+    <meta name="twitter:image:alt" content="${escapeHtml(siteData.siteName)} local legal guide preview" />
     <title>${escapeHtml(title)}</title>
     <link rel="stylesheet" href="/styles.css" />
     <!-- Google tag (gtag.js) -->
@@ -3050,14 +3187,7 @@ function renderHome() {
     active: "/",
     route,
     schema: [
-      {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        name: siteData.siteName,
-        url: siteOrigin,
-        description,
-        publisher: publisherSchema(),
-      },
+      webSiteSchema({ description }),
       webPageSchema({ title, description, route }),
     ],
   });
@@ -3227,6 +3357,18 @@ function securityHeadersFile() {
 /app.js
   Cache-Control: public, max-age=3600, must-revalidate
 
+/favicon.svg
+  Cache-Control: public, max-age=86400, must-revalidate
+
+/logo.svg
+  Cache-Control: public, max-age=86400, must-revalidate
+
+/og-image.svg
+  Cache-Control: public, max-age=86400, must-revalidate
+
+/site.webmanifest
+  Cache-Control: public, max-age=86400, must-revalidate
+
 /*.html
   Cache-Control: no-cache
 `;
@@ -3312,6 +3454,7 @@ async function main() {
   }
 
   await copyStaticAssets();
+  await writeBrandAssets();
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
