@@ -367,6 +367,76 @@ function practiceSeoLabel(practice, region) {
   return practice.label;
 }
 
+function duiPractice() {
+  return practiceBySlug.get("dui");
+}
+
+function duiCityEntries() {
+  const practice = duiPractice();
+  return siteData.regions.flatMap((region) =>
+    region.cities.map((city) => ({
+      city,
+      region,
+      label: practiceSeoLabel(practice, region),
+      href: pathForPracticeCity("dui", city.slug),
+    }))
+  );
+}
+
+function duiCityLink(entry, className = "city-link") {
+  return `<a class="${className}" href="${entry.href}">${escapeHtml(entry.city.name)}, ${escapeHtml(
+    entry.region.stateCode
+  )} ${escapeHtml(entry.label)} guide</a>`;
+}
+
+function groupedDuiLocationSections({ compact = false } = {}) {
+  const states = new Map();
+
+  for (const entry of duiCityEntries()) {
+    if (!states.has(entry.region.state)) {
+      states.set(entry.region.state, []);
+    }
+    states.get(entry.region.state).push(entry);
+  }
+
+  return [...states.entries()]
+    .map(([state, entries]) => {
+      const regions = new Map();
+      for (const entry of entries) {
+        if (!regions.has(entry.region.slug)) {
+          regions.set(entry.region.slug, { region: entry.region, entries: [] });
+        }
+        regions.get(entry.region.slug).entries.push(entry);
+      }
+
+      return `<section class="${compact ? "state-location-block compact-state-block" : "state-location-block"}">
+        <div class="section-head section-head-compact">
+          <p class="eyebrow">${escapeHtml(state)}</p>
+          <h2>${escapeHtml(state)} DUI/DWI city guides.</h2>
+        </div>
+        <div class="stack-grid">${[...regions.values()]
+          .map(
+            ({ region, entries: regionEntries }) => `<article class="region-block">
+              <div class="region-block-head">
+                <p class="eyebrow">${escapeHtml(region.stateCode)}</p>
+                <h3>${escapeHtml(region.name)}</h3>
+              </div>
+              <div class="city-link-grid">${regionEntries.map((entry) => duiCityLink(entry)).join("")}</div>
+            </article>`
+          )
+          .join("")}</div>
+      </section>`;
+    })
+    .join("");
+}
+
+function recentDuiGuideLinks(limit = 18) {
+  return duiCityEntries()
+    .slice(0, limit)
+    .map((entry) => duiCityLink(entry, "related-card compact-related-card"))
+    .join("");
+}
+
 function cityPageTitle(city, region, practice) {
   if (practice.slug === "dui") {
     const label = practiceSeoLabel(practice, region);
@@ -1812,7 +1882,7 @@ function pageShell({ title, description, body, active = "", route = "/", schema 
     <footer class="site-footer">
       <div class="container footer-inner">
         <p>General legal information for local court, license, claims, and city agency research.</p>
-        <p><a href="/contact/">Contact</a> | <a href="/terms/">Terms</a> | <a href="/privacy/">Privacy</a></p>
+        <p><a href="/dui/locations/">DUI/DWI city guides</a> | <a href="/contact/">Contact</a> | <a href="/terms/">Terms</a> | <a href="/privacy/">Privacy</a></p>
         <p>&copy; ${siteData.year} ${siteData.siteName} | ${siteData.domain}</p>
       </div>
     </footer>
@@ -2254,12 +2324,19 @@ function cityShell(city, region, practice) {
     <div class="container">
       <div>
         <div class="section-head">
-          <p class="eyebrow">More guides for ${escapeHtml(city.name)}</p>
-          <h2>Related legal topics.</h2>
+          <p class="eyebrow">Related local legal guides</p>
+          <h2>More ${escapeHtml(city.name)} guides and location indexes.</h2>
         </div>
-        <div class="related-grid">${siteData.practiceAreas
+        <div class="related-grid">${
+          isDui
+            ? `<a class="related-card" href="/dui/locations/"><span>DUI/DWI locations</span><strong>All DUI and DWI guides by city</strong><p>Browse every DUI/DWI city guide by state and region.</p></a>`
+            : ""
+        }${siteData.practiceAreas
           .filter((item) => item.slug !== practice.slug)
-          .map((item) => `<a class="related-card" href="${pathForPracticeCity(item.slug, city.slug)}"><span>${escapeHtml(item.label)}</span><strong>${escapeHtml(city.name)} ${escapeHtml(item.title)}</strong><p>${escapeHtml(item.summary)}</p></a>`)
+          .map((item) => {
+            const label = item.slug === "dui" ? practiceSeoLabel(item, region) : item.label;
+            return `<a class="related-card" href="${pathForPracticeCity(item.slug, city.slug)}"><span>${escapeHtml(label)}</span><strong>${escapeHtml(city.name)} ${escapeHtml(label)} guide</strong><p>${escapeHtml(item.summary)}</p></a>`;
+          })
           .join("")}
           <article class="related-card muted-card"><span>Coming next</span><strong>Traffic Violations</strong><p>Speeding, reckless driving, and license points in local court.</p></article>
           <article class="related-card muted-card"><span>Coming next</span><strong>Criminal Defense</strong><p>Misdemeanor and felony court process for local cases.</p></article>
@@ -2365,10 +2442,14 @@ function practiceHubContent(practice) {
 }
 
 function practicePage(practice) {
+  const isDui = practice.slug === "dui";
   const regionCards = siteData.regions
     .map((region) => {
       const cities = region.cities
-        .map((city) => `<a class="city-link" href="${pathForPracticeCity(practice.slug, city.slug)}">${escapeHtml(city.name)}</a>`)
+        .map((city) => {
+          const label = isDui ? `${city.name}, ${region.stateCode} ${practiceSeoLabel(practice, region)}` : city.name;
+          return `<a class="city-link" href="${pathForPracticeCity(practice.slug, city.slug)}">${escapeHtml(label)}</a>`;
+        })
         .join("");
       return `<article class="region-block">
         <div class="region-block-head">
@@ -2395,10 +2476,29 @@ function practicePage(practice) {
         <p class="note">
           Choose a city to see the relevant court, agency, deadline, and official source links.
         </p>
+        ${
+          isDui
+            ? `<div class="hero-actions"><a class="button button-secondary" href="/dui/locations/">Browse all DUI/DWI locations</a></div>`
+            : ""
+        }
       </aside>
     </div>
   </section>
   ${practiceHubContent(practice)}
+  ${
+    isDui
+      ? `<section class="section section-alt">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">DUI/DWI locations</p>
+        <h2>Browse every DUI and DWI city guide by state.</h2>
+        <p>These state sections create a direct crawl path to every DUI/DWI city page and use DWI labels outside Illinois where appropriate.</p>
+      </div>
+      ${groupedDuiLocationSections({ compact: true })}
+    </div>
+  </section>`
+      : ""
+  }
   <section class="section">
     <div class="container">
       <div class="section-head">
@@ -2406,6 +2506,40 @@ function practicePage(practice) {
         <h2>Pick a region, then a city.</h2>
       </div>
       <div class="stack-grid">${regionCards}</div>
+    </div>
+  </section>`;
+}
+
+function duiLocationsPage() {
+  const entries = duiCityEntries();
+
+  return `<section class="hero hero-tight">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">DUI/DWI locations</p>
+        <h1>DUI and DWI Guides by City</h1>
+        <p class="lede">Browse DUI and DWI city guides by state, region, and local court market. Illinois pages use DUI labels, while Missouri and North Carolina pages use DWI labels where appropriate.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="/dui/">DUI/DWI hub</a>
+          <a class="button button-secondary" href="/sitemap-dui.xml">DUI sitemap</a>
+        </div>
+      </div>
+      <aside class="hero-card">
+        <div class="hero-card-header">
+          <span class="pill">${entries.length} city guides</span>
+          <span class="pill pill-muted">${siteData.regions.length} regions</span>
+        </div>
+        <p class="note">Every DUI/DWI city page has a self-referencing canonical URL and is included in the DUI sitemap.</p>
+      </aside>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">All locations</p>
+        <h2>State and regional DUI/DWI guide index.</h2>
+      </div>
+      ${groupedDuiLocationSections()}
     </div>
   </section>`;
 }
@@ -2474,6 +2608,21 @@ function homePage() {
           ["City guides", String(siteData.regions.reduce((sum, region) => sum + guideCount(region), 0))],
           ["Starter packages", "$1,000/year"],
         ], "metric-grid metric-grid-compact")}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">DUI/DWI crawl path</p>
+        <h2>Recently Published DUI/DWI Guides</h2>
+        <p>Priority city guides for DUI and DWI searches, grouped into the broader locations index for easier discovery.</p>
+      </div>
+      <div class="related-grid">${recentDuiGuideLinks(18)}</div>
+      <div class="hero-actions">
+        <a class="button button-primary" href="/dui/locations/">Browse all DUI/DWI city guides</a>
+        <a class="button button-secondary" href="/dui/">View DUI/DWI hub</a>
       </div>
     </div>
   </section>
@@ -3248,8 +3397,13 @@ function renderCityPage(city, region, practice) {
 
 function renderPracticePage(practice) {
   const route = `/${practice.slug}/`;
-  const title = `${practice.title} by City | ${siteData.siteName}`;
-  const description = compactDescription(`${practice.summary} Browse city-specific court, agency, deadline, and official source information.`);
+  const isDui = practice.slug === "dui";
+  const title = isDui ? `DUI and DWI Guides by City | ${siteData.siteName}` : `${practice.title} by City | ${siteData.siteName}`;
+  const description = compactDescription(
+    isDui
+      ? "Browse DUI and DWI guides by city, state, and region with local court, police, license, deadline, and official source information."
+      : `${practice.summary} Browse city-specific court, agency, deadline, and official source information.`
+  );
   const breadcrumbs = [
     { name: "Home", href: "/" },
     { name: practice.title, href: route },
@@ -3339,6 +3493,13 @@ function renderStaticPages() {
       active: "/sponsorships/",
       crumbs: ["Sponsorships"],
     },
+    "/dui/locations/": {
+      title: `DUI and DWI Guides by City | ${siteData.siteName}`,
+      description: "Browse all Local Legal Guides DUI and DWI city pages by state, region, and local court market.",
+      body: duiLocationsPage(),
+      active: "/dui/",
+      crumbs: ["DUI and DWI Guides by City"],
+    },
     "/pricing/": {
       title: `Sponsorship Pricing | ${siteData.siteName}`,
       description: `${siteData.siteName} sponsorship pricing for regional cluster packages, related city-page placements, and future market expansion.`,
@@ -3410,6 +3571,7 @@ function sitemapEntries() {
   const entries = [
     "/",
     "/dui/",
+    "/dui/locations/",
     "/personal-injury/",
     "/regions/",
     "/sponsorships/",
@@ -3430,6 +3592,15 @@ function sitemapEntries() {
     }
   }
   return entries;
+}
+
+function duiSitemapEntries() {
+  return [
+    "/dui/",
+    "/dui/locations/",
+    ...Object.keys(resourcePages).filter((route) => /(dui|dwi)/i.test(route)),
+    ...duiCityEntries().map((entry) => entry.href),
+  ];
 }
 
 function securityHeadersFile() {
@@ -3553,10 +3724,19 @@ ${sitemapEntries()
 </urlset>
 `;
 
+  const duiSitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${duiSitemapEntries()
+  .map((route) => `  <url><loc>${absoluteUrl(route)}</loc></url>`)
+  .join("\n")}
+</urlset>
+`;
+
   await writeTarget("sitemap.xml", sitemap);
+  await writeTarget("sitemap-dui.xml", duiSitemap);
   await writeTarget(
     "robots.txt",
-    `User-agent: *\nAllow: /\nSitemap: ${absoluteUrl("/sitemap.xml")}\n`
+    `User-agent: *\nAllow: /\nSitemap: ${absoluteUrl("/sitemap.xml")}\nSitemap: ${absoluteUrl("/sitemap-dui.xml")}\n`
   );
   await writeTarget("_headers", securityHeadersFile());
   await writeTarget("_redirects", redirectsFile());
