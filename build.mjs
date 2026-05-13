@@ -2201,14 +2201,14 @@ function cityShell(city, region, practice) {
         <p>The map is a quick orientation tool. Confirm the right office and hours before traveling.</p>
       </div>
       <div class="map-shell">
-        <div class="map-placeholder" data-map-src="${escapeHtml(mapEmbedHref(mapQuery))}" data-map-title="${escapeHtml(`${city.name} local legal office map`)}">
-          <p>Map embed is held until requested so the page loads faster.</p>
-          <div class="hero-actions">
-            <button class="button button-secondary" type="button" data-load-map="true">Load office map</button>
-            <a class="text-link" href="${escapeHtml(mapsHref(mapQuery))}" target="_blank" rel="noopener noreferrer">Open in Google Maps</a>
-          </div>
-        </div>
+        <iframe
+          title="${escapeHtml(`${city.name} local legal office map`)}"
+          src="${escapeHtml(mapEmbedHref(mapQuery))}"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen></iframe>
       </div>
+      <p class="map-link-note"><a class="text-link" href="${escapeHtml(mapsHref(mapQuery))}" target="_blank" rel="noopener noreferrer">Open this office map in Google Maps</a></p>
     </div>
   </section>
 
