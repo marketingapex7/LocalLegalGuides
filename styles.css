@@ -617,6 +617,8 @@ h3 {
 }
 
 .sample-sponsor-card {
+  width: min(100%, 24rem);
+  justify-self: center;
   padding: 1.2rem;
   border: 1px solid rgba(126, 45, 52, 0.24);
   border-radius: calc(var(--radius) + 6px);
