@@ -1,4 +1,5 @@
 import { copyFile, mkdir, rm, writeFile } from "node:fs/promises";
+import { deflateSync } from "node:zlib";
 import path from "node:path";
 import { siteData } from "./site-data.mjs";
 
@@ -8,7 +9,7 @@ const practiceBySlug = new Map(siteData.practiceAreas.map((p) => [p.slug, p]));
 const googleAnalyticsId = "G-VLQC2KYC9E";
 const brandIconPath = "/favicon.svg";
 const brandLogoPath = "/logo.svg";
-const brandSocialImagePath = "/og-image.svg";
+const brandSocialImagePath = "/og-image.png";
 const sampleSponsorImagePath = "/sample-sponsor-attorney.svg";
 
 const navLinks = [
@@ -212,7 +213,7 @@ function sponsorProfileCard(region, packageInfo, placement = "cluster") {
   </aside>`;
 }
 
-function citySponsorNotice(region, packageInfo, practice) {
+function citySponsorNotice(city, region, packageInfo, practice) {
   const sponsor = activeSponsor(packageInfo);
   const isDui = practice?.slug === "dui";
   const practiceLabel = isDui ? practiceSeoLabel(practice, region) : practice?.label ?? "selected practice area";
@@ -226,6 +227,8 @@ function citySponsorNotice(region, packageInfo, practice) {
       <div class="hero-actions">
         <a class="button button-primary" href="${escapeHtml(sponsor.ctaUrl)}" ${trackingAttrs("city_sponsor_cta_click", {
           region: region.slug,
+          city: city.slug,
+          practice: practice?.slug ?? "",
           placement: "city",
           firm: sponsor.firmName,
           status: packageInfo.status,
@@ -854,7 +857,7 @@ function relatedResourceLinks(region, isDui) {
   </section>`;
 }
 
-function citySponsorAvailabilityBox(region, packageInfo, practice) {
+function citySponsorAvailabilityBox(city, region, packageInfo, practice) {
   const isDui = practice?.slug === "dui";
   const practiceLabel = isDui ? practiceSeoLabel(practice, region) : practice?.label ?? "practice area";
   const includedCities = region.cities.map((city) => city.name).join(", ");
@@ -871,6 +874,8 @@ function citySponsorAvailabilityBox(region, packageInfo, practice) {
       </div>
       <a class="button button-primary" href="${sponsorPackageHref(region)}" ${trackingAttrs("claim_package_click", {
         region: region.slug,
+        city: city.slug,
+        practice: practice?.slug ?? "",
         placement: "city_top",
         status: packageInfo.status,
       })}>${escapeHtml(packageInfo.status === "sponsored" ? "View sponsor package" : `Claim This ${practiceLabel} Sponsorship`)}</a>
@@ -1680,6 +1685,10 @@ function writeTarget(filePath, content) {
   return writeFile(path.join(outputRoot, filePath), content, "utf8");
 }
 
+function writeBinaryTarget(filePath, content) {
+  return writeFile(path.join(outputRoot, filePath), content);
+}
+
 async function ensureDir(filePath) {
   await mkdir(path.dirname(path.join(outputRoot, filePath)), { recursive: true });
 }
@@ -1740,6 +1749,98 @@ function brandSocialImageSvg() {
   <text x="100" y="549" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" fill="#fff8ea">locallegalguides.com</text>
 </svg>
 `;
+}
+
+function crc32(buffer) {
+  let crc = 0xffffffff;
+  for (const byte of buffer) {
+    crc ^= byte;
+    for (let index = 0; index < 8; index += 1) {
+      crc = (crc >>> 1) ^ (0xedb88320 & -(crc & 1));
+    }
+  }
+  return (crc ^ 0xffffffff) >>> 0;
+}
+
+function pngChunk(type, data) {
+  const typeBuffer = Buffer.from(type);
+  const length = Buffer.alloc(4);
+  length.writeUInt32BE(data.length, 0);
+  const crc = Buffer.alloc(4);
+  crc.writeUInt32BE(crc32(Buffer.concat([typeBuffer, data])), 0);
+  return Buffer.concat([length, typeBuffer, data, crc]);
+}
+
+function blendColor(start, end, amount) {
+  return start.map((channel, index) => Math.round(channel + (end[index] - channel) * amount));
+}
+
+function brandSocialImagePng() {
+  const width = 1200;
+  const height = 630;
+  const rowLength = 1 + width * 4;
+  const raw = Buffer.alloc(rowLength * height);
+  const navy = [23, 36, 56];
+  const dusk = [37, 31, 41];
+  const wine = [127, 39, 48];
+  const cream = [255, 248, 234];
+  const gold = [214, 162, 71];
+
+  for (let y = 0; y < height; y += 1) {
+    const rowStart = y * rowLength;
+    raw[rowStart] = 0;
+    for (let x = 0; x < width; x += 1) {
+      const gradient = (x / width) * 0.72 + (y / height) * 0.28;
+      const base = gradient < 0.58 ? blendColor(navy, dusk, gradient / 0.58) : blendColor(dusk, wine, (gradient - 0.58) / 0.42);
+      const glowDistance = Math.hypot((x - 915) / 610, (y - 116) / 440);
+      const glow = Math.max(0, 1 - glowDistance) * 0.34;
+      const color = blendColor(base, gold, glow);
+      const offset = rowStart + 1 + x * 4;
+      raw[offset] = color[0];
+      raw[offset + 1] = color[1];
+      raw[offset + 2] = color[2];
+      raw[offset + 3] = 255;
+    }
+  }
+
+  const paintRect = (left, top, rectWidth, rectHeight, color, alpha = 1) => {
+    for (let y = top; y < top + rectHeight; y += 1) {
+      if (y < 0 || y >= height) continue;
+      for (let x = left; x < left + rectWidth; x += 1) {
+        if (x < 0 || x >= width) continue;
+        const offset = y * rowLength + 1 + x * 4;
+        raw[offset] = Math.round(raw[offset] * (1 - alpha) + color[0] * alpha);
+        raw[offset + 1] = Math.round(raw[offset + 1] * (1 - alpha) + color[1] * alpha);
+        raw[offset + 2] = Math.round(raw[offset + 2] * (1 - alpha) + color[2] * alpha);
+      }
+    }
+  };
+
+  paintRect(72, 76, 118, 118, cream, 1);
+  paintRect(103, 166, 56, 10, wine, 1);
+  paintRect(74, 518, 324, 46, cream, 0.14);
+  paintRect(72, 260, 720, 24, cream, 0.92);
+  paintRect(72, 316, 790, 24, cream, 0.92);
+  paintRect(72, 372, 650, 24, cream, 0.92);
+  paintRect(76, 462, 560, 16, cream, 0.78);
+  paintRect(76, 490, 440, 16, cream, 0.6);
+  paintRect(220, 106, 340, 18, gold, 0.9);
+
+  const ihdr = Buffer.alloc(13);
+  ihdr.writeUInt32BE(width, 0);
+  ihdr.writeUInt32BE(height, 4);
+  ihdr[8] = 8;
+  ihdr[9] = 6;
+  ihdr[10] = 0;
+  ihdr[11] = 0;
+  ihdr[12] = 0;
+
+  return Buffer.concat([
+    Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+    pngChunk("IHDR", ihdr),
+    pngChunk("IDAT", deflateSync(raw, { level: 9 })),
+    pngChunk("IEND", Buffer.alloc(0)),
+  ]);
 }
 
 function sampleSponsorImageSvg() {
@@ -1803,6 +1904,7 @@ async function writeBrandAssets() {
   await writeTarget("favicon.svg", brandFaviconSvg());
   await writeTarget("logo.svg", brandLogoSvg());
   await writeTarget("og-image.svg", brandSocialImageSvg());
+  await writeBinaryTarget("og-image.png", brandSocialImagePng());
   await writeTarget("sample-sponsor-attorney.svg", sampleSponsorImageSvg());
   await writeTarget("site.webmanifest", siteWebManifest());
 }
@@ -1848,7 +1950,7 @@ function pageShell({ title, description, body, active = "", route = "/", schema 
     <meta property="og:type" content="website" />
     <meta property="og:image" content="${socialImage}" />
     <meta property="og:image:secure_url" content="${socialImage}" />
-    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="${escapeHtml(siteData.siteName)} local legal guide preview" />
@@ -2120,7 +2222,7 @@ function cityShell(city, region, practice) {
 
   ${firstStepsSection({ city, region, isDui, basics })}
 
-  ${citySponsorAvailabilityBox(region, packageInfo, practice)}
+  ${citySponsorAvailabilityBox(city, region, packageInfo, practice)}
 
   ${whatHappensNextSection({ city, region, isDui, basics })}
 
@@ -2334,7 +2436,7 @@ function cityShell(city, region, practice) {
 
   <section class="section section-attorney-cta">
     <div class="container">
-      ${citySponsorNotice(region, packageInfo, practice)}
+      ${citySponsorNotice(city, region, packageInfo, practice)}
     </div>
   </section>
 
@@ -3637,6 +3739,9 @@ function securityHeadersFile() {
   Cache-Control: public, max-age=86400, must-revalidate
 
 /og-image.svg
+  Cache-Control: public, max-age=86400, must-revalidate
+
+/og-image.png
   Cache-Control: public, max-age=86400, must-revalidate
 
 /site.webmanifest

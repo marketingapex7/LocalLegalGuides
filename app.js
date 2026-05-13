@@ -36,6 +36,16 @@ function emitSponsorEvent(eventName, payload) {
   }
 }
 
+function isSponsorApplyEvent(eventName) {
+  return (
+    eventName === "claim_package_click" ||
+    eventName === "city_sponsor_cta_click" ||
+    eventName === "sponsor_form_submit" ||
+    eventName.endsWith("_claim_click") ||
+    eventName.endsWith("_cta_click")
+  );
+}
+
 document.addEventListener("click", (event) => {
   const target = event.target.closest("[data-track='true']");
   if (target) {
@@ -57,6 +67,15 @@ document.addEventListener("click", (event) => {
     }
 
     emitSponsorEvent(eventName, payload);
+    if (isSponsorApplyEvent(eventName)) {
+      emitSponsorEvent("sponsor_apply", {
+        city: payload.city || "",
+        region: payload.region || "",
+        practice: payload.practice || "",
+        placement: payload.placement || "",
+        source_event: eventName,
+      });
+    }
     return;
   }
 
@@ -98,6 +117,13 @@ document.addEventListener("submit", (event) => {
   };
 
   emitSponsorEvent("sponsor_form_submit", payload);
+  emitSponsorEvent("sponsor_apply", {
+    region: regionSlug,
+    city: "",
+    practice: "",
+    placement: "form",
+    source_event: "sponsor_form_submit",
+  });
 
   const subject = encodeURIComponent(`Sponsorship inquiry: ${regionSlug || "cluster not selected"}`);
   const body = encodeURIComponent(
