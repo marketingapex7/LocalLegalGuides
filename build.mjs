@@ -3188,13 +3188,6 @@ function mediaKitPage() {
         <h1>Regional sponsorship inventory for local attorneys.</h1>
         <p class="lede">Each package gives one attorney or firm a clearly labeled sponsor position across a local cluster page and the related city guides for one selected practice area. The guide content remains neutral, source-backed, and useful without a sponsor.</p>
       </div>
-      <aside class="hero-card">
-        <div class="hero-card-header">
-          <span class="pill">Launch offer</span>
-          <span class="pill pill-muted">$1,000/year per practice area</span>
-        </div>
-        <p class="note">Use this page when discussing available regional inventory with attorneys.</p>
-      </aside>
     </div>
   </section>
 
