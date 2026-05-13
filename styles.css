@@ -626,6 +626,17 @@ h3 {
   box-shadow: var(--shadow);
 }
 
+.sample-sponsor-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(23, 36, 56, 0.12);
+  border-radius: var(--radius);
+  background: var(--navy);
+  object-fit: cover;
+}
+
 .sample-sponsor-card h3 {
   margin-top: 0.25rem;
 }
