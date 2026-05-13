@@ -96,7 +96,7 @@ function articleFor(word) {
 
 function sampleSponsorCard() {
   return `<aside class="sample-sponsor-card" aria-label="Sample sponsor placement">
-    <img class="sample-sponsor-image" src="${sampleSponsorImagePath}" alt="Sample attorney sponsor headshot placeholder" loading="lazy" decoding="async" width="640" height="360" />
+    <img class="sample-sponsor-image" src="${sampleSponsorImagePath}" alt="Sample attorney sponsor headshot placeholder" loading="lazy" decoding="async" width="120" height="120" />
     <p class="eyebrow">Sample placement</p>
     <div class="sample-sponsor-badge">Featured Local Sponsor</div>
     <h3>Smith Law Firm</h3>
@@ -1752,36 +1752,27 @@ function brandSocialImageSvg() {
 }
 
 function sampleSponsorImageSvg() {
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360">
-  <title>Sample attorney sponsor image</title>
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240">
+  <title>Sample attorney headshot</title>
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="640" y2="360" gradientUnits="userSpaceOnUse">
+    <linearGradient id="bg" x1="0" y1="0" x2="240" y2="240" gradientUnits="userSpaceOnUse">
       <stop stop-color="#172438"/>
-      <stop offset="0.58" stop-color="#27364c"/>
+      <stop offset="0.56" stop-color="#27364c"/>
       <stop offset="1" stop-color="#7e2d34"/>
     </linearGradient>
-    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(492 84) rotate(142) scale(300 220)">
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(172 54) rotate(140) scale(150 120)">
       <stop stop-color="#d6a247" stop-opacity="0.46"/>
       <stop offset="1" stop-color="#d6a247" stop-opacity="0"/>
     </radialGradient>
-    <linearGradient id="paper" x1="142" y1="86" x2="348" y2="292" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#fff8ea"/>
-      <stop offset="1" stop-color="#eadcc2"/>
-    </linearGradient>
   </defs>
-  <rect width="640" height="360" rx="28" fill="url(#bg)"/>
-  <rect width="640" height="360" rx="28" fill="url(#glow)"/>
-  <rect x="48" y="46" width="216" height="270" rx="18" fill="url(#paper)" opacity="0.96"/>
-  <path d="M82 98h110M82 132h144M82 166h128M82 200h94" stroke="#172438" stroke-width="9" stroke-linecap="round" opacity="0.34"/>
-  <path d="M85 260h116" stroke="#9b2f38" stroke-width="12" stroke-linecap="round"/>
-  <rect x="301" y="61" width="229" height="255" rx="24" fill="#fff8ea"/>
-  <circle cx="416" cy="143" r="54" fill="#d7b48a"/>
-  <path d="M365 139c22 15 65 14 98-12 8 18 4 47-8 62-16 20-59 20-77 2-13-13-20-32-13-52Z" fill="#172438" opacity="0.92"/>
-  <path d="M324 316c17-70 61-102 94-102 35 0 80 32 97 102H324Z" fill="#172438"/>
-  <path d="M386 222l31 50 33-50" fill="#fff8ea"/>
-  <path d="M422 273l22 43h-50l21-43h7Z" fill="#9b2f38"/>
-  <rect x="477" y="79" width="106" height="36" rx="18" fill="#d6a247"/>
-  <text x="530" y="103" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#172438">SAMPLE</text>
+  <rect width="240" height="240" rx="120" fill="url(#bg)"/>
+  <rect width="240" height="240" rx="120" fill="url(#glow)"/>
+  <circle cx="120" cy="96" r="43" fill="#d7b48a"/>
+  <path d="M78 95c20 14 62 12 86-13 9 21 2 47-12 61-17 17-52 18-68 1-13-13-19-31-6-49Z" fill="#172438"/>
+  <path d="M48 224c10-58 40-90 72-90s62 32 72 90H48Z" fill="#172438"/>
+  <path d="M92 145l28 48 28-48" fill="#fff8ea"/>
+  <path d="M119 194l16 30h-32l15-30h1Z" fill="#9b2f38"/>
+  <path d="M54 224c14-26 36-42 66-42s52 16 66 42" fill="none" stroke="#fff8ea" stroke-width="5" opacity="0.22"/>
 </svg>
 `;
 }
