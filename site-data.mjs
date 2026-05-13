@@ -1,6 +1,5 @@
 const makeAvailableSponsorPackage = (coverageLabel) => ({
   status: "available",
-  annualPriceUsd: 1000,
   termLabel: "12-month exclusive package",
   coverageLabel,
   sponsor: {
@@ -662,7 +661,6 @@ export const siteData = {
   sponsorPackages: {
     "madison-county-il": {
       status: "available",
-      annualPriceUsd: 1000,
       termLabel: "12-month exclusive package",
       coverageLabel: "5 Illinois city pages for one selected practice area",
       sponsor: {
@@ -679,7 +677,6 @@ export const siteData = {
     },
     "st-charles-county-mo": {
       status: "preview",
-      annualPriceUsd: 1000,
       termLabel: "12-month exclusive package",
       coverageLabel: "5 Missouri city pages for one selected practice area",
       sponsor: {
@@ -697,7 +694,6 @@ export const siteData = {
     },
     "west-st-louis-county-mo": {
       status: "available",
-      annualPriceUsd: 1000,
       termLabel: "12-month exclusive package",
       coverageLabel: "5 Missouri city pages for one selected practice area",
       sponsor: {
@@ -714,7 +710,6 @@ export const siteData = {
     },
     "charlotte-south-nc": {
       status: "available",
-      annualPriceUsd: 1000,
       termLabel: "12-month exclusive package",
       coverageLabel: "4 North Carolina city pages for one selected practice area",
       sponsor: {
@@ -731,7 +726,6 @@ export const siteData = {
     },
     "raleigh-north-nc": {
       status: "available",
-      annualPriceUsd: 1000,
       termLabel: "12-month exclusive package",
       coverageLabel: "4 North Carolina city pages for one selected practice area",
       sponsor: {
@@ -748,7 +742,6 @@ export const siteData = {
     },
     "wake-southwest-nc": {
       status: "available",
-      annualPriceUsd: 1000,
       termLabel: "12-month exclusive package",
       coverageLabel: "4 North Carolina city pages for one selected practice area",
       sponsor: {
