@@ -11,6 +11,7 @@ const brandIconPath = "/favicon.svg";
 const brandLogoPath = "/logo.svg";
 const brandSocialImagePath = "/og-image.png";
 const sampleSponsorImagePath = "/sample-sponsor-attorney.svg";
+const launchPackageLabel = "$1,000/year launch package";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -193,7 +194,7 @@ function sponsorProfileCard(region, packageInfo, placement = "cluster") {
     )} cluster page and the related city pages for the selected practice area with clear advertising disclosure.</p>
     <ul class="sponsor-list">
       <li>${escapeHtml(packageInfo.termLabel)}.</li>
-      <li>Current sponsor availability is handled by inquiry.</li>
+      <li>${escapeHtml(launchPackageLabel)} for founding sponsors.</li>
       <li>${escapeHtml(packageInfo.coverageLabel)}</li>
       <li>DUI/DWI and Personal Injury are separate sponsor inventory slots.</li>
     </ul>
@@ -203,7 +204,7 @@ function sponsorProfileCard(region, packageInfo, placement = "cluster") {
         region: region.slug,
         placement,
         status: packageInfo.status,
-      })}>Claim this package</a>
+      })}>Claim a Sponsorship</a>
       <a class="button button-secondary" href="/contact/" ${trackingAttrs(`${eventBase}_contact_click`, {
         region: region.slug,
         placement,
@@ -250,10 +251,10 @@ function citySponsorNotice(city, region, packageInfo, practice) {
       <li>${escapeHtml(region.cities.length)} city ${escapeHtml(practiceLabel)} guides plus regional placement.</li>
       <li>Phone/link CTA placement on related city guides for this practice area.</li>
       <li>${escapeHtml(packageInfo.termLabel)} with no competing sponsor in the same practice-area slot.</li>
-      <li>Current launch availability is handled by sponsorship inquiry.</li>
+      <li>${escapeHtml(launchPackageLabel)} for founding sponsors.</li>
     </ul>
     <div class="hero-actions">
-      <a class="button button-primary" href="${sponsorPackageHref(region)}">Claim This ${escapeHtml(practiceLabel)} Sponsorship</a>
+      <a class="button button-primary" href="${sponsorPackageHref(region)}">Claim a Sponsorship</a>
       <a class="button button-secondary" href="/sponsorships/">Ask about sponsorship</a>
     </div>
     <p class="sponsor-note">Attorney Advertising. Sponsorship does not imply endorsement or legal recommendation. Official court, police, records, and public-agency references remain separate.</p>
@@ -304,8 +305,9 @@ function sponsorInquiryForm({ defaultRegion = "", title = "Sponsor inquiry", int
             <textarea name="notes" rows="5" placeholder="Tell us which package you want, what practice area matters most, and your preferred launch timing."></textarea>
           </label>
           <input type="hidden" name="targetEmail" value="${escapeHtml(siteData.sponsorsEmail)}" />
-          <button class="button button-primary" type="submit">Open sponsorship email</button>
-          <p class="form-note">This opens a prefilled email draft to ${escapeHtml(siteData.sponsorsEmail)} so the inquiry works on a static site without a backend.</p>
+          <button class="button button-primary" type="submit">Claim a Sponsorship</button>
+          <p class="form-note">Prefer email? Contact <a class="text-link" href="mailto:${escapeHtml(siteData.sponsorsEmail)}">${escapeHtml(siteData.sponsorsEmail)}</a>.</p>
+          <p class="form-note">This opens a prefilled email draft so the inquiry works on a static site without a backend.</p>
         </form>
       </div>
     </div>
@@ -878,7 +880,7 @@ function citySponsorAvailabilityBox(city, region, packageInfo, practice) {
         practice: practice?.slug ?? "",
         placement: "city_top",
         status: packageInfo.status,
-      })}>${escapeHtml(packageInfo.status === "sponsored" ? "View sponsor package" : `Claim This ${practiceLabel} Sponsorship`)}</a>
+      })}>${escapeHtml(packageInfo.status === "sponsored" ? "View sponsor package" : "Claim a Sponsorship")}</a>
     </div>
   </section>`;
 }
@@ -2719,8 +2721,8 @@ function homePage() {
           <p>Local Legal Guides offers one clearly labeled attorney sponsor slot per practice area in each regional market. DUI/DWI and Personal Injury are sold separately.</p>
         </div>
         <div class="hero-actions">
-          <a class="button button-primary" href="/sponsorships/">View Available Sponsorships</a>
-          <a class="button button-secondary" href="/sponsor-media-kit/">See Media Kit</a>
+          <a class="button button-primary" href="/sponsor-media-kit/">View Available Markets</a>
+          <a class="button button-secondary" href="/sponsorships/#sponsor-inquiry">Claim a Sponsorship</a>
         </div>
       </div>
       <div>
@@ -2728,7 +2730,7 @@ function homePage() {
           ["Markets", String(siteData.regions.length)],
           ["Cities", String(cityCount)],
           ["City guides", String(siteData.regions.reduce((sum, region) => sum + guideCount(region), 0))],
-          ["Sponsor slots", "One per practice"],
+          ["Launch package", launchPackageLabel],
         ], "metric-grid metric-grid-compact")}
       </div>
     </div>
@@ -2839,7 +2841,7 @@ function regionPage(region) {
     ["Regional placement", `Featured sponsor placement on this ${region.name} cluster page for the selected practice area.`],
     ["City-page placement", `Sponsor visibility across ${region.cities.length} related city guides for the selected practice area.`],
     ["Clear disclosure", "Attorney advertising is labeled and kept separate from official court, police, records, and DMV information."],
-    ["Annual package", `${packageInfo.termLabel} for the selected practice area, with current availability handled by inquiry.`],
+    ["Annual package", `${packageInfo.termLabel} for the selected practice area. Founding sponsors can claim the ${launchPackageLabel}.`],
   ]
     .map((item) => `<article class="info-card"><h3>${escapeHtml(item[0])}</h3><p>${escapeHtml(item[1])}</p></article>`)
     .join("");
@@ -2849,14 +2851,14 @@ function regionPage(region) {
       (practice) => `<tr>
         <td>${escapeHtml(practice.label)}</td>
         <td>${escapeHtml(packageInfo.status === "sponsored" ? "Sponsored" : "Available")}</td>
-        <td>${region.cities.length} ${escapeHtml(practice.label)} city pages plus regional placement</td>
+        <td>${escapeHtml(launchPackageLabel)}</td>
         <td>${escapeHtml(packageInfo.termLabel)}</td>
         <td><a class="text-link" href="/sponsorships/" ${trackingAttrs("claim_package_click", {
           region: region.slug,
           practice: practice.slug,
           placement: "cluster_inventory",
           status: packageInfo.status,
-        })}>Reserve ${escapeHtml(practice.label)}</a></td>
+        })}>Reserve ${escapeHtml(practice.label)} Sponsorship</a></td>
       </tr>`
     )
     .join("");
@@ -3014,7 +3016,7 @@ function sponsorshipPage() {
       <div class="hero-copy">
         <p class="eyebrow">For attorneys</p>
         <h1>Claim a regional sponsorship where local legal questions start.</h1>
-        <p class="lede">Local Legal Guides offers one clearly labeled sponsor slot per practice area per region. DUI/DWI and Personal Injury are sold separately, with launch availability handled by inquiry.</p>
+        <p class="lede">Local Legal Guides offers one clearly labeled sponsor slot per practice area per region. DUI/DWI and Personal Injury are sold separately. Founding packages are available as a ${escapeHtml(launchPackageLabel)}.</p>
       </div>
       <aside class="hero-card">
         <div class="hero-card-header">
@@ -3023,8 +3025,8 @@ function sponsorshipPage() {
         </div>
         <p class="note">${guideCountTotal} city guides are live across DUI/DWI and Personal Injury. Questions about availability or placement? Email ${siteData.sponsorsEmail}.</p>
         <div class="hero-actions">
-          <a class="button button-primary" href="/sponsor-media-kit/">See available markets</a>
-          <a class="button button-secondary" href="#sponsor-inquiry">Ask about a package</a>
+          <a class="button button-primary" href="/sponsor-media-kit/">View Available Markets</a>
+          <a class="button button-secondary" href="#sponsor-inquiry">Claim a Sponsorship</a>
         </div>
       </aside>
     </div>
@@ -3043,7 +3045,7 @@ function sponsorshipPage() {
         <article class="info-card"><h3>High-intent context</h3><p>City pages are framed around what to do after a DUI/DWI arrest or accident, then supported by local courts, agencies, deadlines, and source links.</p></article>
         <article class="info-card"><h3>Not a lawyer directory</h3><p>No rankings, shared lead form, bidding stack, or side-by-side competitor list on the same sponsor slot.</p></article>
         <article class="info-card"><h3>Practice-area exclusivity</h3><p>One sponsor per practice area per region. DUI/DWI and Personal Injury are sold separately.</p></article>
-        <article class="info-card"><h3>Annual sponsorship</h3><p>This is an annual visibility sponsorship, not pay-per-lead. Current availability and package details are handled by inquiry.</p></article>
+        <article class="info-card"><h3>Simple launch offer</h3><p>The founding offer is a ${escapeHtml(launchPackageLabel)}. This is annual visibility, not pay-per-lead.</p></article>
       </div>
     </div>
   </section>
@@ -3059,7 +3061,7 @@ function sponsorshipPage() {
         <article class="info-card"><h3>Regional page placement</h3><p>Featured sponsor placement on the cluster page for the selected practice area.</p></article>
         <article class="info-card"><h3>Related city-page cards</h3><p>Sponsor card or sponsor availability placement on related city pages in the purchased practice area.</p></article>
         <article class="info-card"><h3>Phone/link CTA</h3><p>Firm name, service area, phone or call link, website link, and attorney advertising disclosure when sponsor details are supplied.</p></article>
-        <article class="info-card"><h3>Tracking ready</h3><p>Optional tracking URL or UTM link, plus existing click events for sponsor CTAs, calls, package claims, and inquiry actions.</p></article>
+        <article class="info-card"><h3>Tracking ready</h3><p>Optional tracking URL or UTM link, plus existing click events for sponsor CTAs, calls, package claims, and sponsorship inquiries.</p></article>
         <article class="info-card"><h3>12-month exclusivity</h3><p>No competing sponsor in the same practice-area slot during the package term.</p></article>
         <article class="info-card"><h3>Clear disclosure</h3><p>Sponsor placement is advertising, not a ranking, endorsement, recommendation, or legal advice.</p></article>
       </div>
@@ -3071,20 +3073,26 @@ function sponsorshipPage() {
       <div>
         <div class="section-head">
           <p class="eyebrow">Sponsor contact</p>
-          <h2>Talk to the sponsorship team.</h2>
-          <p>Use ${siteData.sponsorsEmail} for inventory, pricing, and launch timing.</p>
+          <h2>Ready to see available markets?</h2>
+          <p>Start with the available markets list, then claim the region and practice area you want. Prefer email? Contact <a class="text-link" href="mailto:${siteData.sponsorsEmail}">${siteData.sponsorsEmail}</a>.</p>
         </div>
         <div class="hero-actions">
-          <a class="button button-primary" href="/sponsor-media-kit/">View media kit</a>
+          <a class="button button-primary" href="/sponsor-media-kit/">View Available Markets</a>
           <a class="button button-secondary" href="/sponsor-agreement/">Sponsor terms</a>
         </div>
       </div>
-      <div>${sampleSponsorCard()}</div>
+      <div class="hero-card">
+        <div class="hero-card-header">
+          <span class="pill">${escapeHtml(launchPackageLabel)}</span>
+          <span class="pill pill-muted">12-month term</span>
+        </div>
+        <p class="note">One sponsor per practice area per region. DUI/DWI and Personal Injury are sold separately.</p>
+      </div>
     </div>
   </section>
 
   ${sponsorInquiryForm({
-    title: "Request a regional package",
+    title: "Claim a Sponsorship",
     intro: "Send a prefilled sponsorship inquiry for the cluster you want to reserve.",
   })}`;
 }
@@ -3259,7 +3267,7 @@ function mediaKitPage() {
         <td>${escapeHtml(region.state)}</td>
         <td>${region.cities.length}</td>
         <td>${guideCount(region)}</td>
-        <td>Inquiry-based annual sponsorship</td>
+        <td>${escapeHtml(launchPackageLabel)}</td>
         <td>${escapeHtml(packageInfo.status === "preview" ? "Preview" : packageInfo.status === "sponsored" ? "Sponsored" : "Available")}</td>
       </tr>`;
     })
@@ -3270,7 +3278,7 @@ function mediaKitPage() {
       <div class="hero-copy">
         <p class="eyebrow">Sponsor media kit</p>
         <h1>Regional sponsorship inventory for local attorneys.</h1>
-        <p class="lede">Each package gives one attorney or firm a clearly labeled sponsor position across a local cluster page and the related city guides for one selected practice area. The guide content remains neutral, source-backed, and useful without a sponsor.</p>
+        <p class="lede">Detailed inventory, package specs, sample placement, and disclosure language for attorneys evaluating a regional sponsorship.</p>
       </div>
     </div>
   </section>
@@ -3285,7 +3293,7 @@ function mediaKitPage() {
         </div>
         <div class="card-grid two-up">
           <article class="info-card"><h3>What makes this different</h3><p>Not a ranking directory. No bidding against other lawyers on the same page. No shared lead form competing with the sponsor placement.</p></article>
-          <article class="info-card"><h3>Launch availability</h3><p>Each region can have one DUI/DWI sponsor and one Personal Injury sponsor. Current package details are handled by inquiry.</p></article>
+          <article class="info-card"><h3>Launch rate</h3><p>Founding packages are listed as a ${escapeHtml(launchPackageLabel)}. Each region can have one DUI/DWI sponsor and one Personal Injury sponsor.</p></article>
         </div>
       </div>
       <div>${sampleSponsorCard()}</div>
@@ -3312,7 +3320,7 @@ function mediaKitPage() {
       <div class="section-head">
         <p class="eyebrow">Current inventory</p>
         <h2>Available regional packages.</h2>
-        <p>Introductory pricing is designed to test demand before expanding into more markets or raising package prices.</p>
+        <p>Introductory pricing is designed to be simple: one regional practice-area package, one sponsor slot, one annual launch rate.</p>
       </div>
       <div class="responsive-table">
         <table>
@@ -3332,7 +3340,7 @@ function mediaKitPage() {
           <p>Sponsors are advertisers. Sponsorship does not mean Local Legal Guides endorses the attorney, ranks the attorney, guarantees results, or replaces the reader's need to verify court and agency information.</p>
         </div>
         <div class="hero-actions">
-          <a class="button button-primary" href="/sponsorships/">Claim sponsorship</a>
+          <a class="button button-primary" href="/sponsorships/">Claim a Sponsorship</a>
           <a class="button button-secondary" href="/sponsor-agreement/">Sponsor terms</a>
         </div>
       </div>
@@ -3418,7 +3426,7 @@ function sponsorAgreementPage() {
           <h2>Start with availability.</h2>
           <p>Send the region you want, the firm name, and the best contact person. We can confirm whether the cluster is open and what would be needed to launch.</p>
           <div class="hero-actions">
-            <a class="button button-primary" href="/sponsorships/">Claim sponsorship</a>
+            <a class="button button-primary" href="/sponsorships/">Claim a Sponsorship</a>
             <a class="button button-secondary" href="mailto:${siteData.sponsorsEmail}">${siteData.sponsorsEmail}</a>
           </div>
         </aside>
