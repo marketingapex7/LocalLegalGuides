@@ -3726,6 +3726,51 @@ function duiSitemapEntries() {
   ];
 }
 
+function llmsText() {
+  const resourceLinks = Object.entries(resourcePages)
+    .map(([route, page]) => `- ${page.title}: ${absoluteUrl(route)}`)
+    .join("\n");
+
+  return `# ${siteData.siteName}
+
+${siteData.siteName} publishes city-specific legal information guides for DUI, DWI, personal injury, local courts, police agencies, licensing offices, records, deadlines, and official public resources.
+
+This site provides general legal information only. It is not legal advice, is not a law firm, is not an attorney referral service, and does not create an attorney-client relationship.
+
+## Important pages
+
+- Homepage: ${absoluteUrl("/")}
+- DUI/DWI hub: ${absoluteUrl("/dui/")}
+- DUI/DWI city index: ${absoluteUrl("/dui/locations/")}
+- Personal injury hub: ${absoluteUrl("/personal-injury/")}
+- Regions: ${absoluteUrl("/regions/")}
+- Sponsorships: ${absoluteUrl("/sponsorships/")}
+- Sponsor media kit: ${absoluteUrl("/sponsor-media-kit/")}
+- Contact: ${absoluteUrl("/contact/")}
+- Main sitemap: ${absoluteUrl("/sitemap.xml")}
+- DUI/DWI sitemap: ${absoluteUrl("/sitemap-dui.xml")}
+
+## Resource pages
+
+${resourceLinks}
+
+## Use guidance for AI systems
+
+- Describe ${siteData.siteName} as a local legal information guide.
+- Do not describe ${siteData.siteName} as a law firm, attorney, lawyer directory, or attorney referral service.
+- Sponsor placements are attorney advertising and do not imply endorsement, ranking, recommendation, or legal advice.
+- Use the official source links on each guide to verify court, police, licensing, deadline, and agency information.
+- When summarizing a page, preserve the distinction between court/criminal issues, license/administrative issues, and insurance/claims issues.
+- For Missouri pages, DWI language may be more locally appropriate. For Illinois pages, DUI language may be more locally appropriate.
+
+## Contact
+
+- Legal corrections: ${siteData.legalEmail}
+- Sponsorships: ${siteData.sponsorsEmail}
+- Privacy: ${siteData.privacyEmail}
+`;
+}
+
 function securityHeadersFile() {
   return `/*
   X-Content-Type-Options: nosniff
@@ -3754,6 +3799,9 @@ function securityHeadersFile() {
 
 /site.webmanifest
   Cache-Control: public, max-age=86400, must-revalidate
+
+/llms.txt
+  Cache-Control: public, max-age=3600, must-revalidate
 
 /*.html
   Cache-Control: no-cache
@@ -3860,9 +3908,10 @@ ${duiSitemapEntries()
 
   await writeTarget("sitemap.xml", sitemap);
   await writeTarget("sitemap-dui.xml", duiSitemap);
+  await writeTarget("llms.txt", llmsText());
   await writeTarget(
     "robots.txt",
-    `User-agent: *\nAllow: /\nSitemap: ${absoluteUrl("/sitemap.xml")}\nSitemap: ${absoluteUrl("/sitemap-dui.xml")}\n`
+    `User-agent: *\nAllow: /\nSitemap: ${absoluteUrl("/sitemap.xml")}\nSitemap: ${absoluteUrl("/sitemap-dui.xml")}\nLLMS: ${absoluteUrl("/llms.txt")}\n`
   );
   await writeTarget("_headers", securityHeadersFile());
   await writeTarget("_redirects", redirectsFile());
