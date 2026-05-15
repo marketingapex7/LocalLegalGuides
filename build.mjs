@@ -448,6 +448,19 @@ function cityPageDescription(city, region, practice) {
   const court = courtForCity(city, region, practice);
   if (practice.slug === "dui") {
     const label = practiceSeoLabel(practice, region);
+    const targetedDescriptions = {
+      "nixa-mo":
+        "Nixa DWI guide covering Missouri administrative hearing deadlines, Form 2385, Department of Revenue license issues, local court context, and questions to ask a DWI attorney.",
+      "manchester-mo":
+        "Manchester DWI guide for people searching DUI attorney near me, with Missouri DWI terminology, St. Louis County court context, DOR license issues, and local road context.",
+      "wentzville-mo":
+        "Wentzville DWI guide covering traffic citations, license consequences, Missouri DOR paperwork, local roads, court context, and questions to ask a DWI attorney.",
+      "edwardsville-il":
+        "Edwardsville DUI guide covering what to do after an arrest, Madison County court, Illinois license issues, police records, and questions to ask an Edwardsville DUI lawyer.",
+    };
+    if (targetedDescriptions[city.slug]) {
+      return compactDescription(targetedDescriptions[city.slug]);
+    }
     return compactDescription(
       `Arrested for ${label} in ${city.name}? Learn what to do next, court and license deadlines, local police records, questions to ask a ${label} attorney, and official sources.`
     );
@@ -705,7 +718,7 @@ function whenToCallLawyerSection({ city, region, isDui, basics }) {
   return `<section class="section section-attorney-question" id="when-to-call-lawyer">
     <div class="container split-grid">
       <div class="section-head">
-        <p class="eyebrow">${escapeHtml(isDui ? "When to call a DUI lawyer" : "When to call an injury lawyer")}</p>
+        <p class="eyebrow">${escapeHtml(isDui ? `When to call a ${basics.duiName} lawyer` : "When to call an injury lawyer")}</p>
         <h2>${escapeHtml(isDui ? `When talking to ${articleFor(city.name)} ${city.name} ${basics.duiName} attorney may make sense.` : `When talking to ${articleFor(city.name)} ${city.name} personal injury attorney may make sense.`)}</h2>
         <p>${escapeHtml(
           isDui
@@ -833,19 +846,22 @@ function editorialReviewBlock(isDui) {
 }
 
 function relatedResourceLinks(region, isDui) {
-  if (region.stateCode !== "IL") {
+  if (region.stateCode !== "IL" && !(isDui && region.stateCode === "MO")) {
     return "";
   }
 
-  const resources = isDui
-    ? [
-        ["Illinois DUI license suspension guide", "/resources/illinois-dui-license-suspension/"],
-        ["Madison County DUI process", "/resources/madison-county-dui-process/"],
-      ]
-    : [
-        ["Illinois personal injury deadlines", "/resources/illinois-personal-injury-deadlines/"],
-        ["Madison County accident report guide", "/resources/madison-county-accident-report-guide/"],
-      ];
+  const resources =
+    isDui && region.stateCode === "MO"
+      ? [["Missouri DWI administrative hearing guide", "/resources/missouri-dwi-administrative-hearing/"]]
+      : isDui
+        ? [
+            ["Illinois DUI license suspension guide", "/resources/illinois-dui-license-suspension/"],
+            ["Madison County DUI process", "/resources/madison-county-dui-process/"],
+          ]
+        : [
+            ["Illinois personal injury deadlines", "/resources/illinois-personal-injury-deadlines/"],
+            ["Madison County accident report guide", "/resources/madison-county-accident-report-guide/"],
+          ];
   return `<section class="section section-alt" id="related-resources">
     <div class="container">
       <div class="section-head">
@@ -1498,9 +1514,10 @@ function localDuiDataSources(data) {
   });
 }
 
-function localDuiDataSection(city) {
+function localDuiDataSection(city, region) {
   const data = duiLocalDataFor(city);
   if (!data) return "";
+  const label = region?.stateCode === "IL" ? "DUI" : "DWI";
 
   const snapshot = data.enforcement_snapshot;
   const campaigns = data.past_campaigns ?? [];
@@ -1515,8 +1532,8 @@ function localDuiDataSection(city) {
   return `<section class="section section-alt" id="dui-local-data">
     <div class="container">
       <div class="section-head">
-        <p class="eyebrow">Hyper-local DUI context</p>
-        <h2>Local DUI enforcement and roadway context for ${escapeHtml(city.name)}.</h2>
+        <p class="eyebrow">Hyper-local ${escapeHtml(label)} context</p>
+        <h2>Local ${escapeHtml(label)} enforcement and roadway context for ${escapeHtml(city.name)}.</h2>
         <p>${escapeHtml(safetyText)}</p>
       </div>
       <div class="data-panel-grid">
@@ -1590,7 +1607,137 @@ function localDuiDataSection(city) {
   </section>`;
 }
 
-function cityToc(isDui, region, hasLocalDuiData = false) {
+function rankingOpportunitySection(city, region, isDui, basics) {
+  if (!isDui) return "";
+
+  const moAdminSources = [
+    {
+      label: "Missouri DOR DWI information",
+      href: "https://dor.mo.gov/driver-license/revocation-reinstatement/dwi.html",
+    },
+    {
+      label: "Missouri DOR Administrative Alcohol FAQ",
+      href: "https://dor.mo.gov/faq/driver-license/administrative-alcohol.html",
+    },
+    {
+      label: "Missouri Form 2385",
+      href: "https://dor.mo.gov/forms/2385.pdf",
+    },
+  ];
+
+  const sections = {
+    "nixa-mo": {
+      eyebrow: "Administrative hearing focus",
+      title: "Nixa DWI administrative hearing questions.",
+      intro:
+        "A Nixa DWI arrest can create a criminal court issue and a separate Missouri Department of Revenue license issue. The DOR says a Form 2385 hearing request is tied to a 15-day deadline, so drivers often look for administrative-hearing guidance before the first court date feels settled.",
+      cards: [
+        [
+          "DOR track",
+          "The administrative track is about driving privileges and can move separately from the criminal case in Christian County or another local court.",
+        ],
+        [
+          "Hearing request",
+          "If Form 2385 is issued, the request for an administrative hearing should be checked immediately against the official DOR instructions.",
+        ],
+        [
+          "Questions for counsel",
+          "Ask whether the lawyer handles DOR administrative hearings, license stays, restricted driving options, and the local criminal court case together.",
+        ],
+      ],
+      sources: moAdminSources,
+    },
+    "manchester-mo": {
+      eyebrow: "Attorney search context",
+      title: "Manchester DUI attorney searches and Missouri DWI wording.",
+      intro:
+        "People may search for a DUI attorney near Manchester even though Missouri commonly uses DWI language. This page uses both terms naturally so readers can connect the search phrase to the actual Missouri court and Department of Revenue process.",
+      cards: [
+        [
+          "Local terminology",
+          "A search for a Manchester DUI attorney may still point to Missouri DWI issues, including police paperwork, court settings, and license consequences.",
+        ],
+        [
+          "Road context",
+          "Manchester Road, Big Bend Road, I-270, and nearby West County commuter routes can shape where stops, crash reports, or records questions begin.",
+        ],
+        [
+          "Attorney questions",
+          "Ask whether the lawyer handles both St. Louis County court issues and Missouri DOR license deadlines after a DWI arrest.",
+        ],
+      ],
+      sources: moAdminSources.slice(0, 2),
+    },
+    "wentzville-mo": {
+      eyebrow: "Traffic and license context",
+      title: "DWI, traffic citations, and license consequences in Wentzville.",
+      intro:
+        "A Wentzville traffic-law search can overlap with DWI issues when a stop involves alcohol testing, license paperwork, a crash, or multiple citations. This guide keeps the DWI focus while flagging the traffic and license documents readers may need to organize.",
+      cards: [
+        [
+          "Citation stack",
+          "A DWI stop can also involve traffic citations, towing paperwork, insurance questions, or crash-report issues depending on the facts.",
+        ],
+        [
+          "License paperwork",
+          "Missouri DOR paperwork can matter even when the first visible concern is the traffic ticket or court date.",
+        ],
+        [
+          "Local corridors",
+          "I-70, I-64, U.S. Route 61, Wentzville Parkway, and Pearce Boulevard are useful roadway context for records and agency questions.",
+        ],
+      ],
+      sources: moAdminSources,
+    },
+    "edwardsville-il": {
+      eyebrow: "Attorney search context",
+      title: "Edwardsville DUI lawyer questions to ask early.",
+      intro:
+        "People searching for an Edwardsville DUI lawyer are usually trying to understand court dates, license risk, police reports, and what to do before making decisions in court. The most useful next step is organizing the paperwork and asking focused questions about Madison County practice and Illinois license consequences.",
+      cards: [
+        [
+          "Madison County practice",
+          "Ask how often the lawyer handles DUI cases in Madison County and whether they know the local court schedule, discovery process, and agency records path.",
+        ],
+        [
+          "License consequences",
+          "Ask how the Illinois license track may move separately from the criminal case and what deadlines or notices need attention.",
+        ],
+        [
+          "Evidence review",
+          "Ask whether the lawyer will review the stop basis, police report, chemical-test paperwork, video, crash records, and any towing or impound documents.",
+        ],
+      ],
+      sources: [
+        {
+          label: "Illinois Secretary of State DUI information",
+          href: "https://www.ilsos.gov/departments/drivers/traffic_safety/DUI/home.html",
+        },
+        {
+          label: "Madison County Circuit Clerk",
+          href: "https://www.madisoncountyil.gov/departments/circuit_clerk/index.php",
+        },
+      ],
+    },
+  };
+
+  const content = sections[city.slug];
+  if (!content) return "";
+
+  return `<section class="section section-alt" id="ranking-opportunity">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">${escapeHtml(content.eyebrow)}</p>
+        <h2>${escapeHtml(content.title)}</h2>
+        <p>${escapeHtml(content.intro)}</p>
+      </div>
+      <div class="card-grid three-up">${content.cards.map((item) => `<article class="info-card"><h3>${escapeHtml(item[0])}</h3><p>${escapeHtml(item[1])}</p></article>`).join("")}</div>
+      <div class="source-chip-row">${content.sources.map((source) => `<a href="${escapeHtml(source.href)}" target="_blank" rel="noopener noreferrer">Source: ${escapeHtml(source.label)}</a>`).join("")}</div>
+    </div>
+  </section>`;
+}
+
+function cityToc(isDui, region, hasLocalDuiData = false, hasRankingOpportunity = false) {
   const lawyerLabel = isDui ? `${region.stateCode === "IL" ? "DUI" : "DWI"} lawyer` : "injury lawyer";
   const items = [
     ["Start here", "#start-here"],
@@ -1599,19 +1746,20 @@ function cityToc(isDui, region, hasLocalDuiData = false) {
     ["Local directory", "#directory"],
     ["Map", "#map"],
     ["Local details", "#local"],
-    ...(isDui && hasLocalDuiData ? [["Local DUI data", "#dui-local-data"]] : []),
+    ...(isDui && hasLocalDuiData ? [[`Local ${region.stateCode === "IL" ? "DUI" : "DWI"} data`, "#dui-local-data"]] : []),
     ...(isDui ? [] : [["Insurance warning", "#insurance-warning"]]),
     ["Key deadlines", "#deadlines"],
     ["Documents", "#documents"],
-    [isDui ? "DUI law" : "Injury law", "#state-law"],
+    [isDui ? `${region.stateCode === "IL" ? "DUI" : "DWI"} law` : "Injury law", "#state-law"],
     ["Case process", "#process"],
     [isDui ? "Penalties" : "Claim value", "#penalties"],
     [isDui ? "Implied consent" : "Fault and proof", "#implied-consent"],
     [isDui ? "License restoration" : "Insurance and settlement", "#restoration"],
     ...(isDui ? [] : [["Reports", "#accident-report"]]),
     [isDui ? `${region.stateCode === "IL" ? "DUI" : "DWI"} attorney` : "Injury attorney", "#attorney-question"],
+    ...(hasRankingOpportunity ? [["Search context", "#ranking-opportunity"]] : []),
     ["Questions to ask", "#questions-to-ask"],
-    ...(region?.stateCode === "IL" ? [["Resources", "#related-resources"]] : []),
+    ...(region?.stateCode === "IL" || (isDui && region?.stateCode === "MO") ? [["Resources", "#related-resources"]] : []),
     ["Official sources", "#sources"],
     ["Common questions", "#faq"],
   ];
@@ -2041,6 +2189,7 @@ function cityShell(city, region, practice) {
   const enforcementOffices = [city.police, ...(region.sharedEnforcement ?? [])].filter(Boolean);
   const licenseOffice = city.licenseOfficeOverride ?? region.licenseOffice;
   const localDuiData = isDui ? duiLocalDataFor(city) : null;
+  const hasRankingOpportunity = isDui && ["nixa-mo", "manchester-mo", "wentzville-mo", "edwardsville-il"].includes(city.slug);
   const caseName = isDui ? basics.duiName : "personal injury";
   const quickActions = quickActionCards({ city, region, court, licenseOffice, isDui, basics });
   const title = heroTitleForCity(city, region, isDui, basics);
@@ -2254,7 +2403,7 @@ function cityShell(city, region, practice) {
     </div>
   </section>
 
-  ${cityToc(isDui, region, Boolean(localDuiData))}
+  ${cityToc(isDui, region, Boolean(localDuiData), hasRankingOpportunity)}
 
   <section class="section section-directory" id="directory">
     <div class="container">
@@ -2319,7 +2468,7 @@ function cityShell(city, region, practice) {
     </div>
   </section>
 
-  ${isDui ? localDuiDataSection(city) : ""}
+  ${isDui ? localDuiDataSection(city, region) : ""}
 
   <section class="section" id="deadlines">
     <div class="container">
@@ -2433,6 +2582,8 @@ function cityShell(city, region, practice) {
   ${isDui ? "" : accidentReportSection(city, region)}
 
   ${attorneyQuestionSection({ city, region, isDui, basics })}
+
+  ${rankingOpportunitySection(city, region, isDui, basics)}
 
   ${questionsToAskAttorneySection({ city, region, isDui, basics })}
 
@@ -3098,6 +3249,34 @@ function sponsorshipPage() {
 }
 
 const resourcePages = {
+  "/resources/missouri-dwi-administrative-hearing/": {
+    title: "Missouri DWI Administrative Hearing Guide",
+    description:
+      "Missouri DWI administrative hearing resource covering Form 2385, the Department of Revenue license track, 15-day hearing requests, and official DOR sources.",
+    body: resourcePage({
+      eyebrow: "Missouri DWI resource",
+      title: "Missouri DWI administrative hearing guide.",
+      intro:
+        "A Missouri DWI arrest can create two separate tracks: the criminal case and the Department of Revenue driver-license process. This resource explains the DOR administrative hearing path so readers know why license paperwork should be reviewed quickly.",
+      cards: [
+        ["Separate DOR track", "The Missouri Department of Revenue explains that administrative license action can move separately from the criminal ticket or court case."],
+        ["Form 2385 deadline", "The DOR states that a written administrative hearing request tied to Form 2385 has a 15-day timing requirement."],
+        ["Hearing format", "DOR materials explain that administrative alcohol hearings may be scheduled in person or by telephone depending on the request and circumstances."],
+      ],
+      bullets: [
+        "Find the Notice of Suspension/Revocation of Driving Privilege, commonly referenced as Form 2385.",
+        "Confirm the date the notice was issued and compare it to official DOR hearing-request instructions.",
+        "Separate the criminal court date from the Department of Revenue license issue.",
+        "Ask a Missouri DWI attorney whether the administrative hearing, restricted driving options, and court case should be handled together.",
+      ],
+      sources: [
+        { label: "Missouri DOR DWI information", href: "https://dor.mo.gov/driver-license/revocation-reinstatement/dwi.html" },
+        { label: "Missouri DOR Administrative Alcohol FAQ", href: "https://dor.mo.gov/faq/driver-license/administrative-alcohol.html" },
+        { label: "Missouri Form 2385", href: "https://dor.mo.gov/forms/2385.pdf" },
+        { label: "Missouri DOR Restricted Driving Privilege", href: "https://dor.mo.gov/driver-license/revocation-reinstatement/rdp-alcohol.html" },
+      ],
+    }),
+  },
   "/resources/illinois-dui-license-suspension/": {
     title: "Illinois DUI License Suspension Guide",
     description:
