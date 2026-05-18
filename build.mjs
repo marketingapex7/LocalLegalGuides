@@ -387,6 +387,20 @@ function duiCityLink(entry, className = "city-link") {
   )} ${escapeHtml(entry.label)} guide</a>`;
 }
 
+const priorityDuiCitySlugs = ["apex-nc", "nixa-mo", "manchester-mo", "wentzville-mo", "edwardsville-il"];
+
+function priorityDuiEntries() {
+  const entries = duiCityEntries();
+  const bySlug = new Map(entries.map((entry) => [entry.city.slug, entry]));
+  return priorityDuiCitySlugs.map((slug) => bySlug.get(slug)).filter(Boolean);
+}
+
+function priorityDuiGuideLinks(className = "related-card compact-related-card") {
+  return priorityDuiEntries()
+    .map((entry) => duiCityLink(entry, className))
+    .join("");
+}
+
 function groupedDuiLocationSections({ compact = false } = {}) {
   const states = new Map();
 
@@ -429,7 +443,8 @@ function groupedDuiLocationSections({ compact = false } = {}) {
 }
 
 function recentDuiGuideLinks(limit = 18) {
-  return duiCityEntries()
+  const priority = new Set(priorityDuiCitySlugs);
+  return [...priorityDuiEntries(), ...duiCityEntries().filter((entry) => !priority.has(entry.city.slug))]
     .slice(0, limit)
     .map((entry) => duiCityLink(entry, "related-card compact-related-card"))
     .join("");
@@ -457,6 +472,8 @@ function cityPageDescription(city, region, practice) {
         "Wentzville DWI guide covering traffic citations, license consequences, Missouri DOR paperwork, local roads, court context, and questions to ask a DWI attorney.",
       "edwardsville-il":
         "Edwardsville DUI guide covering what to do after an arrest, Madison County court, Illinois license issues, police records, and questions to ask an Edwardsville DUI lawyer.",
+      "apex-nc":
+        "Apex DWI guide covering North Carolina DWI probation, misdemeanor consequences, restricted license questions, Apex Police records, Wake County court, and NCDMV issues.",
     };
     if (targetedDescriptions[city.slug]) {
       return compactDescription(targetedDescriptions[city.slug]);
@@ -467,7 +484,9 @@ function cityPageDescription(city, region, practice) {
   }
 
   return compactDescription(
-    `Injured in ${city.name}? Learn what to do before dealing with insurance, how to document a claim, where reports may come from, deadlines, and official sources.`
+    city.slug === "apex-nc"
+      ? "Apex personal injury guide covering crash reports, insurance calls, medical documentation, Wake County court context, local roads, and what to do after an accident."
+      : `Injured in ${city.name}? Learn what to do before dealing with insurance, how to document a claim, where reports may come from, deadlines, and official sources.`
   );
 }
 
@@ -846,13 +865,15 @@ function editorialReviewBlock(isDui) {
 }
 
 function relatedResourceLinks(region, isDui) {
-  if (region.stateCode !== "IL" && !(isDui && region.stateCode === "MO")) {
+  if (region.stateCode !== "IL" && !(isDui && ["MO", "NC"].includes(region.stateCode))) {
     return "";
   }
 
   const resources =
     isDui && region.stateCode === "MO"
       ? [["Missouri DWI administrative hearing guide", "/resources/missouri-dwi-administrative-hearing/"]]
+      : isDui && region.stateCode === "NC"
+        ? [["North Carolina DWI consequences and limited driving privilege", "/resources/north-carolina-dwi-consequences-limited-driving-privilege/"]]
       : isDui
         ? [
             ["Illinois DUI license suspension guide", "/resources/illinois-dui-license-suspension/"],
@@ -1719,6 +1740,40 @@ function rankingOpportunitySection(city, region, isDui, basics) {
         },
       ],
     },
+    "apex-nc": {
+      eyebrow: "Consequences and probation context",
+      title: "Apex DWI probation, consequences, and restricted-license questions.",
+      intro:
+        "People searching for Apex DWI probation, Apex DUI consequences, misdemeanor DWI, arrests, or restricted-license issues are usually trying to understand what can happen after the stop. North Carolina DWI cases can involve Wake County court, probation conditions, punishment levels, a NCDMV license issue, and possible limited-driving-privilege questions.",
+      cards: [
+        [
+          "Probation and punishment levels",
+          "North Carolina DWI sentencing uses punishment levels, and probation terms can include conditions such as assessment, treatment, monitoring, community service, or active time depending on the level and facts.",
+        ],
+        [
+          "Misdemeanor consequences",
+          "Many North Carolina DWI cases are misdemeanors, but the consequences can still be serious because sentencing level, prior history, aggravating factors, and license consequences can change the practical outcome.",
+        ],
+        [
+          "Restricted license questions",
+          "A limited driving privilege is a court order under North Carolina law. Eligibility and terms depend on the revocation, timing, facts, and statutory requirements.",
+        ],
+      ],
+      sources: [
+        {
+          label: "North Carolina State Highway Patrol DWI law summary",
+          href: "https://www.ncshp.gov/ncshp/commercial-vehicles/laws",
+        },
+        {
+          label: "NCDMV license suspension",
+          href: "https://www.ncdot.gov/dmv/license-id/license-suspension/Pages/",
+        },
+        {
+          label: "NCGS 20-179.3 limited driving privilege",
+          href: "https://www.ncleg.gov/EnactedLegislation/Statutes/PDF/BySection/Chapter_20/GS_20-179.3.pdf",
+        },
+      ],
+    },
   };
 
   const content = sections[city.slug];
@@ -1733,6 +1788,29 @@ function rankingOpportunitySection(city, region, isDui, basics) {
       </div>
       <div class="card-grid three-up">${content.cards.map((item) => `<article class="info-card"><h3>${escapeHtml(item[0])}</h3><p>${escapeHtml(item[1])}</p></article>`).join("")}</div>
       <div class="source-chip-row">${content.sources.map((source) => `<a href="${escapeHtml(source.href)}" target="_blank" rel="noopener noreferrer">Source: ${escapeHtml(source.label)}</a>`).join("")}</div>
+    </div>
+  </section>`;
+}
+
+function personalInjuryOpportunitySection(city, region, isDui) {
+  if (isDui || city.slug !== "apex-nc") return "";
+
+  return `<section class="section section-alt" id="ranking-opportunity">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Apex injury search context</p>
+        <h2>Apex personal injury questions after a crash or accident.</h2>
+        <p>People searching for personal injury help in Apex are often trying to organize medical care, insurance calls, crash reports, and whether Wake County court deadlines could matter later.</p>
+      </div>
+      <div class="card-grid three-up">
+        <article class="info-card"><h3>Crash and incident reports</h3><p>If Apex Police handled the scene, the department may be the starting point for a local report. If the incident happened outside town limits, Wake County or North Carolina State Highway Patrol may be involved.</p></article>
+        <article class="info-card"><h3>Insurance pressure</h3><p>Insurance adjusters may ask for recorded statements, broad medical authorizations, or quick settlement decisions before the full injury picture is clear.</p></article>
+        <article class="info-card"><h3>Local road context</h3><p>U.S. 64, NC 55, Apex Peakway, Salem Street, and Ten Ten Road are useful roadway context for report, records, and insurance questions.</p></article>
+      </div>
+      <div class="source-chip-row">
+        <a href="https://www.apexnc.org/261/Police-Department" target="_blank" rel="noopener noreferrer">Source: Apex Police Department</a>
+        <a href="https://www.nccourts.gov/locations/wake-county" target="_blank" rel="noopener noreferrer">Source: North Carolina Judicial Branch - Wake County</a>
+      </div>
     </div>
   </section>`;
 }
@@ -2189,7 +2267,9 @@ function cityShell(city, region, practice) {
   const enforcementOffices = [city.police, ...(region.sharedEnforcement ?? [])].filter(Boolean);
   const licenseOffice = city.licenseOfficeOverride ?? region.licenseOffice;
   const localDuiData = isDui ? duiLocalDataFor(city) : null;
-  const hasRankingOpportunity = isDui && ["nixa-mo", "manchester-mo", "wentzville-mo", "edwardsville-il"].includes(city.slug);
+  const hasRankingOpportunity =
+    (isDui && ["apex-nc", "nixa-mo", "manchester-mo", "wentzville-mo", "edwardsville-il"].includes(city.slug)) ||
+    (!isDui && city.slug === "apex-nc");
   const caseName = isDui ? basics.duiName : "personal injury";
   const quickActions = quickActionCards({ city, region, court, licenseOffice, isDui, basics });
   const title = heroTitleForCity(city, region, isDui, basics);
@@ -2585,6 +2665,8 @@ function cityShell(city, region, practice) {
 
   ${rankingOpportunitySection(city, region, isDui, basics)}
 
+  ${personalInjuryOpportunitySection(city, region, isDui)}
+
   ${questionsToAskAttorneySection({ city, region, isDui, basics })}
 
   <section class="section section-attorney-cta">
@@ -2628,7 +2710,10 @@ function cityShell(city, region, practice) {
       </div>
       <div class="chip-grid">${region.cities
         .filter((nearby) => nearby.slug !== city.slug)
-        .map((nearby) => `<a class="city-chip" href="${pathForPracticeCity(practice.slug, nearby.slug)}">${escapeHtml(nearby.name)}</a>`)
+        .map((nearby) => {
+          const nearbyLabel = isDui ? `${nearby.name} ${practiceSeoLabel(practice, region)} guide` : nearby.name;
+          return `<a class="city-chip" href="${pathForPracticeCity(practice.slug, nearby.slug)}">${escapeHtml(nearbyLabel)}</a>`;
+        })
         .join("")}
         <a class="practice-chip" href="/clusters/${region.slug}/">View all in ${escapeHtml(region.name)}</a>
       </div>
@@ -2765,6 +2850,16 @@ function practicePage(practice) {
       ? `<section class="section section-alt">
     <div class="container">
       <div class="section-head">
+        <p class="eyebrow">Pages Google is testing</p>
+        <h2>Priority DUI/DWI guides getting early impressions.</h2>
+        <p>These city guides are already showing early search impressions and get direct internal links from the hub.</p>
+      </div>
+      <div class="related-grid">${priorityDuiGuideLinks()}</div>
+    </div>
+  </section>
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-head">
         <p class="eyebrow">DUI/DWI locations</p>
         <h2>Browse every DUI and DWI city guide by state.</h2>
         <p>These state sections create a direct crawl path to every DUI/DWI city page and use DWI labels outside Illinois where appropriate.</p>
@@ -2806,6 +2901,16 @@ function duiLocationsPage() {
         </div>
         <p class="note">Every DUI/DWI city page has a self-referencing canonical URL and is included in the DUI sitemap.</p>
       </aside>
+    </div>
+  </section>
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Early search signals</p>
+        <h2>Priority DUI/DWI guides to review first.</h2>
+        <p>Google has started testing these city guides for DUI/DWI, attorney, traffic, probation, and license-related searches.</p>
+      </div>
+      <div class="related-grid">${priorityDuiGuideLinks()}</div>
     </div>
   </section>
   <section class="section">
@@ -3274,6 +3379,33 @@ const resourcePages = {
         { label: "Missouri DOR Administrative Alcohol FAQ", href: "https://dor.mo.gov/faq/driver-license/administrative-alcohol.html" },
         { label: "Missouri Form 2385", href: "https://dor.mo.gov/forms/2385.pdf" },
         { label: "Missouri DOR Restricted Driving Privilege", href: "https://dor.mo.gov/driver-license/revocation-reinstatement/rdp-alcohol.html" },
+      ],
+    }),
+  },
+  "/resources/north-carolina-dwi-consequences-limited-driving-privilege/": {
+    title: "North Carolina DWI Consequences and Limited Driving Privilege Guide",
+    description:
+      "North Carolina DWI resource covering punishment levels, probation conditions, misdemeanor consequences, license suspension, and limited driving privilege sources.",
+    body: resourcePage({
+      eyebrow: "North Carolina DWI resource",
+      title: "North Carolina DWI consequences and limited driving privilege guide.",
+      intro:
+        "North Carolina DWI cases can involve court punishment levels, probation conditions, license consequences, and limited-driving-privilege questions. This resource explains the official-source path before readers return to a city guide for local courts, police, and DMV offices.",
+      cards: [
+        ["Punishment levels", "North Carolina describes multiple DWI punishment levels, with penalties affected by aggravating, mitigating, and grossly aggravating factors."],
+        ["Probation conditions", "Depending on the sentence level and facts, probation can involve court-ordered conditions such as assessment, treatment, community service, monitoring, or active time."],
+        ["Limited driving privilege", "A limited driving privilege is a court order under North Carolina law, and eligibility depends on the revocation, facts, and statutory requirements."],
+      ],
+      bullets: [
+        "Keep the citation, court date, bond or release paperwork, and any revocation notice.",
+        "Separate the Wake County or local court case from the NCDMV license issue.",
+        "Ask whether probation, community service, assessment, treatment, or monitoring could apply.",
+        "Check whether limited driving privilege questions should be handled before making court decisions.",
+      ],
+      sources: [
+        { label: "North Carolina State Highway Patrol DWI law summary", href: "https://www.ncshp.gov/ncshp/commercial-vehicles/laws" },
+        { label: "NCDMV license suspension", href: "https://www.ncdot.gov/dmv/license-id/license-suspension/Pages/" },
+        { label: "NCGS 20-179.3 limited driving privilege", href: "https://www.ncleg.gov/EnactedLegislation/Statutes/PDF/BySection/Chapter_20/GS_20-179.3.pdf" },
       ],
     }),
   },
