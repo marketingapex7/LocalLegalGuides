@@ -3,6 +3,7 @@ export async function onRequest(context) {
 
   if (url.hostname === "www.locallegalguides.com") {
     url.hostname = "locallegalguides.com";
+    url.protocol = "https:";
     return Response.redirect(url.toString(), 301);
   }
 
