@@ -387,7 +387,7 @@ function duiCityLink(entry, className = "city-link") {
   )} ${escapeHtml(entry.label)} guide</a>`;
 }
 
-const priorityDuiCitySlugs = ["apex-nc", "nixa-mo", "manchester-mo", "wentzville-mo", "edwardsville-il"];
+const priorityDuiCitySlugs = ["wentzville-mo", "apex-nc", "manchester-mo", "nixa-mo", "edwardsville-il"];
 
 function priorityDuiEntries() {
   const entries = duiCityEntries();
@@ -767,6 +767,28 @@ function insuranceRealitySection(city) {
 }
 
 function questionsToAskAttorneySection({ city, region, isDui, basics }) {
+  const targetedDuiQuestions = {
+    "wentzville-mo": [
+      "Do you handle both Wentzville DWI cases and related traffic charges from the same stop?",
+      "How do Wentzville municipal records, St. Charles County court settings, and Missouri DOR deadlines fit together?",
+    ],
+    "nixa-mo": [
+      "Do you handle Missouri DOR administrative hearings after Nixa DWI arrests?",
+      "What should I do if I received Form 2385 or another DOR notice?",
+    ],
+    "manchester-mo": [
+      "If I searched for a DUI attorney near Manchester, should I be asking about Missouri DWI court and DOR experience?",
+      "How often do you handle St. Louis County DWI cases involving Manchester Police or West County traffic stops?",
+    ],
+    "edwardsville-il": [
+      "How do Madison County DUI court dates and Illinois statutory summary suspension deadlines interact?",
+      "Will you request Edwardsville Police records, video, chemical-test paperwork, and Secretary of State license documents?",
+    ],
+    "apex-nc": [
+      "How do Apex DWI punishment levels, probation, and limited-driving-privilege issues usually get reviewed?",
+      "What evidence could affect dismissal, reduction, or sentencing arguments in Wake County court?",
+    ],
+  };
   const questions = isDui
     ? [
         `How often do you handle ${basics.duiName} cases in ${region.name}?`,
@@ -777,6 +799,7 @@ function questionsToAskAttorneySection({ city, region, isDui, basics }) {
         "What are the likely court dates and deadlines?",
         "What are the possible outcomes for a first offense or repeat offense?",
         "What should I avoid doing before court?",
+        ...(targetedDuiQuestions[city.slug] ?? []),
       ]
     : [
         "Do you handle accident and injury claims in this county?",
@@ -1649,9 +1672,9 @@ function rankingOpportunitySection(city, region, isDui, basics) {
   const sections = {
     "nixa-mo": {
       eyebrow: "Administrative hearing focus",
-      title: "Nixa DWI administrative hearing questions.",
+      title: "Nixa DWI administrative hearing and lawyer questions.",
       intro:
-        "A Nixa DWI arrest can create a criminal court issue and a separate Missouri Department of Revenue license issue. The DOR says a Form 2385 hearing request is tied to a 15-day deadline, so drivers often look for administrative-hearing guidance before the first court date feels settled.",
+        "A Nixa DWI arrest can create a criminal court issue and a separate Missouri Department of Revenue license issue. The DOR says a Form 2385 hearing request is tied to a 15-day deadline, so drivers often look for administrative-hearing guidance before the first court date feels settled. A lawyer conversation should cover both the Christian County court path and the DOR license track.",
       cards: [
         [
           "DOR track",
@@ -1664,6 +1687,10 @@ function rankingOpportunitySection(city, region, isDui, basics) {
         [
           "Questions for counsel",
           "Ask whether the lawyer handles DOR administrative hearings, license stays, restricted driving options, and the local criminal court case together.",
+        ],
+        [
+          "Hearing evidence",
+          "Ask what records matter for the hearing, including officer paperwork, testing documents, notice forms, video, and any refusal or chemical-test issue.",
         ],
       ],
       sources: moAdminSources,
@@ -1691,17 +1718,21 @@ function rankingOpportunitySection(city, region, isDui, basics) {
     },
     "wentzville-mo": {
       eyebrow: "Traffic and license context",
-      title: "DWI, traffic citations, and license consequences in Wentzville.",
+      title: "Wentzville DWI lawyer questions, traffic charges, and license consequences.",
       intro:
-        "A Wentzville traffic-law search can overlap with DWI issues when a stop involves alcohol testing, license paperwork, a crash, or multiple citations. This guide keeps the DWI focus while flagging the traffic and license documents readers may need to organize.",
+        "A Wentzville traffic-law search can overlap with DWI issues when a stop involves alcohol testing, license paperwork, a crash, or multiple citations. This guide keeps the DWI focus while flagging the traffic and license documents readers may need to organize before asking a Wentzville DWI lawyer or traffic lawyer what happens next.",
       cards: [
         [
           "Citation stack",
-          "A DWI stop can also involve traffic citations, towing paperwork, insurance questions, or crash-report issues depending on the facts.",
+          "A DWI stop can also involve traffic charges, towing paperwork, insurance questions, points, careless-and-imprudent allegations, or crash-report issues depending on the facts.",
         ],
         [
           "License paperwork",
-          "Missouri DOR paperwork can matter even when the first visible concern is the traffic ticket or court date.",
+          "Missouri DOR paperwork can matter even when the first visible concern is the traffic ticket or court date. Check any Form 2385 or DOR notice immediately.",
+        ],
+        [
+          "Municipal and county court",
+          "Wentzville-related cases may start with local police paperwork while the broader criminal court path can connect to St. Charles County procedures, so the court notice should control where to appear.",
         ],
         [
           "Local corridors",
@@ -1712,21 +1743,25 @@ function rankingOpportunitySection(city, region, isDui, basics) {
     },
     "edwardsville-il": {
       eyebrow: "Attorney search context",
-      title: "Edwardsville DUI lawyer questions to ask early.",
+      title: "Edwardsville DUI lawyer questions for Madison County and license consequences.",
       intro:
-        "People searching for an Edwardsville DUI lawyer are usually trying to understand court dates, license risk, police reports, and what to do before making decisions in court. The most useful next step is organizing the paperwork and asking focused questions about Madison County practice and Illinois license consequences.",
+        "People searching for an Edwardsville DUI lawyer are usually trying to understand court dates, statutory summary suspension risk, Edwardsville Police records, Illinois Secretary of State license consequences, and what to do before making decisions in court. The most useful next step is organizing the paperwork and asking focused questions about Madison County practice and the separate Illinois license track.",
       cards: [
         [
           "Madison County practice",
           "Ask how often the lawyer handles DUI cases in Madison County and whether they know the local court schedule, discovery process, and agency records path.",
         ],
         [
-          "License consequences",
-          "Ask how the Illinois license track may move separately from the criminal case and what deadlines or notices need attention.",
+          "Statutory summary suspension",
+          "Ask how Illinois statutory summary suspension works, when it can begin, and how it differs from the criminal DUI case.",
         ],
         [
-          "Evidence review",
-          "Ask whether the lawyer will review the stop basis, police report, chemical-test paperwork, video, crash records, and any towing or impound documents.",
+          "Edwardsville Police records",
+          "Ask whether the lawyer will request or review the Edwardsville Police report, stop basis, video, chemical-test paperwork, crash records, and any towing or impound documents.",
+        ],
+        [
+          "Secretary of State track",
+          "Ask what the Illinois Secretary of State license process may require for suspension, reinstatement, restricted permits, or alcohol-evaluation issues.",
         ],
       ],
       sources: [
@@ -1742,9 +1777,9 @@ function rankingOpportunitySection(city, region, isDui, basics) {
     },
     "apex-nc": {
       eyebrow: "Consequences and probation context",
-      title: "Apex DWI probation, consequences, and restricted-license questions.",
+      title: "Apex DWI probation, dismissal, misdemeanor, and restricted-license questions.",
       intro:
-        "People searching for Apex DWI probation, Apex DUI consequences, misdemeanor DWI, arrests, or restricted-license issues are usually trying to understand what can happen after the stop. North Carolina DWI cases can involve Wake County court, probation conditions, punishment levels, a NCDMV license issue, and possible limited-driving-privilege questions.",
+        "People searching for Apex DWI probation, Apex DUI consequences, Apex DWI dismissal, misdemeanor DWI, arrests, or restricted-license issues are usually trying to understand what can happen after the stop. North Carolina DWI cases can involve Wake County court, probation conditions, punishment levels, a NCDMV license issue, and possible limited-driving-privilege questions.",
       cards: [
         [
           "Probation and punishment levels",
@@ -1753,6 +1788,10 @@ function rankingOpportunitySection(city, region, isDui, basics) {
         [
           "Misdemeanor consequences",
           "Many North Carolina DWI cases are misdemeanors, but the consequences can still be serious because sentencing level, prior history, aggravating factors, and license consequences can change the practical outcome.",
+        ],
+        [
+          "Dismissal questions",
+          "A dismissal depends on the facts, evidence, procedure, and prosecutor or court decisions. Ask what issues could affect the stop, arrest, chemical testing, witness proof, and admissibility of evidence.",
         ],
         [
           "Restricted license questions",
@@ -1815,12 +1854,42 @@ function personalInjuryOpportunitySection(city, region, isDui) {
   </section>`;
 }
 
+function targetedDuiFaqs(city, region, basics) {
+  if (city.slug === "apex-nc") {
+    return [
+      {
+        q: "What are common Apex DUI consequences?",
+        a: "Apex DWI consequences can involve Wake County court, punishment-level analysis, fines, probation conditions, possible active time, substance-use assessment or treatment requirements, insurance issues, and NCDMV license consequences.",
+      },
+      {
+        q: "Can DWI probation apply in Apex?",
+        a: "Probation can be part of a North Carolina DWI sentence depending on the punishment level and facts. Conditions may include assessment, treatment, monitoring, community service, fees, and compliance with court orders.",
+      },
+      {
+        q: "Can an Apex DWI be dismissed?",
+        a: "A dismissal depends on the evidence, procedure, witness availability, testing issues, and legal rulings. A lawyer may review the stop, arrest, chemical testing, video, and court file to identify possible defenses.",
+      },
+      {
+        q: "Is an Apex DWI a misdemeanor?",
+        a: "Many North Carolina DWI cases are charged as misdemeanors, but the consequences can still be serious because punishment levels, aggravating factors, prior history, and license consequences can change the practical outcome.",
+      },
+      {
+        q: "What should I ask a DWI lawyer in Apex?",
+        a: "Ask whether the lawyer handles Wake County DWI cases, limited driving privilege issues, NCDMV consequences, probation conditions, chemical-test evidence, and possible dismissal or reduction arguments.",
+      },
+    ];
+  }
+
+  return [];
+}
+
 function cityToc(isDui, region, hasLocalDuiData = false, hasRankingOpportunity = false) {
   const lawyerLabel = isDui ? `${region.stateCode === "IL" ? "DUI" : "DWI"} lawyer` : "injury lawyer";
   const items = [
     ["Start here", "#start-here"],
     ["What happens next", "#what-happens-next"],
     [`When to call ${isDui ? "a" : "an"} ${lawyerLabel}`, "#when-to-call-lawyer"],
+    ...(hasRankingOpportunity ? [["Search context", "#ranking-opportunity"]] : []),
     ["Local directory", "#directory"],
     ["Map", "#map"],
     ["Local details", "#local"],
@@ -1835,7 +1904,6 @@ function cityToc(isDui, region, hasLocalDuiData = false, hasRankingOpportunity =
     [isDui ? "License restoration" : "Insurance and settlement", "#restoration"],
     ...(isDui ? [] : [["Reports", "#accident-report"]]),
     [isDui ? `${region.stateCode === "IL" ? "DUI" : "DWI"} attorney` : "Injury attorney", "#attorney-question"],
-    ...(hasRankingOpportunity ? [["Search context", "#ranking-opportunity"]] : []),
     ["Questions to ask", "#questions-to-ask"],
     ...(region?.stateCode === "IL" || (isDui && region?.stateCode === "MO") ? [["Resources", "#related-resources"]] : []),
     ["Official sources", "#sources"],
@@ -2388,7 +2456,7 @@ function cityShell(city, region, practice) {
           q: "Can license issues happen outside the criminal case?",
           a: basics.duiLicense,
         },
-      ]
+      ].concat(targetedDuiFaqs(city, region, basics))
     : [
         {
           q: `How long do ${region.state} injury claims usually have?`,
@@ -2484,6 +2552,8 @@ function cityShell(city, region, practice) {
   </section>
 
   ${cityToc(isDui, region, Boolean(localDuiData), hasRankingOpportunity)}
+
+  ${rankingOpportunitySection(city, region, isDui, basics)}
 
   <section class="section section-directory" id="directory">
     <div class="container">
@@ -2662,8 +2732,6 @@ function cityShell(city, region, practice) {
   ${isDui ? "" : accidentReportSection(city, region)}
 
   ${attorneyQuestionSection({ city, region, isDui, basics })}
-
-  ${rankingOpportunitySection(city, region, isDui, basics)}
 
   ${personalInjuryOpportunitySection(city, region, isDui)}
 
@@ -2844,20 +2912,24 @@ function practicePage(practice) {
       </aside>
     </div>
   </section>
-  ${practiceHubContent(practice)}
   ${
     isDui
       ? `<section class="section section-alt">
     <div class="container">
       <div class="section-head">
-        <p class="eyebrow">Pages Google is testing</p>
-        <h2>Priority DUI/DWI guides getting early impressions.</h2>
-        <p>These city guides are already showing early search impressions and get direct internal links from the hub.</p>
+        <p class="eyebrow">Featured DUI/DWI city guides</p>
+        <h2>Early-performing DUI and DWI pages to start with.</h2>
+        <p>These city guides are already showing early search impressions and now get direct crawl links from the DUI/DWI hub.</p>
       </div>
       <div class="related-grid">${priorityDuiGuideLinks()}</div>
     </div>
-  </section>
-  <section class="section section-alt">
+  </section>`
+      : ""
+  }
+  ${practiceHubContent(practice)}
+  ${
+    isDui
+      ? `<section class="section section-alt">
     <div class="container">
       <div class="section-head">
         <p class="eyebrow">DUI/DWI locations</p>
