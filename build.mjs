@@ -1692,6 +1692,10 @@ function rankingOpportunitySection(city, region, isDui, basics) {
           "Hearing evidence",
           "Ask what records matter for the hearing, including officer paperwork, testing documents, notice forms, video, and any refusal or chemical-test issue.",
         ],
+        [
+          "Local court pairing",
+          "A Nixa case may require tracking both the DOR deadline and the local court date, so readers should not assume one notice replaces the other.",
+        ],
       ],
       sources: moAdminSources,
     },
@@ -1712,6 +1716,10 @@ function rankingOpportunitySection(city, region, isDui, basics) {
         [
           "Attorney questions",
           "Ask whether the lawyer handles both St. Louis County court issues and Missouri DOR license deadlines after a DWI arrest.",
+        ],
+        [
+          "Near-me search reality",
+          "A near-me search should still be filtered by courthouse experience, DOR hearing knowledge, and familiarity with Manchester Police or West County traffic-stop records.",
         ],
       ],
       sources: moAdminSources.slice(0, 2),
@@ -1737,6 +1745,10 @@ function rankingOpportunitySection(city, region, isDui, basics) {
         [
           "Local corridors",
           "I-70, I-64, U.S. Route 61, Wentzville Parkway, and Pearce Boulevard are useful roadway context for records and agency questions.",
+        ],
+        [
+          "Traffic lawyer overlap",
+          "If the search starts as traffic lawyer Wentzville MO, ask whether the issue is only a traffic ticket or whether alcohol testing, DOR paperwork, or a DWI allegation changes the strategy.",
         ],
       ],
       sources: moAdminSources,
@@ -1797,6 +1809,14 @@ function rankingOpportunitySection(city, region, isDui, basics) {
           "Restricted license questions",
           "A limited driving privilege is a court order under North Carolina law. Eligibility and terms depend on the revocation, timing, facts, and statutory requirements.",
         ],
+        [
+          "Defense resources",
+          "Useful defense-resource questions include what police records, video, chemical-test evidence, witness details, and NCDMV notices should be gathered before court.",
+        ],
+        [
+          "Community impact",
+          "A DWI case can affect work, school, transportation, insurance, and family logistics even before final sentencing, which is why early deadline review matters.",
+        ],
       ],
       sources: [
         {
@@ -1832,7 +1852,34 @@ function rankingOpportunitySection(city, region, isDui, basics) {
 }
 
 function personalInjuryOpportunitySection(city, region, isDui) {
-  if (isDui || city.slug !== "apex-nc") return "";
+  if (isDui) return "";
+
+  if (city.slug === "edwardsville-il") {
+    return `<section class="section section-alt" id="ranking-opportunity">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Edwardsville injury search context</p>
+        <h2>Edwardsville personal injury questions before talking to insurance.</h2>
+        <p>People searching for personal injury help in Edwardsville are often trying to understand medical documentation, insurance calls, crash reports, missed work, and whether a Madison County filing deadline could matter later.</p>
+      </div>
+      <div class="card-grid three-up">
+        <article class="info-card"><h3>Insurance adjuster questions</h3><p>Before giving a recorded statement or signing a release, organize claim numbers, adjuster letters, photos, medical bills, wage records, and any repair estimate or total-loss paperwork.</p></article>
+        <article class="info-card"><h3>Madison County crash reports</h3><p>If Edwardsville Police handled the scene, the city police department may be the starting point. If the crash happened on an interstate, county road, or outside city limits, Madison County Sheriff or Illinois State Police may be involved.</p></article>
+        <article class="info-card"><h3>Local accident corridors</h3><p>Route 157, Route 159, I-55, I-70, I-255, Governors' Parkway, Troy Road, downtown Edwardsville, and SIUE-area traffic are useful local context for reports and insurance questions.</p></article>
+        <article class="info-card"><h3>Medical documentation</h3><p>Emergency room records, urgent-care notes, follow-up treatment, therapy records, prescriptions, mileage, and work restrictions can all matter if the injury claim is disputed.</p></article>
+        <article class="info-card"><h3>Government-property warning</h3><p>Claims involving a public vehicle, sidewalk, school, county property, courthouse area, or public employee may involve different notice rules or shorter practical deadlines.</p></article>
+        <article class="info-card"><h3>Should I talk to insurance?</h3><p>Insurance contact is common after a crash, but recorded statements, broad medical authorizations, and quick settlement offers should be reviewed carefully before decisions are made.</p></article>
+      </div>
+      <div class="source-chip-row">
+        <a href="https://www.cityofedwardsville.com/217/Police" target="_blank" rel="noopener noreferrer">Source: Edwardsville Police</a>
+        <a href="https://www.madisoncountyil.gov/departments/circuit_clerk/index.php" target="_blank" rel="noopener noreferrer">Source: Madison County Circuit Clerk</a>
+        <a href="https://isp.illinois.gov/" target="_blank" rel="noopener noreferrer">Source: Illinois State Police</a>
+      </div>
+    </div>
+  </section>`;
+  }
+
+  if (city.slug !== "apex-nc") return "";
 
   return `<section class="section section-alt" id="ranking-opportunity">
     <div class="container">
@@ -1855,6 +1902,9 @@ function personalInjuryOpportunitySection(city, region, isDui) {
 }
 
 function targetedDuiFaqs(city, region, basics) {
+  const sharedMissouriAdminAnswer =
+    "Missouri DWI cases can create a criminal court track and a separate Department of Revenue license track. Any Form 2385 or DOR notice should be checked quickly against official hearing-request instructions.";
+
   if (city.slug === "apex-nc") {
     return [
       {
@@ -1877,10 +1927,121 @@ function targetedDuiFaqs(city, region, basics) {
         q: "What should I ask a DWI lawyer in Apex?",
         a: "Ask whether the lawyer handles Wake County DWI cases, limited driving privilege issues, NCDMV consequences, probation conditions, chemical-test evidence, and possible dismissal or reduction arguments.",
       },
+      {
+        q: "What Apex DWI defense resources should I gather?",
+        a: "Useful defense resources may include the citation, release paperwork, police agency information, crash report details, chemical-test paperwork, video references, witness names, and NCDMV notices.",
+      },
+      {
+        q: "Can an Apex DWI affect work, school, or transportation?",
+        a: "Yes. Even before a case is resolved, a DWI can create transportation, insurance, employment, school, and family-logistics problems, especially if license consequences or probation conditions are involved.",
+      },
+    ];
+  }
+
+  if (city.slug === "wentzville-mo") {
+    return [
+      {
+        q: "Can a Wentzville DWI also involve traffic charges?",
+        a: "Yes. A DWI stop can also involve traffic citations, careless-and-imprudent allegations, crash reports, towing paperwork, insurance questions, points, or other records that should be organized before court.",
+      },
+      {
+        q: "Is Wentzville municipal court the same as the St. Charles County court process?",
+        a: "The correct court depends on the citation and official notice. Wentzville police paperwork may be local, while broader criminal procedure can connect to St. Charles County court resources, so the court notice should control where to appear.",
+      },
+      {
+        q: "Should I ask a traffic lawyer or a DWI lawyer in Wentzville?",
+        a: "If alcohol testing, DOR paperwork, refusal, license consequences, or a DWI allegation is involved, ask whether the lawyer handles both traffic charges and Missouri DWI defense.",
+      },
+      {
+        q: "Can Missouri DOR license issues happen separately from Wentzville court?",
+        a: sharedMissouriAdminAnswer,
+      },
+    ];
+  }
+
+  if (city.slug === "nixa-mo") {
+    return [
+      {
+        q: "What is a Missouri DWI administrative hearing after a Nixa arrest?",
+        a: "It is a Department of Revenue license process that can move separately from the criminal court case. The hearing focuses on driving privileges and should be checked against any DOR notice.",
+      },
+      {
+        q: "What should I ask a lawyer about a Nixa DWI administrative hearing?",
+        a: "Ask whether the lawyer handles Form 2385 hearing requests, license stays, restricted driving options, refusal issues, chemical-test paperwork, and the local court case together.",
+      },
+      {
+        q: "Does the Nixa court date protect my Missouri license deadline?",
+        a: "Not necessarily. Court dates and DOR license deadlines can be separate, so the court notice should not be treated as the only deadline after a DWI arrest.",
+      },
+      {
+        q: "What paperwork matters for a Nixa DWI hearing?",
+        a: "Useful paperwork may include the citation, release documents, officer notices, Form 2385, chemical-test records, refusal paperwork, video references, and any DOR mailing.",
+      },
+    ];
+  }
+
+  if (city.slug === "manchester-mo") {
+    return [
+      {
+        q: "Why do people search DUI attorney near me in Manchester if Missouri uses DWI?",
+        a: "DUI is common search language, but Missouri commonly uses DWI in official materials. A Manchester DUI attorney search may still involve Missouri DWI court, police, and DOR license issues.",
+      },
+      {
+        q: "What should a Manchester DWI lawyer know locally?",
+        a: "Ask about St. Louis County court experience, Manchester Police records, West County traffic corridors, DOR administrative deadlines, and chemical-test or refusal issues.",
+      },
+      {
+        q: "Can Manchester DWI license issues move separately from court?",
+        a: sharedMissouriAdminAnswer,
+      },
+    ];
+  }
+
+  if (city.slug === "edwardsville-il") {
+    return [
+      {
+        q: "What should I ask an Edwardsville DUI lawyer about Madison County?",
+        a: "Ask how often the lawyer handles Madison County DUI cases, how discovery is reviewed, and how local police records, court settings, and prosecutor practices may affect the timeline.",
+      },
+      {
+        q: "How does Illinois statutory summary suspension affect an Edwardsville DUI?",
+        a: "A statutory summary suspension is separate from the criminal case and can begin 46 days after notice unless successfully challenged. The timing should be checked quickly against official Illinois sources.",
+      },
+      {
+        q: "What Edwardsville Police records might matter after a DUI arrest?",
+        a: "Police reports, bodycam or dashcam, stop basis, chemical-test paperwork, crash information, towing records, and impound paperwork may all matter depending on the facts.",
+      },
+      {
+        q: "Can Illinois Secretary of State consequences continue after court?",
+        a: "Yes. Reinstatement, restricted permits, evaluations, BAIID or MDDP issues, and fees may involve the Illinois Secretary of State separately from the court case.",
+      },
     ];
   }
 
   return [];
+}
+
+function targetedPersonalInjuryFaqs(city, region) {
+  if (city.slug !== "edwardsville-il") return [];
+
+  return [
+    {
+      q: "Should I talk to insurance after an Edwardsville accident?",
+      a: "You may need to communicate with an insurer, but recorded statements, broad medical authorizations, and quick settlement offers should be handled carefully, especially when injuries, missed work, or disputed fault are involved.",
+    },
+    {
+      q: "Where might an Edwardsville crash report come from?",
+      a: "If Edwardsville Police handled the scene, the city police department may be the starting point. If the crash happened outside city limits or on an interstate, Madison County Sheriff or Illinois State Police may be involved.",
+    },
+    {
+      q: "What medical documents should I keep for an Edwardsville injury claim?",
+      a: "Keep emergency room records, urgent-care notes, follow-up treatment, therapy records, prescriptions, bills, work restrictions, mileage, and any letters from insurers or medical providers.",
+    },
+    {
+      q: "Do Madison County injury claims always go to court?",
+      a: "No. Many claims resolve through insurance, but Madison County court context can matter if settlement fails, liability is disputed, or a lawsuit becomes necessary before a deadline expires.",
+    },
+  ];
 }
 
 function cityToc(isDui, region, hasLocalDuiData = false, hasRankingOpportunity = false) {
@@ -2470,7 +2631,7 @@ function cityShell(city, region, practice) {
           q: "What should be checked early?",
           a: "Medical records, insurance coverage, crash reports, photographs, witness information, and any government notice deadline should be reviewed early.",
         },
-      ];
+      ].concat(targetedPersonalInjuryFaqs(city, region));
   const allSources = [
     ...sourcesForPractice(basics, isDui),
     { label: court.name, href: court.href },
@@ -3452,6 +3613,11 @@ const resourcePages = {
         { label: "Missouri Form 2385", href: "https://dor.mo.gov/forms/2385.pdf" },
         { label: "Missouri DOR Restricted Driving Privilege", href: "https://dor.mo.gov/driver-license/revocation-reinstatement/rdp-alcohol.html" },
       ],
+      relatedLinks: [
+        ["Nixa DWI administrative hearing guide", "/dui/nixa-mo/"],
+        ["Wentzville DWI and traffic charges guide", "/dui/wentzville-mo/"],
+        ["Manchester DUI/DWI attorney search guide", "/dui/manchester-mo/"],
+      ],
     }),
   },
   "/resources/north-carolina-dwi-consequences-limited-driving-privilege/": {
@@ -3478,6 +3644,11 @@ const resourcePages = {
         { label: "North Carolina State Highway Patrol DWI law summary", href: "https://www.ncshp.gov/ncshp/commercial-vehicles/laws" },
         { label: "NCDMV license suspension", href: "https://www.ncdot.gov/dmv/license-id/license-suspension/Pages/" },
         { label: "NCGS 20-179.3 limited driving privilege", href: "https://www.ncleg.gov/EnactedLegislation/Statutes/PDF/BySection/Chapter_20/GS_20-179.3.pdf" },
+      ],
+      relatedLinks: [
+        ["Apex DWI consequences and probation guide", "/dui/apex-nc/"],
+        ["North Raleigh DWI guide", "/dui/north-raleigh-nc/"],
+        ["Matthews DWI guide", "/dui/matthews-nc/"],
       ],
     }),
   },
@@ -3547,6 +3718,10 @@ const resourcePages = {
         { label: "Illinois Compiled Statutes", href: "https://www.ilga.gov/legislation/ilcs/ilcs.asp" },
         { label: "Illinois Courts", href: "https://www.illinoiscourts.gov/" },
       ],
+      relatedLinks: [
+        ["Edwardsville personal injury guide", "/personal-injury/edwardsville-il/"],
+        ["Madison County accident report guide", "/resources/madison-county-accident-report-guide/"],
+      ],
     }),
   },
   "/resources/madison-county-accident-report-guide/": {
@@ -3569,11 +3744,16 @@ const resourcePages = {
         { label: "Madison County Sheriff", href: "https://www.madisoncountyil.gov/departments/sheriff/index.php" },
         { label: "Illinois State Police", href: "https://isp.illinois.gov/" },
       ],
+      relatedLinks: [
+        ["Edwardsville personal injury guide", "/personal-injury/edwardsville-il/"],
+        ["Collinsville personal injury guide", "/personal-injury/collinsville-il/"],
+        ["Fairview Heights personal injury guide", "/personal-injury/fairview-heights-il/"],
+      ],
     }),
   },
 };
 
-function resourcePage({ eyebrow, title, intro, cards, bullets, sources }) {
+function resourcePage({ eyebrow, title, intro, cards, bullets, sources, relatedLinks = [] }) {
   return `<section class="hero hero-tight">
     <div class="container hero-grid">
       <div class="hero-copy">
@@ -3612,7 +3792,22 @@ function resourcePage({ eyebrow, title, intro, cards, bullets, sources }) {
         <div class="source-grid">${sourceCards(sources)}</div>
       </div>
     </div>
-  </section>`;
+  </section>
+  ${
+    relatedLinks.length
+      ? `<section class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Related city guides</p>
+        <h2>Pages to review next.</h2>
+      </div>
+      <div class="related-grid">${relatedLinks
+        .map((item) => `<a class="related-card compact-related-card" href="${escapeHtml(item[1])}">${escapeHtml(item[0])}</a>`)
+        .join("")}</div>
+    </div>
+  </section>`
+      : ""
+  }`;
 }
 
 function pricingPage() {
