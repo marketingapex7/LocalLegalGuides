@@ -919,6 +919,32 @@ function relatedResourceLinks(region, isDui) {
   </section>`;
 }
 
+function duiInternalLinksSection(city, region, practice) {
+  const nearbyLinks = region.cities
+    .filter((nearby) => nearby.slug !== city.slug)
+    .slice(0, 6)
+    .map((nearby) => {
+      const label = `${nearby.name} ${practiceSeoLabel(practice, region)} guide`;
+      return `<a class="related-card compact-related-card" href="${pathForPracticeCity(practice.slug, nearby.slug)}">${escapeHtml(label)}</a>`;
+    })
+    .join("");
+
+  return `<section class="section section-alt" id="dui-internal-links">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Related DUI/DWI links</p>
+        <h2>Keep researching ${escapeHtml(city.name)} and nearby ${escapeHtml(practiceSeoLabel(practice, region))} guides.</h2>
+        <p>Use these internal links to compare nearby city pages, switch to the matching injury guide, or return to the main DUI/DWI hub.</p>
+      </div>
+      <div class="related-grid">
+        <a class="related-card compact-related-card" href="/dui/">DUI/DWI hub</a>
+        <a class="related-card compact-related-card" href="${pathForPracticeCity("personal-injury", city.slug)}">${escapeHtml(city.name)} personal injury guide</a>
+        ${nearbyLinks}
+      </div>
+    </div>
+  </section>`;
+}
+
 function citySponsorAvailabilityBox(city, region, packageInfo, practice) {
   const isDui = practice?.slug === "dui";
   const practiceLabel = isDui ? practiceSeoLabel(practice, region) : practice?.label ?? "practice area";
@@ -1750,6 +1776,10 @@ function rankingOpportunitySection(city, region, isDui, basics) {
           "Traffic lawyer overlap",
           "If the search starts as traffic lawyer Wentzville MO, ask whether the issue is only a traffic ticket or whether alcohol testing, DOR paperwork, or a DWI allegation changes the strategy.",
         ],
+        [
+          "Municipal court search",
+          "A Wentzville municipal court search should still be checked against the actual citation because DWI-related paperwork may involve different court or license-agency steps.",
+        ],
       ],
       sources: moAdminSources,
     },
@@ -1816,6 +1846,10 @@ function rankingOpportunitySection(city, region, isDui, basics) {
         [
           "Community impact",
           "A DWI case can affect work, school, transportation, insurance, and family logistics even before final sentencing, which is why early deadline review matters.",
+        ],
+        [
+          "Case outcomes and updates",
+          "Possible outcomes depend on the facts, evidence, punishment level, prior history, and current North Carolina law, so readers should verify official sources before relying on old articles or forum posts.",
         ],
       ],
       sources: [
@@ -2366,7 +2400,7 @@ async function writeBrandAssets() {
   await writeTarget("site.webmanifest", siteWebManifest());
 }
 
-function pageShell({ title, description, body, active = "", route = "/", schema = [], lastVerified = siteData.lastVerified }) {
+function pageShell({ title, description, body, active = "", route = "/", schema = [], lastVerified = siteData.lastVerified, noindex = false }) {
   const nav = navLinks
     .map((item) => {
       const isActive =
@@ -2395,6 +2429,7 @@ function pageShell({ title, description, body, active = "", route = "/", schema 
     <meta name="application-name" content="${escapeHtml(siteData.siteName)}" />
     <meta name="apple-mobile-web-app-title" content="${escapeHtml(siteData.siteName)}" />
     <meta name="theme-color" content="#172438" />
+    ${noindex ? '<meta name="robots" content="noindex,follow" />' : ""}
     <link rel="canonical" href="${absoluteUrl(route)}" />
     <link rel="icon" href="${brandIconPath}" type="image/svg+xml" sizes="any" />
     <link rel="shortcut icon" href="${brandIconPath}" type="image/svg+xml" />
@@ -2905,6 +2940,8 @@ function cityShell(city, region, practice) {
   </section>
 
   ${relatedResourceLinks(region, isDui)}
+
+  ${isDui ? duiInternalLinksSection(city, region, practice) : ""}
 
   <section class="section section-alt" id="related-guides">
     <div class="container">
@@ -4175,6 +4212,7 @@ function renderRegion(region) {
     body: `${breadcrumbTrail(breadcrumbs)}${regionPage(region)}`,
     active: "/regions/",
     route,
+    noindex: true,
     schema: [
       webPageSchema({ title, description, route }),
       breadcrumbSchema(breadcrumbs),
@@ -4286,7 +4324,6 @@ function sitemapEntries() {
   ];
 
   for (const region of siteData.regions) {
-    entries.push(`/clusters/${region.slug}/`);
     for (const city of region.cities) {
       entries.push(`/dui/${city.slug}/`);
       entries.push(`/personal-injury/${city.slug}/`);
