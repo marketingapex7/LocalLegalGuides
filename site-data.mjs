@@ -398,7 +398,7 @@ const expansionRegions = [
     name: "Mid County / Clayton Corridor",
     state: "Missouri",
     stateCode: "MO",
-    teaser: "Clayton-corridor guides for court-adjacent suburbs with strong personal injury and DWI sponsor value.",
+    teaser: "Clayton-corridor guides for court-adjacent suburbs with strong personal injury and DWI local-process relevance.",
     urgentDeadline: {
       headline: "Clayton gives this cluster courthouse credibility, but each city still has its own records path.",
       body: "Readers should separate St. Louis County court information from municipal police or accident-report requests.",

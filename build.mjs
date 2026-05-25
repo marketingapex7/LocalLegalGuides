@@ -18,7 +18,6 @@ const navLinks = [
   { href: "/dui/", label: "DUI" },
   { href: "/personal-injury/", label: "Personal Injury" },
   { href: "/regions/", label: "Regions" },
-  { href: "/sponsorships/", label: "For Attorneys" },
   { href: "/contact/", label: "Contact" },
 ];
 
@@ -108,7 +107,7 @@ function metricsGrid(items, className = "metric-grid") {
 }
 
 function activeSponsor(packageInfo) {
-  if (!["sponsored", "preview"].includes(packageInfo.status)) {
+  if (packageInfo.status !== "sponsored") {
     return null;
   }
 
@@ -218,7 +217,6 @@ function citySponsorNotice(city, region, packageInfo, practice) {
   const sponsor = activeSponsor(packageInfo);
   const isDui = practice?.slug === "dui";
   const practiceLabel = isDui ? practiceSeoLabel(practice, region) : practice?.label ?? "selected practice area";
-  const includedCities = region.cities.map((city) => city.name).join(", ");
 
   if (sponsor) {
     return `<aside class="sponsor-panel sponsor-panel-strong">
@@ -241,24 +239,7 @@ function citySponsorNotice(city, region, packageInfo, practice) {
     </aside>`;
   }
 
-  return `<aside class="sponsor-panel sponsor-panel-strong">
-    <p class="eyebrow">Attorney Advertising Position Available</p>
-    <h2>Featured ${escapeHtml(practiceLabel)} Sponsor for ${escapeHtml(region.name)}.</h2>
-    <p>This attorney advertising position is currently available for one ${escapeHtml(
-      isDui ? `${practiceLabel} defense attorney or law firm` : "personal injury attorney or law firm"
-    )} serving ${escapeHtml(includedCities)}.</p>
-    <ul class="sponsor-list">
-      <li>${escapeHtml(region.cities.length)} city ${escapeHtml(practiceLabel)} guides plus regional placement.</li>
-      <li>Phone/link CTA placement on related city guides for this practice area.</li>
-      <li>${escapeHtml(packageInfo.termLabel)} with no competing sponsor in the same practice-area slot.</li>
-      <li>${escapeHtml(launchPackageLabel)} for founding sponsors.</li>
-    </ul>
-    <div class="hero-actions">
-      <a class="button button-primary" href="${sponsorPackageHref(region)}">Claim a Sponsorship</a>
-      <a class="button button-secondary" href="/sponsorships/">Ask about sponsorship</a>
-    </div>
-    <p class="sponsor-note">Attorney Advertising. Sponsorship does not imply endorsement or legal recommendation. Official court, police, records, and public-agency references remain separate.</p>
-  </aside>`;
+  return "";
 }
 
 function sponsorInquiryForm({ defaultRegion = "", title = "Sponsor inquiry", intro = "Share the market you want and the best way to reach you." }) {
@@ -964,27 +945,28 @@ function duiInternalLinksSection(city, region, practice) {
 }
 
 function citySponsorAvailabilityBox(city, region, packageInfo, practice) {
+  const sponsor = activeSponsor(packageInfo);
+  if (!sponsor) {
+    return "";
+  }
+
   const isDui = practice?.slug === "dui";
   const practiceLabel = isDui ? practiceSeoLabel(practice, region) : practice?.label ?? "practice area";
-  const includedCities = region.cities.map((city) => city.name).join(", ");
   return `<section class="sponsor-availability-band" aria-label="Sponsor availability">
     <div class="container sponsor-availability-inner">
       <div>
-        <p class="eyebrow">Featured ${escapeHtml(practiceLabel)} Sponsor ${packageInfo.status === "sponsored" ? "" : "Available"}</p>
-        <h2>${escapeHtml(packageInfo.status === "sponsored" ? `${region.name} ${practiceLabel} sponsor.` : `Featured ${practiceLabel} Sponsor for ${region.name}.`)}</h2>
-        <p>${escapeHtml(
-          packageInfo.status === "sponsored"
-            ? `This clearly labeled attorney advertising placement appears near urgent ${practiceLabel} next-step guidance and remains separate from official source information.`
-            : `Available to one ${isDui ? `${practiceLabel} defense attorney or law firm` : "personal injury attorney or law firm"} serving ${includedCities}. Includes ${region.cities.length} city guides, regional placement, phone/link CTA, and ${packageInfo.termLabel.toLowerCase()}.`
-        )}</p>
+        <p class="eyebrow">Featured ${escapeHtml(practiceLabel)} Sponsor</p>
+        <h2>${escapeHtml(region.name)} ${escapeHtml(practiceLabel)} sponsor.</h2>
+        <p>${escapeHtml(`This clearly labeled attorney advertising placement appears near urgent ${practiceLabel} next-step guidance and remains separate from official source information.`)}</p>
       </div>
-      <a class="button button-primary" href="${sponsorPackageHref(region)}" ${trackingAttrs("claim_package_click", {
+      <a class="button button-primary" href="${escapeHtml(sponsor.ctaUrl)}" ${trackingAttrs("city_sponsor_cta_click", {
         region: region.slug,
         city: city.slug,
         practice: practice?.slug ?? "",
         placement: "city_top",
+        firm: sponsor.firmName,
         status: packageInfo.status,
-      })}>${escapeHtml(packageInfo.status === "sponsored" ? "View sponsor package" : "Claim a Sponsorship")}</a>
+      })}>Contact Featured ${escapeHtml(practiceLabel)} Sponsor</a>
     </div>
   </section>`;
 }
@@ -2592,7 +2574,6 @@ function pageShell({ title, description, body, active = "", route = "/", schema 
         (active === "dui" && item.href === "/dui/") ||
         (active === "personal-injury" && item.href === "/personal-injury/") ||
         (active === "regions" && item.href === "/regions/") ||
-        (active === "/sponsorships/" && item.href === "/sponsorships/") ||
         (active === "contact" && item.href === "/contact/");
       return `<a class="nav-link${isActive ? " is-active" : ""}" href="${item.href}">${item.label}</a>`;
     })
@@ -2702,7 +2683,7 @@ function regionSummary(region) {
         .map((city) => `<a class="region-city-pill" href="${pathForPracticeCity("dui", city.slug)}">${escapeHtml(city.name)}</a>`)
         .join("")}
     </div>
-    <a class="text-link" href="/clusters/${region.slug}/" aria-label="View ${escapeHtml(region.name)} region">View region</a>
+    <a class="text-link" href="/dui/locations/" aria-label="Browse DUI and DWI city guides">Browse DUI/DWI guides</a>
   </article>`;
 }
 
@@ -2724,7 +2705,7 @@ function cityShell(city, region, practice) {
   const intro = heroIntroForCity(city, region, isDui, basics);
   const sponsor = activeSponsor(packageInfo);
   const practiceSponsorLabel = isDui ? practiceSeoLabel(practice, region) : practice.label;
-  const heroSponsorCta = sponsor ? `Contact Featured ${practiceSponsorLabel} Sponsor` : `${practiceSponsorLabel} Sponsor Available`;
+  const heroSponsorCta = `Contact Featured ${practiceSponsorLabel} Sponsor`;
   const mapQuery = isDui
     ? `${city.name} ${region.stateCode} police courthouse driver services`
     : `${city.name} ${region.stateCode} police courthouse records`;
@@ -2860,7 +2841,7 @@ function cityShell(city, region, practice) {
   const breadcrumbs = [
     { name: "Home", href: "/" },
     { name: practice.title, href: `/${practice.slug}/` },
-    { name: region.name, href: `/clusters/${region.slug}/` },
+    { name: region.name, href: "/regions/" },
     { name: city.name, href: pathForPracticeCity(practice.slug, city.slug) },
   ];
 
@@ -2873,8 +2854,8 @@ function cityShell(city, region, practice) {
         <p class="lede">${escapeHtml(intro)}</p>
         <p class="hero-note">${escapeHtml(cityLocalFlavor(city, region, isDui))}</p>
         <div class="hero-actions">
-          <a class="button button-primary" href="${sponsor ? escapeHtml(sponsor.ctaUrl) : sponsorPackageHref(region)}">${escapeHtml(heroSponsorCta)}</a>
-          <a class="button button-secondary" href="#start-here">See What to Do Next</a>
+          ${sponsor ? `<a class="button button-primary" href="${escapeHtml(sponsor.ctaUrl)}">${escapeHtml(heroSponsorCta)}</a>` : ""}
+          <a class="button ${sponsor ? "button-secondary" : "button-primary"}" href="#start-here">See What to Do Next</a>
         </div>
       </div>
       <aside class="hero-card">
@@ -3165,7 +3146,9 @@ function cityShell(city, region, practice) {
           return `<a class="city-chip" href="${pathForPracticeCity(practice.slug, nearby.slug)}">${escapeHtml(nearbyLabel)}</a>`;
         })
         .join("")}
-        <a class="practice-chip" href="/clusters/${region.slug}/">View all in ${escapeHtml(region.name)}</a>
+        <a class="practice-chip" href="${isDui ? "/dui/locations/" : "/personal-injury/"}">Browse all ${escapeHtml(
+          isDui ? "DUI/DWI" : "personal injury"
+        )} guides</a>
       </div>
     </div>
   </section>
@@ -3403,8 +3386,8 @@ function homePage() {
           turning into a lawyer directory.
         </p>
         <div class="hero-actions">
-          <a class="button button-primary" href="/regions/">Browse regions</a>
-          <a class="button button-secondary" href="/sponsorships/">For Attorneys</a>
+          <a class="button button-primary" href="/dui/locations/">Browse DUI/DWI guides</a>
+          <a class="button button-secondary" href="/personal-injury/">Browse personal injury guides</a>
         </div>
       </div>
       <aside class="hero-card">
@@ -3419,30 +3402,6 @@ function homePage() {
           <dt>Sources</dt><dd>State law and court references</dd>
         </dl>
       </aside>
-    </div>
-  </section>
-
-  <section class="section section-attorney-cta">
-    <div class="container split-grid">
-      <div>
-        <div class="section-head">
-          <p class="eyebrow">For attorneys</p>
-          <h2>Attorneys: regional sponsorships are open.</h2>
-          <p>Local Legal Guides offers one clearly labeled attorney sponsor slot per practice area in each regional market. DUI/DWI and Personal Injury are sold separately.</p>
-        </div>
-        <div class="hero-actions">
-          <a class="button button-primary" href="/sponsor-media-kit/">View Available Markets</a>
-          <a class="button button-secondary" href="/sponsorships/#sponsor-inquiry">Claim a Sponsorship</a>
-        </div>
-      </div>
-      <div>
-        ${metricsGrid([
-          ["Markets", String(siteData.regions.length)],
-          ["Cities", String(cityCount)],
-          ["City guides", String(siteData.regions.reduce((sum, region) => sum + guideCount(region), 0))],
-          ["Launch package", launchPackageLabel],
-        ], "metric-grid metric-grid-compact")}
-      </div>
     </div>
   </section>
 
@@ -4293,7 +4252,7 @@ function privacyPage() {
     `${siteData.siteName} keeps its data collection simple. The site is primarily a static publishing platform, and readers should assume standard server logs, analytics, and email communications may be used to operate and improve the site.`,
     `<div class="container card-grid three-up">
       <article class="info-card"><h3>What may be collected</h3><p>Basic request logs, referral data, and email messages sent to site addresses may be retained for operations, security, and business communication.</p></article>
-      <article class="info-card"><h3>How it is used</h3><p>Information may be used to run the site, answer inquiries, review sponsorship interest, and improve page quality and usability.</p></article>
+      <article class="info-card"><h3>How it is used</h3><p>Information may be used to run the site, answer inquiries, review source updates, and improve page quality and usability.</p></article>
       <article class="info-card"><h3>Privacy contact</h3><p>Privacy questions can be sent to ${siteData.privacyEmail}.</p></article>
     </div>`
   );
@@ -4303,15 +4262,11 @@ function contactPage() {
   return infoPage(
     "Contact",
     `Contact ${siteData.siteName}`,
-    `Ask about a founding territory sponsorship, source updates, legal corrections, or privacy questions.`,
-    `<div class="container card-grid three-up">
+    `Send source updates, legal corrections, privacy questions, or general site questions.`,
+    `<div class="container card-grid two-up">
       <article class="info-card"><h3>Legal and compliance</h3><p><a class="text-link" href="mailto:${siteData.legalEmail}">${siteData.legalEmail}</a></p></article>
       <article class="info-card"><h3>Privacy questions</h3><p><a class="text-link" href="mailto:${siteData.privacyEmail}">${siteData.privacyEmail}</a></p></article>
-      <article class="info-card"><h3>Sponsorship inquiries</h3><p><a class="text-link" href="mailto:${siteData.sponsorsEmail}">${siteData.sponsorsEmail}</a></p></article>
-    </div>${sponsorInquiryForm({
-      title: "Ask about a founding territory sponsorship.",
-      intro: "Use the form to open a prefilled email draft with the cluster, contact details, and notes already organized.",
-    })}`
+    </div>`
   );
 }
 
@@ -4454,6 +4409,7 @@ function renderStaticPages() {
       body: sponsorshipPage(),
       active: "/sponsorships/",
       crumbs: ["Sponsorships"],
+      noindex: true,
     },
     "/dui/locations/": {
       title: `DUI and DWI Guides by City | ${siteData.siteName}`,
@@ -4468,6 +4424,7 @@ function renderStaticPages() {
       body: pricingPage(),
       active: "/pricing/",
       crumbs: ["Pricing"],
+      noindex: true,
     },
     "/sponsor-media-kit/": {
       title: `Sponsor Media Kit | ${siteData.siteName}`,
@@ -4475,6 +4432,7 @@ function renderStaticPages() {
       body: mediaKitPage(),
       active: "/sponsorships/",
       crumbs: ["Sponsor Media Kit"],
+      noindex: true,
     },
     "/sponsor-agreement/": {
       title: `Sponsor Agreement | ${siteData.siteName}`,
@@ -4482,6 +4440,7 @@ function renderStaticPages() {
       body: sponsorAgreementPage(),
       active: "/sponsorships/",
       crumbs: ["Sponsor Agreement"],
+      noindex: true,
     },
     "/terms/": {
       title: `Terms of Service | ${siteData.siteName}`,
@@ -4499,7 +4458,7 @@ function renderStaticPages() {
     },
     "/contact/": {
       title: `Contact ${siteData.siteName}`,
-      description: `Contact ${siteData.siteName} for legal, privacy, and sponsorship questions.`,
+      description: `Contact ${siteData.siteName} for legal corrections, privacy questions, and source updates.`,
       body: contactPage(),
       active: "contact",
       crumbs: ["Contact"],
@@ -4518,6 +4477,7 @@ function renderStaticPages() {
             body: `${breadcrumbTrail(breadcrumbs)}${page.body}`,
             active: page.active ?? "",
             route,
+            noindex: page.noindex ?? false,
             schema: [
               webPageSchema({ title: page.title, description: page.description, route }),
               breadcrumbSchema(breadcrumbs),
@@ -4536,10 +4496,6 @@ function sitemapEntries() {
     "/dui/locations/",
     "/personal-injury/",
     "/regions/",
-    "/sponsorships/",
-    "/pricing/",
-    "/sponsor-media-kit/",
-    "/sponsor-agreement/",
     "/terms/",
     "/privacy/",
     "/contact/",
@@ -4582,8 +4538,6 @@ This site provides general legal information only. It is not legal advice, is no
 - DUI/DWI city index: ${absoluteUrl("/dui/locations/")}
 - Personal injury hub: ${absoluteUrl("/personal-injury/")}
 - Regions: ${absoluteUrl("/regions/")}
-- Sponsorships: ${absoluteUrl("/sponsorships/")}
-- Sponsor media kit: ${absoluteUrl("/sponsor-media-kit/")}
 - Contact: ${absoluteUrl("/contact/")}
 - Main sitemap: ${absoluteUrl("/sitemap.xml")}
 - DUI/DWI sitemap: ${absoluteUrl("/sitemap-dui.xml")}
@@ -4604,7 +4558,6 @@ ${resourceLinks}
 ## Contact
 
 - Legal corrections: ${siteData.legalEmail}
-- Sponsorships: ${siteData.sponsorsEmail}
 - Privacy: ${siteData.privacyEmail}
 `;
 }
