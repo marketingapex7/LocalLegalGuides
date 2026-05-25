@@ -387,7 +387,16 @@ function duiCityLink(entry, className = "city-link") {
   )} ${escapeHtml(entry.label)} guide</a>`;
 }
 
-const priorityDuiCitySlugs = ["wentzville-mo", "apex-nc", "manchester-mo", "nixa-mo", "edwardsville-il"];
+const priorityDuiCitySlugs = [
+  "apex-nc",
+  "wentzville-mo",
+  "ofallon-mo",
+  "nixa-mo",
+  "manchester-mo",
+  "cary-nc",
+  "pineville-nc",
+  "edwardsville-il",
+];
 
 function priorityDuiEntries() {
   const entries = duiCityEntries();
@@ -470,10 +479,16 @@ function cityPageDescription(city, region, practice) {
         "Manchester DWI guide for people searching DUI attorney near me, with Missouri DWI terminology, St. Louis County court context, DOR license issues, and local road context.",
       "wentzville-mo":
         "Wentzville DWI guide covering traffic citations, license consequences, Missouri DOR paperwork, local roads, court context, and questions to ask a DWI attorney.",
+      "ofallon-mo":
+        "O'Fallon DWI guide covering St. Charles County court context, O'Fallon Police records, Missouri DOR license deadlines, local roads, and questions to ask a DWI lawyer.",
       "edwardsville-il":
         "Edwardsville DUI guide covering what to do after an arrest, Madison County court, Illinois license issues, police records, and questions to ask an Edwardsville DUI lawyer.",
       "apex-nc":
         "Apex DWI guide covering North Carolina DWI probation, misdemeanor consequences, restricted license questions, Apex Police records, Wake County court, and NCDMV issues.",
+      "cary-nc":
+        "Cary DWI guide covering Wake County court context, North Carolina misdemeanor consequences, NCDMV license issues, local police records, and questions to ask a DWI lawyer.",
+      "pineville-nc":
+        "Pineville DWI guide covering Mecklenburg County court context, North Carolina DWI consequences, police records, license questions, and what to ask a DWI lawyer.",
     };
     if (targetedDescriptions[city.slug]) {
       return compactDescription(targetedDescriptions[city.slug]);
@@ -895,8 +910,11 @@ function relatedResourceLinks(region, isDui) {
   const resources =
     isDui && region.stateCode === "MO"
       ? [["Missouri DWI administrative hearing guide", "/resources/missouri-dwi-administrative-hearing/"]]
-      : isDui && region.stateCode === "NC"
-        ? [["North Carolina DWI consequences and limited driving privilege", "/resources/north-carolina-dwi-consequences-limited-driving-privilege/"]]
+    : isDui && region.stateCode === "NC"
+        ? [
+            ["North Carolina DWI misdemeanor, probation, and dismissal guide", "/resources/north-carolina-dwi-misdemeanor-probation-dismissal/"],
+            ["North Carolina DWI consequences and limited driving privilege", "/resources/north-carolina-dwi-consequences-limited-driving-privilege/"],
+          ]
       : isDui
         ? [
             ["Illinois DUI license suspension guide", "/resources/illinois-dui-license-suspension/"],
@@ -1783,6 +1801,41 @@ function rankingOpportunitySection(city, region, isDui, basics) {
       ],
       sources: moAdminSources,
     },
+    "ofallon-mo": {
+      eyebrow: "O'Fallon DWI search context",
+      title: "O'Fallon DWI lawyer questions, court process, and license deadlines.",
+      intro:
+        "People searching for an O'Fallon DWI lawyer are usually trying to connect a local police stop, St. Charles County court paperwork, and Missouri Department of Revenue license deadlines. This section explains how O'Fallon DWI, DUI, traffic, and license-language searches fit together without turning the guide into a lawyer ranking page.",
+      cards: [
+        [
+          "DWI vs DUI wording",
+          "Missouri commonly uses DWI in official materials, but people still search for O'Fallon DUI lawyer, DWI lawyer, traffic lawyer, and drunk-driving defense help.",
+        ],
+        [
+          "St. Charles County court",
+          "O'Fallon Police paperwork may start locally, but the official court notice should control whether the case connects to St. Charles County court resources or another listed court path.",
+        ],
+        [
+          "DOR hearing deadline",
+          "Missouri Department of Revenue license paperwork can move separately from the court case, so any Form 2385 or DOR notice should be reviewed quickly.",
+        ],
+        [
+          "Local road context",
+          "I-70, Highway K, Bryan Road, Mexico Road, and Veterans Memorial Parkway are useful local context when organizing reports, stops, crash information, or agency questions.",
+        ],
+        [
+          "Police records",
+          "Ask what O'Fallon Police records, video, chemical-test documents, crash reports, towing records, or refusal paperwork may need to be requested.",
+        ],
+      ],
+      sources: [
+        ...moAdminSources,
+        {
+          label: "O'Fallon Police Department",
+          href: "https://www.ofallon.mo.us/police",
+        },
+      ],
+    },
     "edwardsville-il": {
       eyebrow: "Attorney search context",
       title: "Edwardsville DUI lawyer questions for Madison County and license consequences.",
@@ -1851,6 +1904,10 @@ function rankingOpportunitySection(city, region, isDui, basics) {
           "Case outcomes and updates",
           "Possible outcomes depend on the facts, evidence, punishment level, prior history, and current North Carolina law, so readers should verify official sources before relying on old articles or forum posts.",
         ],
+        [
+          "Spanish-language searches",
+          "Some people search for Apex DWI help in Spanish. This guide is in English, but callers can ask any attorney whether Spanish-language consultation or translation support is available.",
+        ],
       ],
       sources: [
         {
@@ -1864,6 +1921,74 @@ function rankingOpportunitySection(city, region, isDui, basics) {
         {
           label: "NCGS 20-179.3 limited driving privilege",
           href: "https://www.ncleg.gov/EnactedLegislation/Statutes/PDF/BySection/Chapter_20/GS_20-179.3.pdf",
+        },
+      ],
+    },
+    "cary-nc": {
+      eyebrow: "Cary DWI search context",
+      title: "Cary DWI lawyer questions and Wake County license issues.",
+      intro:
+        "People searching for a Cary DWI lawyer or DWI defense tips are usually trying to understand Wake County court timing, Cary Police records, NCDMV license consequences, and what evidence should be gathered before court.",
+      cards: [
+        [
+          "Wake County court context",
+          "A Cary DWI case may involve local police paperwork while the court process connects to Wake County resources and the specific court notice.",
+        ],
+        [
+          "Defense records",
+          "Useful records may include the citation, release paperwork, police report, video references, chemical-test documents, refusal paperwork, and any crash report.",
+        ],
+        [
+          "License consequences",
+          "North Carolina DWI cases can involve NCDMV consequences separately from the court case, so license notices and limited-driving-privilege questions should be tracked early.",
+        ],
+        [
+          "Attorney questions",
+          "Ask whether the lawyer handles Cary and Wake County DWI cases, punishment-level analysis, probation questions, limited driving privilege, and testing evidence.",
+        ],
+      ],
+      sources: [
+        {
+          label: "North Carolina State Highway Patrol DWI law summary",
+          href: "https://www.ncshp.gov/ncshp/commercial-vehicles/laws",
+        },
+        {
+          label: "NCDMV license suspension",
+          href: "https://www.ncdot.gov/dmv/license-id/license-suspension/Pages/",
+        },
+      ],
+    },
+    "pineville-nc": {
+      eyebrow: "Pineville DWI search context",
+      title: "Pineville DWI lawyer questions and Mecklenburg County process.",
+      intro:
+        "People searching for a Pineville DWI lawyer are usually trying to connect local police records, Mecklenburg County court timing, North Carolina DWI consequences, and license questions after an arrest.",
+      cards: [
+        [
+          "Local agency records",
+          "Start by confirming which agency handled the stop, arrest, crash, or report before assuming where records should be requested.",
+        ],
+        [
+          "County court path",
+          "The official court notice should control the court location and date, especially when local police paperwork and county court procedures overlap.",
+        ],
+        [
+          "DWI consequences",
+          "A misdemeanor DWI can still involve punishment levels, probation conditions, insurance consequences, and NCDMV license issues.",
+        ],
+        [
+          "Questions for counsel",
+          "Ask about Mecklenburg County DWI experience, police records, chemical testing, limited driving privilege, and what deadlines should be handled first.",
+        ],
+      ],
+      sources: [
+        {
+          label: "North Carolina State Highway Patrol DWI law summary",
+          href: "https://www.ncshp.gov/ncshp/commercial-vehicles/laws",
+        },
+        {
+          label: "NCDMV license suspension",
+          href: "https://www.ncdot.gov/dmv/license-id/license-suspension/Pages/",
         },
       ],
     },
@@ -1969,6 +2094,10 @@ function targetedDuiFaqs(city, region, basics) {
         q: "Can an Apex DWI affect work, school, or transportation?",
         a: "Yes. Even before a case is resolved, a DWI can create transportation, insurance, employment, school, and family-logistics problems, especially if license consequences or probation conditions are involved.",
       },
+      {
+        q: "What if I searched in Spanish for Apex DWI help?",
+        a: "This guide is written in English, but Spanish-language searches can still point to the same Apex court, police, and NCDMV issues. Ask any attorney or law firm whether Spanish-language consultation or translation support is available.",
+      },
     ];
   }
 
@@ -1989,6 +2118,27 @@ function targetedDuiFaqs(city, region, basics) {
       {
         q: "Can Missouri DOR license issues happen separately from Wentzville court?",
         a: sharedMissouriAdminAnswer,
+      },
+    ];
+  }
+
+  if (city.slug === "ofallon-mo") {
+    return [
+      {
+        q: "Why do people search for an O'Fallon DWI lawyer?",
+        a: "An O'Fallon DWI search usually means the reader is trying to understand local police paperwork, St. Charles County court timing, Missouri Department of Revenue license consequences, and what records to gather before court.",
+      },
+      {
+        q: "Is O'Fallon DWI the same as O'Fallon DUI?",
+        a: "Missouri commonly uses DWI in official materials, while many people still search DUI. The practical issue is whether the case involves impaired-driving allegations, alcohol or drug evidence, license paperwork, or related traffic charges.",
+      },
+      {
+        q: "Can O'Fallon DWI license issues move separately from court?",
+        a: sharedMissouriAdminAnswer,
+      },
+      {
+        q: "What should I ask a lawyer after an O'Fallon DWI arrest?",
+        a: "Ask about St. Charles County DWI experience, O'Fallon Police records, DOR hearing deadlines, Form 2385, testing or refusal issues, traffic charges, and possible license options.",
       },
     ];
   }
@@ -2048,6 +2198,40 @@ function targetedDuiFaqs(city, region, basics) {
       {
         q: "Can Illinois Secretary of State consequences continue after court?",
         a: "Yes. Reinstatement, restricted permits, evaluations, BAIID or MDDP issues, and fees may involve the Illinois Secretary of State separately from the court case.",
+      },
+    ];
+  }
+
+  if (city.slug === "cary-nc") {
+    return [
+      {
+        q: "What should I ask a Cary DWI lawyer?",
+        a: "Ask about Wake County DWI experience, Cary Police records, chemical-test evidence, punishment levels, probation questions, limited driving privilege, and NCDMV license consequences.",
+      },
+      {
+        q: "Are Cary DWI defense tips enough to handle the case alone?",
+        a: "General tips can help organize documents, but they are not legal advice. A DWI case can involve court, license, evidence, and probation issues that depend on the specific facts.",
+      },
+      {
+        q: "Can a Cary DWI affect my license separately from court?",
+        a: "Yes. North Carolina DWI cases can involve NCDMV license consequences and possible limited-driving-privilege questions in addition to the court case.",
+      },
+    ];
+  }
+
+  if (city.slug === "pineville-nc") {
+    return [
+      {
+        q: "What should I ask a Pineville DWI lawyer?",
+        a: "Ask about Mecklenburg County DWI experience, local police records, court dates, chemical testing, license consequences, probation questions, and limited-driving-privilege issues.",
+      },
+      {
+        q: "Is a Pineville DWI usually handled only by the local police department?",
+        a: "The local agency may start the paperwork, but the court process, license consequences, and records path can involve county and state systems depending on the facts.",
+      },
+      {
+        q: "Can a misdemeanor DWI in Pineville still be serious?",
+        a: "Yes. Even a misdemeanor DWI can involve punishment levels, probation conditions, insurance consequences, license issues, and future background-check concerns.",
       },
     ];
   }
@@ -3653,6 +3837,7 @@ const resourcePages = {
       relatedLinks: [
         ["Nixa DWI administrative hearing guide", "/dui/nixa-mo/"],
         ["Wentzville DWI and traffic charges guide", "/dui/wentzville-mo/"],
+        ["O'Fallon DWI lawyer questions guide", "/dui/ofallon-mo/"],
         ["Manchester DUI/DWI attorney search guide", "/dui/manchester-mo/"],
       ],
     }),
@@ -3683,7 +3868,45 @@ const resourcePages = {
         { label: "NCGS 20-179.3 limited driving privilege", href: "https://www.ncleg.gov/EnactedLegislation/Statutes/PDF/BySection/Chapter_20/GS_20-179.3.pdf" },
       ],
       relatedLinks: [
+        ["North Carolina DWI misdemeanor, probation, and dismissal guide", "/resources/north-carolina-dwi-misdemeanor-probation-dismissal/"],
         ["Apex DWI consequences and probation guide", "/dui/apex-nc/"],
+        ["Cary DWI guide", "/dui/cary-nc/"],
+        ["Pineville DWI guide", "/dui/pineville-nc/"],
+        ["North Raleigh DWI guide", "/dui/north-raleigh-nc/"],
+        ["Matthews DWI guide", "/dui/matthews-nc/"],
+      ],
+    }),
+  },
+  "/resources/north-carolina-dwi-misdemeanor-probation-dismissal/": {
+    title: "North Carolina DWI Misdemeanor, Probation, and Dismissal Guide",
+    description:
+      "North Carolina DWI resource covering misdemeanor consequences, probation conditions, dismissal questions, case outcomes, defense records, and official sources.",
+    body: resourcePage({
+      eyebrow: "North Carolina DWI resource",
+      title: "North Carolina DWI misdemeanor, probation, and dismissal guide.",
+      intro:
+        "North Carolina DWI searches often focus on practical questions: whether a DWI is a misdemeanor, what probation can involve, when dismissal may be possible, and how outcomes depend on evidence and punishment levels. This resource gives a neutral source-backed overview before readers choose a city guide.",
+      cards: [
+        ["Misdemeanor does not mean minor", "Many North Carolina DWI cases are misdemeanors, but punishment levels, aggravating factors, prior history, license consequences, and probation conditions can still make the case serious."],
+        ["Probation can be fact-specific", "Probation conditions may involve assessment, treatment, monitoring, community service, court costs, compliance reviews, or active time depending on the sentence level and facts."],
+        ["Dismissal questions are evidence questions", "Dismissal depends on the stop, arrest, testing, witness proof, video, paperwork, procedure, and court rulings. No page can predict that outcome without case-specific review."],
+        ["Case outcomes vary", "Possible outcomes depend on current law, local court procedure, evidence, prior record, mitigation, aggravating factors, and whether license issues are resolved separately."],
+      ],
+      bullets: [
+        "Keep the citation, release paperwork, court date, and any civil revocation or NCDMV notice.",
+        "Gather police agency information, crash report details, witness names, test paperwork, and video references when available.",
+        "Ask whether punishment levels, probation conditions, limited driving privilege, and license consequences should be reviewed together.",
+        "Use the city guide for local police, court, and records contacts after reading the statewide overview.",
+      ],
+      sources: [
+        { label: "North Carolina State Highway Patrol DWI law summary", href: "https://www.ncshp.gov/ncshp/commercial-vehicles/laws" },
+        { label: "NCDMV license suspension", href: "https://www.ncdot.gov/dmv/license-id/license-suspension/Pages/" },
+        { label: "NCGS 20-179.3 limited driving privilege", href: "https://www.ncleg.gov/EnactedLegislation/Statutes/PDF/BySection/Chapter_20/GS_20-179.3.pdf" },
+      ],
+      relatedLinks: [
+        ["Apex DWI misdemeanor and dismissal guide", "/dui/apex-nc/"],
+        ["Cary DWI guide", "/dui/cary-nc/"],
+        ["Pineville DWI guide", "/dui/pineville-nc/"],
         ["North Raleigh DWI guide", "/dui/north-raleigh-nc/"],
         ["Matthews DWI guide", "/dui/matthews-nc/"],
       ],
