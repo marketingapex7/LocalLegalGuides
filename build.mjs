@@ -371,6 +371,8 @@ function duiCityLink(entry, className = "city-link") {
 const priorityDuiCitySlugs = [
   "apex-nc",
   "wentzville-mo",
+  "north-raleigh-nc",
+  "belleville-il",
   "ofallon-mo",
   "nixa-mo",
   "manchester-mo",
@@ -443,7 +445,27 @@ function recentDuiGuideLinks(limit = 18) {
 function cityPageTitle(city, region, practice) {
   if (practice.slug === "dui") {
     const label = practiceSeoLabel(practice, region);
+    const targetedTitles = {
+      "apex-nc": `Apex DWI Guide: Misdemeanor, Dismissal, Probation & License Issues | ${siteData.siteName}`,
+      "wentzville-mo": `Wentzville DWI Guide: Court, Traffic Charges & License Hearing | ${siteData.siteName}`,
+      "north-raleigh-nc": `North Raleigh DWI Guide: Arrest, Court, License & Next Steps | ${siteData.siteName}`,
+      "cary-nc": `Cary DWI Guide: Defense Questions, Court & License Issues | ${siteData.siteName}`,
+      "ofallon-mo": `O'Fallon DWI Guide: Lawyer Questions, Court & License Deadlines | ${siteData.siteName}`,
+      "belleville-il": `Belleville DUI Guide: Charges, St. Clair County Court & License Issues | ${siteData.siteName}`,
+      "edwardsville-il": `Edwardsville DUI Guide: Arrest, Court, License Suspension & Next Steps | ${siteData.siteName}`,
+      "manchester-mo": `Manchester DWI Guide: DUI Attorney Searches, Court & License Issues | ${siteData.siteName}`,
+      "nixa-mo": `Nixa DWI Guide: Administrative Hearing, Court & License Deadlines | ${siteData.siteName}`,
+    };
+
+    if (targetedTitles[city.slug]) {
+      return targetedTitles[city.slug];
+    }
+
     return `Arrested for ${label} in ${city.name}, ${region.stateCode}? What to Do Next | ${siteData.siteName}`;
+  }
+
+  if (city.slug === "edwardsville-il") {
+    return `Edwardsville Personal Injury Guide: Accident Reports, Insurance & Deadlines | ${siteData.siteName}`;
   }
 
   return `Injured in ${city.name}, ${region.stateCode}? What to Do Before Talking to Insurance | ${siteData.siteName}`;
@@ -464,8 +486,12 @@ function cityPageDescription(city, region, practice) {
         "O'Fallon DWI guide covering St. Charles County court context, O'Fallon Police records, Missouri DOR license deadlines, local roads, and questions to ask a DWI lawyer.",
       "edwardsville-il":
         "Edwardsville DUI guide covering what to do after an arrest, Madison County court, Illinois license issues, police records, and questions to ask an Edwardsville DUI lawyer.",
+      "belleville-il":
+        "Belleville DUI guide covering St. Clair County court, DUI charge questions, Belleville Police records, Illinois statutory summary suspension, and license consequences.",
       "apex-nc":
         "Apex DWI guide covering North Carolina DWI probation, misdemeanor consequences, restricted license questions, Apex Police records, Wake County court, and NCDMV issues.",
+      "north-raleigh-nc":
+        "North Raleigh DWI guide covering Raleigh Police records, Wake County court, NCDMV license consequences, restricted license questions, and what to ask after a DWI arrest.",
       "cary-nc":
         "Cary DWI guide covering Wake County court context, North Carolina misdemeanor consequences, NCDMV license issues, local police records, and questions to ask a DWI lawyer.",
       "pineville-nc":
@@ -480,7 +506,9 @@ function cityPageDescription(city, region, practice) {
   }
 
   return compactDescription(
-    city.slug === "apex-nc"
+    city.slug === "edwardsville-il"
+      ? "Edwardsville personal injury guide covering accident reports, insurance calls, medical documentation, Madison County court context, local roads, and claim deadlines."
+      : city.slug === "apex-nc"
       ? "Apex personal injury guide covering crash reports, insurance calls, medical documentation, Wake County court context, local roads, and what to do after an accident."
       : `Injured in ${city.name}? Learn what to do before dealing with insurance, how to document a claim, where reports may come from, deadlines, and official sources.`
   );
@@ -1074,7 +1102,7 @@ function duiDeadlineCards(region, court) {
       },
       {
         label: "First court date",
-        title: "Appear in Madison County court",
+        title: `Appear in ${court.name}`,
         body: `Check the citation, bond paperwork, or circuit clerk for the actual date and courtroom. ${court.name} is the court reference used for this guide.`,
       },
       {
@@ -1852,6 +1880,52 @@ function rankingOpportunitySection(city, region, isDui, basics) {
         },
       ],
     },
+    "belleville-il": {
+      eyebrow: "Belleville DUI charge context",
+      title: "Belleville DUI charges, St. Clair County court, and license questions.",
+      intro:
+        "People searching for help with DUI charges in Belleville are usually trying to connect a police stop or citation to St. Clair County court, Illinois statutory summary suspension, local records, and Secretary of State license consequences. This section keeps those issues organized before a reader decides what questions to ask a Belleville DUI lawyer.",
+      cards: [
+        [
+          "St. Clair County court",
+          "Belleville is the county-seat anchor for this cluster, so readers should confirm the exact court date, courtroom, case number, and clerk information from the official notice.",
+        ],
+        [
+          "DUI charge questions",
+          "Ask what the current charge is, whether aggravating facts are alleged, whether a crash or injury is involved, and what discovery may show about the stop and testing.",
+        ],
+        [
+          "Police records",
+          "Belleville Police records, St. Clair County Sheriff's Department records, Illinois State Police records, video, chemical-test paperwork, towing records, or crash reports may matter depending on where the stop happened.",
+        ],
+        [
+          "License suspension",
+          "Illinois statutory summary suspension can move separately from the criminal DUI case, so any notice tied to the 46-day timing should be reviewed quickly.",
+        ],
+        [
+          "Local road context",
+          "Illinois Route 15, Illinois Route 159, Illinois Route 161, Illinois Route 13, I-64, downtown Belleville, and the Public Square courthouse area are useful local context for agency and records questions.",
+        ],
+        [
+          "Lawyer questions",
+          "Ask whether the lawyer handles St. Clair County DUI cases, statutory summary suspension hearings, police video, chemical-test evidence, and Secretary of State reinstatement or permit issues.",
+        ],
+      ],
+      sources: [
+        {
+          label: "St. Clair County Courthouse",
+          href: "https://www.illinoiscourts.gov/courts-directory/109/St-Clair-County-Courthouse/court/",
+        },
+        {
+          label: "Belleville Police Department",
+          href: "https://www.belleville.net/355/Police",
+        },
+        {
+          label: "Illinois Secretary of State DUI information",
+          href: "https://www.ilsos.gov/departments/drivers/traffic-safety/dui.html",
+        },
+      ],
+    },
     "apex-nc": {
       eyebrow: "Consequences and probation context",
       title: "Apex DWI probation, dismissal, misdemeanor, and restricted-license questions.",
@@ -1903,6 +1977,52 @@ function rankingOpportunitySection(city, region, isDui, basics) {
         {
           label: "NCGS 20-179.3 limited driving privilege",
           href: "https://www.ncleg.gov/EnactedLegislation/Statutes/PDF/BySection/Chapter_20/GS_20-179.3.pdf",
+        },
+      ],
+    },
+    "north-raleigh-nc": {
+      eyebrow: "North Raleigh DWI search context",
+      title: "North Raleigh DWI arrests, Wake County court, and restricted-license questions.",
+      intro:
+        "North Raleigh DWI searches are often broad because readers may type Raleigh DWI, DWI Raleigh NC, DWI arrest Raleigh, or restricted license after a Raleigh DWI. The practical next step is the same: identify the police agency, confirm the Wake County court notice, preserve DWI paperwork, and separate court issues from NCDMV license consequences.",
+      cards: [
+        [
+          "Raleigh Police records",
+          "A North Raleigh stop may involve Raleigh Police paperwork, crash records, video references, chemical-test records, or citation details that should be saved before court.",
+        ],
+        [
+          "Wake County court",
+          "The official court notice should control the date and location. North Raleigh readers should not rely only on a generic Raleigh search result when the citation gives a specific court path.",
+        ],
+        [
+          "NCDMV license track",
+          "North Carolina DWI cases can create license consequences outside the ordinary court timeline, including civil revocation and limited-driving-privilege questions.",
+        ],
+        [
+          "Restricted license searches",
+          "A restricted-license or limited-driving-privilege question should be checked against official North Carolina law and the specific facts before assuming eligibility.",
+        ],
+        [
+          "Road context",
+          "I-540, U.S. 1/Capital Boulevard, Six Forks Road, Falls of Neuse Road, Creedmoor Road, and Glenwood Avenue are useful North Raleigh context for records and agency questions.",
+        ],
+        [
+          "Lawyer questions",
+          "Ask whether the lawyer handles Wake County DWI cases, Raleigh Police records, NCDMV consequences, punishment levels, probation conditions, and limited-driving-privilege issues.",
+        ],
+      ],
+      sources: [
+        {
+          label: "Raleigh Police Department",
+          href: "https://raleighnc.gov/police",
+        },
+        {
+          label: "North Carolina Judicial Branch - Wake County",
+          href: "https://www.nccourts.gov/locations/wake-county",
+        },
+        {
+          label: "NCDMV license suspension",
+          href: "https://www.ncdot.gov/dmv/license-id/license-suspension/Pages/",
         },
       ],
     },
@@ -2125,6 +2245,27 @@ function targetedDuiFaqs(city, region, basics) {
     ];
   }
 
+  if (city.slug === "belleville-il") {
+    return [
+      {
+        q: "What should I do first after a DUI charge in Belleville?",
+        a: "Save the citation, bond or release paperwork, court date, police agency information, chemical-test paperwork, towing records, and any Secretary of State notice. Confirm the court date from the official paperwork.",
+      },
+      {
+        q: "Where do Belleville DUI cases connect locally?",
+        a: "Belleville is tied to St. Clair County court resources, Belleville Police records, and Illinois Secretary of State license consequences. The official citation and court notice should control the exact next step.",
+      },
+      {
+        q: "Can Illinois license suspension issues move separately from court?",
+        a: "Yes. Illinois statutory summary suspension is separate from the criminal DUI case and can begin 46 days after notice unless successfully challenged.",
+      },
+      {
+        q: "What should I ask a Belleville DUI lawyer?",
+        a: "Ask about St. Clair County DUI experience, statutory summary suspension timing, Belleville Police reports, video, chemical-test evidence, crash records, and Secretary of State reinstatement or permit issues.",
+      },
+    ];
+  }
+
   if (city.slug === "nixa-mo") {
     return [
       {
@@ -2197,6 +2338,27 @@ function targetedDuiFaqs(city, region, basics) {
       {
         q: "Can a Cary DWI affect my license separately from court?",
         a: "Yes. North Carolina DWI cases can involve NCDMV license consequences and possible limited-driving-privilege questions in addition to the court case.",
+      },
+    ];
+  }
+
+  if (city.slug === "north-raleigh-nc") {
+    return [
+      {
+        q: "What should I do after a DWI arrest in North Raleigh?",
+        a: "Save the citation, release paperwork, court date, Raleigh Police information, chemical-test paperwork, any crash report details, and NCDMV notices. Confirm whether the case points to Wake County court resources.",
+      },
+      {
+        q: "Can a Raleigh DWI affect my license before the case is over?",
+        a: "Yes. North Carolina DWI cases can involve immediate civil revocation and NCDMV license consequences that should be tracked separately from the court case.",
+      },
+      {
+        q: "Can I get a restricted license after a North Raleigh DWI?",
+        a: "A limited driving privilege may be possible in some North Carolina cases, but eligibility depends on the facts, timing, revocation, and statutory requirements.",
+      },
+      {
+        q: "What should I ask a North Raleigh DWI lawyer?",
+        a: "Ask about Wake County DWI experience, Raleigh Police records, NCDMV license consequences, punishment levels, probation conditions, chemical-test evidence, and limited-driving-privilege issues.",
       },
     ];
   }
@@ -2697,8 +2859,19 @@ function cityShell(city, region, practice) {
   const licenseOffice = city.licenseOfficeOverride ?? region.licenseOffice;
   const localDuiData = isDui ? duiLocalDataFor(city) : null;
   const hasRankingOpportunity =
-    (isDui && ["apex-nc", "nixa-mo", "manchester-mo", "wentzville-mo", "edwardsville-il"].includes(city.slug)) ||
-    (!isDui && city.slug === "apex-nc");
+    (isDui &&
+      [
+        "apex-nc",
+        "nixa-mo",
+        "manchester-mo",
+        "wentzville-mo",
+        "edwardsville-il",
+        "north-raleigh-nc",
+        "cary-nc",
+        "ofallon-mo",
+        "belleville-il",
+      ].includes(city.slug)) ||
+    (!isDui && ["apex-nc", "edwardsville-il"].includes(city.slug));
   const caseName = isDui ? basics.duiName : "personal injury";
   const quickActions = quickActionCards({ city, region, court, licenseOffice, isDui, basics });
   const title = heroTitleForCity(city, region, isDui, basics);

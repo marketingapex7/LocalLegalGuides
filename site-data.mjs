@@ -251,6 +251,9 @@ const expansionRegions = [
         name: "Belleville",
         agency: "Belleville Police Department",
         police: police("Belleville Police Department", "720 W. Main Street, Belleville, IL 62220", "(618) 234-1212", "https://www.belleville.net/355/Police", "For Belleville police reports, crash records, and local enforcement questions."),
+        local_context_intro:
+          "This guide focuses on DUI cases connected to Belleville and nearby St. Clair County communities, including stops or records involving Belleville Police, the St. Clair County Sheriff's Department, or Illinois State Police around Illinois Route 15, Illinois Route 159, Illinois Route 161, Illinois Route 13, I-64, downtown Belleville, and the Public Square courthouse area.",
+        common_roads: ["Illinois Route 15", "Illinois Route 159", "Illinois Route 161", "Illinois Route 13", "I-64", "downtown Belleville", "Public Square"],
       }),
       city({
         slug: "ofallon-il",
@@ -1733,6 +1736,9 @@ export const siteData = {
           slug: "north-raleigh-nc",
           name: "North Raleigh",
           agency: "Raleigh Police Department",
+          local_context_intro:
+            "This guide focuses on DWI cases connected to North Raleigh, including Raleigh Police traffic stops, Wake County court paperwork, and NCDMV license questions involving I-540, U.S. 1/Capital Boulevard, Six Forks Road, Falls of Neuse Road, Creedmoor Road, and Glenwood Avenue.",
+          common_roads: ["I-540", "U.S. 1/Capital Boulevard", "Six Forks Road", "Falls of Neuse Road", "Creedmoor Road", "Glenwood Avenue"],
           police: {
             name: "Raleigh Police Department",
             type: "Municipal Police",
