@@ -86,6 +86,17 @@ function articleFor(word) {
   return /^[aeiou]/i.test(String(word ?? "").trim()) ? "an" : "a";
 }
 
+function listPhrase(items) {
+  const values = items.filter(Boolean).map(String);
+  if (values.length <= 1) {
+    return values[0] ?? "";
+  }
+  if (values.length === 2) {
+    return `${values[0]} and ${values[1]}`;
+  }
+  return `${values.slice(0, -1).join(", ")}, and ${values.at(-1)}`;
+}
+
 function sampleSponsorCard() {
   return `<aside class="sample-sponsor-card" aria-label="Sample sponsor placement">
     <img class="sample-sponsor-image" src="${sampleSponsorImagePath}" alt="Sample attorney sponsor headshot placeholder" loading="lazy" decoding="async" width="120" height="120" />
@@ -662,6 +673,48 @@ function cityRiskFactors(city, isDui) {
   return Array.isArray(configured) && configured.length ? configured : defaults;
 }
 
+function cityDifferentiatorSection({ city, region, court, licenseOffice, isDui }) {
+  const roads = cityRoadContext(city, isDui);
+  const issues = cityRiskFactors(city, isDui);
+  const roadText = roads.length
+    ? `${city.name} has local corridor and place context such as ${listPhrase(roads.slice(0, 6))}.`
+    : `${city.name} pages use the local court, agency, and regional context available for this market instead of relying only on a city-name swap.`;
+  const issueText = issues.length
+    ? `${isDui ? "Local risk factors" : "Local claim issues"} include ${listPhrase(issues.slice(0, 4))}.`
+    : "The guide uses local agency and court references to separate this page from generic statewide legal summaries.";
+  const agencyText = city.police
+    ? `${city.police.name} is the municipal agency reference for this guide. County or state agencies may matter when the stop, crash, or incident happened outside city limits, on a highway, or on shared regional roads.`
+    : `${city.name} may rely on municipal, county, or state agencies depending on where the incident happened.`;
+  const recordText = isDui
+    ? licenseOffice
+      ? `${licenseOffice.name} is listed because driver-license consequences can move separately from the court case.`
+      : "Driver-license consequences can move separately from the court case, so this page separates court steps from license-agency steps."
+    : "For injury claims, the report source can differ from the court venue: city police, county sheriff, state police, insurers, medical providers, and property owners may each hold different records.";
+  const sources = [
+    court ? { label: court.name, href: court.href } : null,
+    city.police ? { label: city.police.name, href: city.police.href } : null,
+    isDui && licenseOffice ? { label: licenseOffice.name, href: licenseOffice.href } : null,
+    ...(region.sharedEnforcement ?? []).map((office) => ({ label: office.name, href: office.href })),
+  ].filter(Boolean);
+
+  return `<section class="section section-alt" id="city-difference">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Local difference</p>
+        <h2>What makes ${escapeHtml(city.name)} different locally.</h2>
+        <p>${escapeHtml(`This block is meant to give ${city.name} its own local identity: court geography, agency setup, roadway context, and records issues that can matter before someone makes a legal decision.`)}</p>
+      </div>
+      <div class="card-grid four-up">
+        <article class="info-card"><h3>Court anchor</h3><p>${escapeHtml(`${court.name} is the court reference used for ${city.name} in the ${region.name} cluster.`)}</p></article>
+        <article class="info-card"><h3>Agency setup</h3><p>${escapeHtml(agencyText)}</p></article>
+        <article class="info-card"><h3>Road and place context</h3><p>${escapeHtml(`${roadText} ${issueText}`)}</p></article>
+        <article class="info-card"><h3>${escapeHtml(isDui ? "License track" : "Records track")}</h3><p>${escapeHtml(recordText)}</p></article>
+      </div>
+      ${sourceChips(sources, "Local references")}
+    </div>
+  </section>`;
+}
+
 function heroTitleForCity(city, region, isDui, basics) {
   if (isDui) {
     return `Arrested for ${basics.duiName} in ${city.name}, ${region.stateCode}? What to Do Next.`;
@@ -902,10 +955,13 @@ function editorialReviewBlock(isDui) {
         <p class="eyebrow">Editorial review</p>
         <h2>How this guide was created.</h2>
         <p>This guide was prepared by Local Legal Guides using ${escapeHtml(sourceTypes)}. It is reviewed for source accuracy, local relevance, and clarity. It is not legal advice and does not create an attorney-client relationship.</p>
+        <p>Attorney review is not claimed unless a page states that a licensed attorney reviewed that specific state-law module. Sponsorship does not control official-source references, legal disclaimers, or the correction process.</p>
         <dl class="review-meta">
           <dt>Last reviewed</dt><dd>May 2026</dd>
           <dt>Next scheduled review</dt><dd>November 2026</dd>
+          <dt>Corrections</dt><dd><a class="text-link" href="/contact/">Send a source update</a></dd>
         </dl>
+        <a class="button button-secondary" href="/editorial-standards/">Read our editorial standards</a>
       </div>
     </div>
   </section>`;
@@ -918,7 +974,10 @@ function relatedResourceLinks(region, isDui) {
 
   const resources =
     isDui && region.stateCode === "MO"
-      ? [["Missouri DWI administrative hearing guide", "/resources/missouri-dwi-administrative-hearing/"]]
+      ? [
+          ["Missouri DWI administrative hearing guide", "/resources/missouri-dwi-administrative-hearing/"],
+          ["Missouri DWI administrative hearing lawyer questions", "/resources/missouri-dwi-administrative-hearing-lawyer-questions/"],
+        ]
     : isDui && region.stateCode === "NC"
         ? [
             ["North Carolina DWI misdemeanor, probation, and dismissal guide", "/resources/north-carolina-dwi-misdemeanor-probation-dismissal/"],
@@ -1150,6 +1209,61 @@ function duiDeadlineCards(region, court) {
       body: "Restoration can require fees, substance-abuse assessment or treatment steps, proof of eligibility, and ignition interlock in some cases.",
     },
   ];
+}
+
+function missouriDwiAdministrativeHearingSection({ city, region, court, basics }) {
+  if (region.stateCode !== "MO") {
+    return "";
+  }
+
+  const resources = [
+    { label: "Missouri DOR DWI information", href: "https://dor.mo.gov/driver-license/revocation-reinstatement/dwi.html" },
+    { label: "Missouri Administrative Alcohol FAQ", href: "https://dor.mo.gov/faq/driver-license/administrative-alcohol.html" },
+    { label: "Missouri Form 2385", href: "https://dor.mo.gov/forms/2385.pdf" },
+    { label: "Missouri Restricted Driving Privilege", href: "https://dor.mo.gov/driver-license/revocation-reinstatement/rdp-alcohol.html" },
+  ];
+  const roads = cityRoadContext(city, true);
+  const roadPhrase = roads.length ? ` local roads such as ${listPhrase(roads.slice(0, 4))},` : "";
+  const questions = [
+    `Does the 15-day Missouri DOR hearing issue apply to my ${city.name} arrest paperwork?`,
+    `How does the DOR license track connect to my ${court.name} court date?`,
+    "What should I bring to a lawyer: Form 2385, ticket, test paperwork, bond paperwork, and tow records?",
+    "Could a restricted driving privilege, SATOP, ignition interlock, or reinstatement requirement apply?",
+  ];
+
+  return `<section class="section section-focus" id="missouri-admin-hearing">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Missouri DWI license track</p>
+        <h2>Missouri DWI administrative hearing and license questions in ${escapeHtml(city.name)}.</h2>
+        <p>${escapeHtml(
+          `A ${basics.duiName} arrest involving ${city.agency},${roadPhrase} or ${region.name} can create a criminal court case and a separate Missouri Department of Revenue license issue.`
+        )}</p>
+      </div>
+      <div class="card-grid three-up">
+        <article class="info-card"><h3>Two tracks can move at once</h3><p>${escapeHtml(`The court case may be assigned through ${court.name}, while the license issue may be handled through the Missouri Department of Revenue.`)}</p></article>
+        <article class="info-card"><h3>15-day hearing issue</h3><p>The Missouri DOR describes a short hearing-request window for administrative alcohol actions. Review the notice quickly and do not assume the first court date protects the license issue.</p></article>
+        <article class="info-card"><h3>Restricted driving questions</h3><p>Restricted driving privileges, SATOP, insurance proof, ignition interlock, reinstatement fees, or other DOR requirements can become separate practical issues.</p></article>
+      </div>
+      <div class="split-grid narrow-split">
+        <div class="info-card">
+          <h3>Questions to ask a Missouri DWI lawyer</h3>
+          <ul>${questions.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+        </div>
+        <div class="info-card">
+          <h3>Documents to review early</h3>
+          <ul>
+            <li>Notice of Suspension/Revocation or Form 2385 paperwork</li>
+            <li>Ticket, citation, bond, or release paperwork</li>
+            <li>Chemical-test or refusal paperwork</li>
+            <li>First court date and division information</li>
+          </ul>
+        </div>
+      </div>
+      ${sourceChips(resources, "Missouri DOR sources")}
+      <p class="section-note"><a class="text-link" href="/resources/missouri-dwi-administrative-hearing-lawyer-questions/">Read the Missouri DWI administrative hearing lawyer questions resource</a>.</p>
+    </div>
+  </section>`;
 }
 
 function duiLawCards(region, city) {
@@ -2413,6 +2527,8 @@ function cityToc(isDui, region, hasLocalDuiData = false, hasRankingOpportunity =
     ["What happens next", "#what-happens-next"],
     [`When to call ${isDui ? "a" : "an"} ${lawyerLabel}`, "#when-to-call-lawyer"],
     ...(hasRankingOpportunity ? [["Search context", "#ranking-opportunity"]] : []),
+    ...(isDui && region.stateCode === "MO" ? [["MO DWI hearing", "#missouri-admin-hearing"]] : []),
+    ["Why this city differs", "#city-difference"],
     ["Local directory", "#directory"],
     ["Map", "#map"],
     ["Local details", "#local"],
@@ -2823,7 +2939,7 @@ function pageShell({ title, description, body, active = "", route = "/", schema 
     <footer class="site-footer">
       <div class="container footer-inner">
         <p>General legal information for local court, license, claims, and city agency research.</p>
-        <p><a href="/dui/locations/">DUI/DWI city guides</a> | <a href="/contact/">Contact</a> | <a href="/terms/">Terms</a> | <a href="/privacy/">Privacy</a></p>
+        <p><a href="/dui/locations/">DUI/DWI city guides</a> | <a href="/editorial-standards/">Editorial Standards</a> | <a href="/contact/">Contact</a> | <a href="/terms/">Terms</a> | <a href="/privacy/">Privacy</a></p>
         <p>&copy; ${siteData.year} ${siteData.siteName} | ${siteData.domain}</p>
       </div>
     </footer>
@@ -3088,6 +3204,10 @@ function cityShell(city, region, practice) {
   ${cityToc(isDui, region, Boolean(localDuiData), hasRankingOpportunity)}
 
   ${rankingOpportunitySection(city, region, isDui, basics)}
+
+  ${isDui ? missouriDwiAdministrativeHearingSection({ city, region, court, basics }) : ""}
+
+  ${cityDifferentiatorSection({ city, region, court, licenseOffice, isDui })}
 
   <section class="section section-directory" id="directory">
     <div class="container">
@@ -3974,6 +4094,47 @@ const resourcePages = {
       ],
     }),
   },
+  "/resources/missouri-dwi-administrative-hearing-lawyer-questions/": {
+    title: "Missouri DWI Administrative Hearing Lawyer Questions",
+    description:
+      "Missouri DWI resource covering administrative hearing lawyer questions, Form 2385, 15-day hearing timing, restricted driving privileges, and DOR license consequences.",
+    body: resourcePage({
+      eyebrow: "Missouri DWI resource",
+      title: "Missouri DWI administrative hearing lawyer questions.",
+      intro:
+        "Missouri DWI cases often create urgent questions about administrative hearings, license deadlines, and whether the court case is the only problem to solve. This resource gives readers neutral questions to ask before a missed DOR license deadline turns into a larger problem.",
+      cards: [
+        ["Ask about the DOR deadline", "A Missouri DWI arrest can create a Department of Revenue license issue that moves separately from the criminal court date."],
+        ["Ask about Form 2385", "The notice paperwork can control how and when an administrative hearing request should be made."],
+        ["Ask about restricted driving", "Restricted driving privilege, SATOP, insurance proof, ignition interlock, reinstatement fees, or other DOR steps may apply depending on the facts."],
+        ["Ask about court coordination", "A lawyer may need to review how the license issue, municipal or circuit court case, police reports, testing records, and plea decisions fit together."],
+      ],
+      bullets: [
+        "Does the 15-day DOR hearing request window apply to this notice?",
+        "What happens if the administrative hearing is not requested on time?",
+        "Could a restricted driving privilege or ignition interlock issue apply?",
+        "What documents should be gathered before the first lawyer consultation?",
+        "How does the DOR license track affect the criminal DWI case?",
+        "What should be avoided before the first court date?",
+      ],
+      sources: [
+        { label: "Missouri DOR DWI information", href: "https://dor.mo.gov/driver-license/revocation-reinstatement/dwi.html" },
+        { label: "Missouri DOR Administrative Alcohol FAQ", href: "https://dor.mo.gov/faq/driver-license/administrative-alcohol.html" },
+        { label: "Missouri Form 2385", href: "https://dor.mo.gov/forms/2385.pdf" },
+        { label: "Missouri DOR Restricted Driving Privilege", href: "https://dor.mo.gov/driver-license/revocation-reinstatement/rdp-alcohol.html" },
+      ],
+      relatedLinks: [
+        ["Wentzville DWI guide", "/dui/wentzville-mo/"],
+        ["Moscow Mills DWI guide", "/dui/moscow-mills-mo/"],
+        ["Pacific DWI guide", "/dui/pacific-mo/"],
+        ["Nixa DWI guide", "/dui/nixa-mo/"],
+        ["Manchester DWI guide", "/dui/manchester-mo/"],
+        ["O'Fallon DWI guide", "/dui/ofallon-mo/"],
+        ["Hazelwood DWI guide", "/dui/hazelwood-mo/"],
+        ["Republic DWI guide", "/dui/republic-mo/"],
+      ],
+    }),
+  },
   "/resources/north-carolina-dwi-consequences-limited-driving-privilege/": {
     title: "North Carolina DWI Consequences and Limited Driving Privilege Guide",
     description:
@@ -4200,6 +4361,69 @@ function resourcePage({ eyebrow, title, intro, cards, bullets, sources, relatedL
   </section>`
       : ""
   }`;
+}
+
+function editorialStandardsPage() {
+  const standards = [
+    ["Official-source priority", "City guides are built around public court, law enforcement, driver-license, records, state-law, and government agency sources wherever possible."],
+    ["Local verification", "Each page is checked for local court geography, agency setup, contact information, local roads or records context, and practice-area fit."],
+    ["Clear limits", "The site publishes general legal information only. It is not a law firm, attorney referral service, ranking directory, or legal-advice provider."],
+    ["Corrections process", "Readers, attorneys, agencies, and court staff can send source updates or correction requests through the contact page."],
+  ];
+  const reviewSteps = [
+    "Check official court, police, sheriff, DMV, Department of Revenue, Secretary of State, or state-law sources before adding legal-process claims.",
+    "Label statewide, county, and city-level information clearly so readers do not confuse state statistics with city-specific data.",
+    "Avoid publishing upcoming checkpoint locations, patrol locations, or information intended to help people avoid law enforcement.",
+    "Do not claim attorney review unless a licensed attorney reviewed that specific module and the page says so plainly.",
+    "Keep sponsorship language separate from legal information, official sources, and editorial review notes.",
+  ];
+
+  return `<section class="hero hero-tight">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">Editorial standards</p>
+        <h1>How Local Legal Guides researches and reviews city legal guides.</h1>
+        <p class="lede">Local Legal Guides is designed to be useful, source-backed, and clear about its limits. These standards explain how pages are researched, reviewed, corrected, and separated from sponsorship.</p>
+      </div>
+      <aside class="hero-card">
+        <div class="hero-card-header">
+          <span class="pill">Public sources</span>
+          <span class="pill pill-muted">No legal advice</span>
+        </div>
+        <p class="note">Last reviewed: May 2026. Next scheduled standards review: November 2026.</p>
+      </aside>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Standards</p>
+        <h2>What every guide is supposed to do.</h2>
+      </div>
+      <div class="card-grid four-up">${standards
+        .map((item) => `<article class="info-card"><h3>${escapeHtml(item[0])}</h3><p>${escapeHtml(item[1])}</p></article>`)
+        .join("")}</div>
+    </div>
+  </section>
+  <section class="section section-alt">
+    <div class="container split-grid">
+      <div>
+        <div class="section-head">
+          <p class="eyebrow">Review checklist</p>
+          <h2>How source-backed claims are handled.</h2>
+        </div>
+        <ul class="checklist-grid">${reviewSteps.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+      </div>
+      <div>
+        <div class="section-head">
+          <p class="eyebrow">Corrections</p>
+          <h2>Send source updates or corrections.</h2>
+          <p>If an agency changes contact information, a court page moves, a source link breaks, or a guide needs a local correction, send the official source and page URL.</p>
+        </div>
+        <a class="button button-primary" href="/contact/">Contact Local Legal Guides</a>
+      </div>
+    </div>
+  </section>`;
 }
 
 function pricingPage() {
@@ -4591,6 +4815,13 @@ function renderStaticPages() {
       active: "/dui/",
       crumbs: ["DUI and DWI Guides by City"],
     },
+    "/editorial-standards/": {
+      title: `Editorial Standards | ${siteData.siteName}`,
+      description: `How ${siteData.siteName} researches, sources, reviews, corrects, and separates sponsorship from legal information.`,
+      body: editorialStandardsPage(),
+      active: "",
+      crumbs: ["Editorial Standards"],
+    },
     "/pricing/": {
       title: `Sponsorship Pricing | ${siteData.siteName}`,
       description: `${siteData.siteName} sponsorship pricing for regional cluster packages, related city-page placements, and future market expansion.`,
@@ -4669,6 +4900,7 @@ function sitemapEntries() {
     "/dui/locations/",
     "/personal-injury/",
     "/regions/",
+    "/editorial-standards/",
     "/terms/",
     "/privacy/",
     "/contact/",
@@ -4711,6 +4943,7 @@ This site provides general legal information only. It is not legal advice, is no
 - DUI/DWI city index: ${absoluteUrl("/dui/locations/")}
 - Personal injury hub: ${absoluteUrl("/personal-injury/")}
 - Regions: ${absoluteUrl("/regions/")}
+- Editorial standards: ${absoluteUrl("/editorial-standards/")}
 - Contact: ${absoluteUrl("/contact/")}
 - Main sitemap: ${absoluteUrl("/sitemap.xml")}
 - DUI/DWI sitemap: ${absoluteUrl("/sitemap-dui.xml")}
