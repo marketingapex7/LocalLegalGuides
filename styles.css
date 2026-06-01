@@ -473,7 +473,7 @@ h3 {
 }
 
 .stat-grid dd,
-.detail-list strong {
+detail-list strong {
   display: block;
   margin: 0 0 0.75rem;
   color: #fffaf0;
@@ -516,6 +516,8 @@ h3 {
 
 .section {
   padding: 3.6rem 0;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 720px;
 }
 
 .quick-start {
@@ -767,7 +769,7 @@ h3 {
   gap: 1rem;
 }
 
-.two-up {
+two-up {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
@@ -1528,6 +1530,16 @@ tr:last-child td {
 }
 
 @media (max-width: 960px) {
+  .bg-grid {
+    display: none;
+  }
+
+  .site-header,
+  .hero-card,
+  .toc-band {
+    backdrop-filter: none;
+  }
+
   .hero-grid,
   .split-grid,
   .urgent-grid,
@@ -1667,6 +1679,7 @@ tr:last-child td {
   .hero,
   .hero-tight,
   .city-hero {
+    background: linear-gradient(135deg, #111b2b 0%, #172438 58%, #55272e 100%);
     padding: 2rem 0 1.45rem;
   }
 
