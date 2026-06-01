@@ -473,7 +473,7 @@ h3 {
 }
 
 .stat-grid dd,
-detail-list strong {
+.detail-list strong {
   display: block;
   margin: 0 0 0.75rem;
   color: #fffaf0;
@@ -769,7 +769,7 @@ detail-list strong {
   gap: 1rem;
 }
 
-two-up {
+.two-up {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
