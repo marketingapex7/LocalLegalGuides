@@ -373,10 +373,32 @@ function duiCityEntries() {
   );
 }
 
+function personalInjuryPractice() {
+  return practiceBySlug.get("personal-injury");
+}
+
+function personalInjuryCityEntries() {
+  const practice = personalInjuryPractice();
+  return siteData.regions.flatMap((region) =>
+    region.cities.map((city) => ({
+      city,
+      region,
+      label: practice.label,
+      href: pathForPracticeCity("personal-injury", city.slug),
+    }))
+  );
+}
+
 function duiCityLink(entry, className = "city-link") {
   return `<a class="${className}" href="${entry.href}">${escapeHtml(entry.city.name)}, ${escapeHtml(
     entry.region.stateCode
   )} ${escapeHtml(entry.label)} guide</a>`;
+}
+
+function personalInjuryCityLink(entry, className = "city-link") {
+  return `<a class="${className}" href="${entry.href}">${escapeHtml(entry.city.name)}, ${escapeHtml(
+    entry.region.stateCode
+  )} car accident and injury guide</a>`;
 }
 
 const priorityDuiCitySlugs = [
@@ -392,15 +414,40 @@ const priorityDuiCitySlugs = [
   "edwardsville-il",
 ];
 
+const priorityPersonalInjuryCitySlugs = [
+  "apex-nc",
+  "cary-nc",
+  "holly-springs-nc",
+  "fuquay-varina-nc",
+  "edwardsville-il",
+  "collinsville-il",
+  "belleville-il",
+  "manchester-mo",
+  "chesterfield-mo",
+  "ofallon-mo",
+];
+
 function priorityDuiEntries() {
   const entries = duiCityEntries();
   const bySlug = new Map(entries.map((entry) => [entry.city.slug, entry]));
   return priorityDuiCitySlugs.map((slug) => bySlug.get(slug)).filter(Boolean);
 }
 
+function priorityPersonalInjuryEntries() {
+  const entries = personalInjuryCityEntries();
+  const bySlug = new Map(entries.map((entry) => [entry.city.slug, entry]));
+  return priorityPersonalInjuryCitySlugs.map((slug) => bySlug.get(slug)).filter(Boolean);
+}
+
 function priorityDuiGuideLinks(className = "related-card compact-related-card") {
   return priorityDuiEntries()
     .map((entry) => duiCityLink(entry, className))
+    .join("");
+}
+
+function priorityPersonalInjuryGuideLinks(className = "related-card compact-related-card") {
+  return priorityPersonalInjuryEntries()
+    .map((entry) => personalInjuryCityLink(entry, className))
     .join("");
 }
 
@@ -445,11 +492,63 @@ function groupedDuiLocationSections({ compact = false } = {}) {
     .join("");
 }
 
+function groupedPersonalInjuryLocationSections({ compact = false } = {}) {
+  const states = new Map();
+
+  for (const entry of personalInjuryCityEntries()) {
+    if (!states.has(entry.region.state)) {
+      states.set(entry.region.state, []);
+    }
+    states.get(entry.region.state).push(entry);
+  }
+
+  return [...states.entries()]
+    .map(([state, entries]) => {
+      const regions = new Map();
+      for (const entry of entries) {
+        if (!regions.has(entry.region.slug)) {
+          regions.set(entry.region.slug, { region: entry.region, entries: [] });
+        }
+        regions.get(entry.region.slug).entries.push(entry);
+      }
+
+      return `<section class="${compact ? "state-location-block compact-state-block" : "state-location-block"}">
+        <div class="section-head section-head-compact">
+          <p class="eyebrow">${escapeHtml(state)}</p>
+          <h2>${escapeHtml(state)} car accident and injury city guides.</h2>
+        </div>
+        <div class="stack-grid">${[...regions.values()]
+          .map(
+            ({ region, entries: regionEntries }) => `<article class="region-block">
+              <div class="region-block-head">
+                <p class="eyebrow">${escapeHtml(region.stateCode)}</p>
+                <h3>${escapeHtml(region.name)}</h3>
+              </div>
+              <div class="city-link-grid">${regionEntries.map((entry) => personalInjuryCityLink(entry)).join("")}</div>
+            </article>`
+          )
+          .join("")}</div>
+      </section>`;
+    })
+    .join("");
+}
+
 function recentDuiGuideLinks(limit = 18) {
   const priority = new Set(priorityDuiCitySlugs);
   return [...priorityDuiEntries(), ...duiCityEntries().filter((entry) => !priority.has(entry.city.slug))]
     .slice(0, limit)
     .map((entry) => duiCityLink(entry, "related-card compact-related-card"))
+    .join("");
+}
+
+function recentPersonalInjuryGuideLinks(limit = 18) {
+  const priority = new Set(priorityPersonalInjuryCitySlugs);
+  return [
+    ...priorityPersonalInjuryEntries(),
+    ...personalInjuryCityEntries().filter((entry) => !priority.has(entry.city.slug)),
+  ]
+    .slice(0, limit)
+    .map((entry) => personalInjuryCityLink(entry, "related-card compact-related-card"))
     .join("");
 }
 
@@ -475,11 +574,21 @@ function cityPageTitle(city, region, practice) {
     return `Arrested for ${label} in ${city.name}, ${region.stateCode}? What to Do Next | ${siteData.siteName}`;
   }
 
-  if (city.slug === "edwardsville-il") {
-    return `Edwardsville Personal Injury Guide: Accident Reports, Insurance & Deadlines | ${siteData.siteName}`;
+  const targetedPiTitles = {
+    "apex-nc": `Apex Car Accident and Personal Injury Guide: Reports, Insurance & Deadlines | ${siteData.siteName}`,
+    "cary-nc": `Cary Car Accident and Personal Injury Guide: Reports, Insurance & Deadlines | ${siteData.siteName}`,
+    "holly-springs-nc": `Holly Springs Car Accident and Personal Injury Guide: Reports & Insurance | ${siteData.siteName}`,
+    "fuquay-varina-nc": `Fuquay-Varina Car Accident and Personal Injury Guide | ${siteData.siteName}`,
+    "edwardsville-il": `Edwardsville Personal Injury Guide: Accident Reports, Insurance & Deadlines | ${siteData.siteName}`,
+    "collinsville-il": `Collinsville Car Accident and Personal Injury Guide: Reports & Claims | ${siteData.siteName}`,
+    "manchester-mo": `Manchester Car Accident and Personal Injury Guide: Reports & Insurance | ${siteData.siteName}`,
+  };
+
+  if (targetedPiTitles[city.slug]) {
+    return targetedPiTitles[city.slug];
   }
 
-  return `Injured in ${city.name}, ${region.stateCode}? What to Do Before Talking to Insurance | ${siteData.siteName}`;
+  return `${city.name}, ${region.stateCode} Car Accident and Personal Injury Guide | ${siteData.siteName}`;
 }
 
 function cityPageDescription(city, region, practice) {
@@ -516,12 +625,26 @@ function cityPageDescription(city, region, practice) {
     );
   }
 
+  const targetedPiDescriptions = {
+    "edwardsville-il":
+      "Edwardsville personal injury and car accident guide covering accident reports, insurance calls, medical documentation, Madison County court context, local roads, and claim deadlines.",
+    "apex-nc":
+      "Apex car accident and personal injury guide covering crash reports, insurance calls, medical documentation, Wake County court context, local roads, and what to do after an accident.",
+    "cary-nc":
+      "Cary car accident and personal injury guide covering crash reports, insurance documents, medical records, Wake County court context, and claim deadlines.",
+    "holly-springs-nc":
+      "Holly Springs car accident and personal injury guide covering crash reports, medical documentation, insurance calls, Wake County court context, and local records.",
+    "fuquay-varina-nc":
+      "Fuquay-Varina car accident and personal injury guide covering crash reports, insurance documents, medical records, Wake County court context, and local records.",
+    "collinsville-il":
+      "Collinsville car accident and personal injury guide covering accident reports, insurance calls, medical documentation, court context, and claim deadlines.",
+    "manchester-mo":
+      "Manchester car accident and personal injury guide covering crash reports, insurance calls, medical documentation, St. Louis County court context, and claim deadlines.",
+  };
+
   return compactDescription(
-    city.slug === "edwardsville-il"
-      ? "Edwardsville personal injury guide covering accident reports, insurance calls, medical documentation, Madison County court context, local roads, and claim deadlines."
-      : city.slug === "apex-nc"
-      ? "Apex personal injury guide covering crash reports, insurance calls, medical documentation, Wake County court context, local roads, and what to do after an accident."
-      : `Injured in ${city.name}? Learn what to do before dealing with insurance, how to document a claim, where reports may come from, deadlines, and official sources.`
+    targetedPiDescriptions[city.slug] ??
+      `${city.name} car accident and personal injury guide covering crash or incident reports, insurance documents, medical records, claim deadlines, and official sources.`
   );
 }
 
@@ -2835,6 +2958,36 @@ function siteWebManifest() {
   )}\n`;
 }
 
+function analyticsScript() {
+  return `<script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+
+      function loadGoogleAnalytics() {
+        if (window.__llgGoogleAnalyticsLoaded) return;
+        window.__llgGoogleAnalyticsLoaded = true;
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}';
+        document.head.appendChild(script);
+        gtag('js', new Date());
+        gtag('config', '${googleAnalyticsId}');
+      }
+
+      ['pointerdown', 'keydown', 'touchstart'].forEach(function (eventName) {
+        window.addEventListener(eventName, loadGoogleAnalytics, { once: true, passive: true });
+      });
+
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(loadGoogleAnalytics, { timeout: 2500 });
+      } else {
+        window.addEventListener('load', function () {
+          setTimeout(loadGoogleAnalytics, 1200);
+        }, { once: true });
+      }
+    </script>`;
+}
+
 async function writeBrandAssets() {
   await writeTarget("favicon.svg", brandFaviconSvg());
   await writeTarget("logo.svg", brandLogoSvg());
@@ -2896,14 +3049,7 @@ function pageShell({ title, description, body, active = "", route = "/", schema 
     <meta name="twitter:image:alt" content="${escapeHtml(siteData.siteName)} local legal guide preview" />
     <title>${escapeHtml(title)}</title>
     <link rel="stylesheet" href="/styles.css" />
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', '${googleAnalyticsId}');
-    </script>
+    ${analyticsScript()}
     <script src="/app.js" defer></script>
     ${schemaTags}
   </head>
@@ -2939,7 +3085,7 @@ function pageShell({ title, description, body, active = "", route = "/", schema 
     <footer class="site-footer">
       <div class="container footer-inner">
         <p>General legal information for local court, license, claims, and city agency research.</p>
-        <p><a href="/dui/locations/">DUI/DWI city guides</a> | <a href="/editorial-standards/">Editorial Standards</a> | <a href="/contact/">Contact</a> | <a href="/terms/">Terms</a> | <a href="/privacy/">Privacy</a></p>
+        <p><a href="/dui/locations/">DUI/DWI city guides</a> | <a href="/personal-injury/locations/">Injury city guides</a> | <a href="/editorial-standards/">Editorial Standards</a> | <a href="/contact/">Contact</a> | <a href="/terms/">Terms</a> | <a href="/privacy/">Privacy</a></p>
         <p>&copy; ${siteData.year} ${siteData.siteName} | ${siteData.domain}</p>
       </div>
     </footer>
@@ -3412,7 +3558,7 @@ function cityShell(city, region, practice) {
           isDui
             ? `<a class="related-card" href="/dui/locations/"><span>DUI/DWI locations</span><strong>All DUI and DWI guides by city</strong><p>Browse every DUI/DWI city guide by state and region.</p></a>`
             : ""
-        }${siteData.practiceAreas
+        }${!isDui ? `<a class="related-card" href="/personal-injury/locations/"><span>Personal injury locations</span><strong>All car accident and injury guides by city</strong><p>Browse every injury city guide by state and region.</p></a>` : ""}${siteData.practiceAreas
           .filter((item) => item.slug !== practice.slug)
           .map((item) => {
             const label = item.slug === "dui" ? practiceSeoLabel(item, region) : item.label;
@@ -3439,7 +3585,7 @@ function cityShell(city, region, practice) {
           return `<a class="city-chip" href="${pathForPracticeCity(practice.slug, nearby.slug)}">${escapeHtml(nearbyLabel)}</a>`;
         })
         .join("")}
-        <a class="practice-chip" href="${isDui ? "/dui/locations/" : "/personal-injury/"}">Browse all ${escapeHtml(
+        <a class="practice-chip" href="${isDui ? "/dui/locations/" : "/personal-injury/locations/"}">Browse all ${escapeHtml(
           isDui ? "DUI/DWI" : "personal injury"
         )} guides</a>
       </div>
@@ -3565,7 +3711,7 @@ function practicePage(practice) {
         ${
           isDui
             ? `<div class="hero-actions"><a class="button button-secondary" href="/dui/locations/">Browse all DUI/DWI locations</a></div>`
-            : ""
+            : `<div class="hero-actions"><a class="button button-secondary" href="/personal-injury/locations/">Browse all injury locations</a></div>`
         }
       </aside>
     </div>
@@ -3582,9 +3728,39 @@ function practicePage(practice) {
       <div class="related-grid">${priorityDuiGuideLinks()}</div>
     </div>
   </section>`
-      : ""
+      : `<section class="section section-alt">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Featured car accident and injury guides</p>
+        <h2>Priority personal injury pages to crawl first.</h2>
+        <p>These city guides now get direct links from the personal injury hub and locations index, with car accident, crash report, insurance, and claim-document language.</p>
+      </div>
+      <div class="related-grid">${priorityPersonalInjuryGuideLinks()}</div>
+    </div>
+  </section>`
   }
   ${practiceHubContent(practice)}
+  ${
+    isDui
+      ? ""
+      : `<section class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Personal injury resources</p>
+        <h2>Crash reports, injury deadlines, and claim documents.</h2>
+        <p>These source-backed resources give Google and readers a clearer path into car accident and personal injury topics before they choose a city guide.</p>
+      </div>
+      <div class="related-grid">
+        <a class="related-card compact-related-card" href="/resources/north-carolina-car-accident-report-guide/">North Carolina car accident report guide</a>
+        <a class="related-card compact-related-card" href="/resources/north-carolina-personal-injury-deadlines/">North Carolina personal injury deadlines</a>
+        <a class="related-card compact-related-card" href="/resources/illinois-car-accident-report-guide/">Illinois car accident report guide</a>
+        <a class="related-card compact-related-card" href="/resources/illinois-personal-injury-deadlines/">Illinois personal injury deadlines</a>
+        <a class="related-card compact-related-card" href="/resources/missouri-car-accident-report-guide/">Missouri car accident report guide</a>
+        <a class="related-card compact-related-card" href="/resources/missouri-personal-injury-deadlines/">Missouri personal injury deadlines</a>
+      </div>
+    </div>
+  </section>`
+  }
   ${
     isDui
       ? `<section class="section section-alt">
@@ -3597,7 +3773,16 @@ function practicePage(practice) {
       ${groupedDuiLocationSections({ compact: true })}
     </div>
   </section>`
-      : ""
+      : `<section class="section section-alt">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Personal injury locations</p>
+        <h2>Browse every car accident and injury city guide by state.</h2>
+        <p>These state sections create a direct crawl path to every personal injury city page and use car accident, crash report, insurance, and claim-document language.</p>
+      </div>
+      ${groupedPersonalInjuryLocationSections({ compact: true })}
+    </div>
+  </section>`
   }
   <section class="section">
     <div class="container">
@@ -3654,6 +3839,50 @@ function duiLocationsPage() {
   </section>`;
 }
 
+function personalInjuryLocationsPage() {
+  const entries = personalInjuryCityEntries();
+
+  return `<section class="hero hero-tight">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">Personal injury locations</p>
+        <h1>Car Accident and Personal Injury Guides by City</h1>
+        <p class="lede">Browse personal injury city guides by state, region, crash-report path, insurance-document questions, and local court market.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="/personal-injury/">Personal injury hub</a>
+          <a class="button button-secondary" href="/sitemap.xml">Main sitemap</a>
+        </div>
+      </div>
+      <aside class="hero-card">
+        <div class="hero-card-header">
+          <span class="pill">${entries.length} city guides</span>
+          <span class="pill pill-muted">${siteData.regions.length} regions</span>
+        </div>
+        <p class="note">Every personal injury city page has a self-referencing canonical URL and is included in the main sitemap.</p>
+      </aside>
+    </div>
+  </section>
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Priority injury pages</p>
+        <h2>Car accident and injury guides to review first.</h2>
+        <p>These city guides are linked first because they match the markets already getting DUI crawl activity or early personal injury impressions.</p>
+      </div>
+      <div class="related-grid">${priorityPersonalInjuryGuideLinks()}</div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">All locations</p>
+        <h2>State and regional personal injury guide index.</h2>
+      </div>
+      ${groupedPersonalInjuryLocationSections()}
+    </div>
+  </section>`;
+}
+
 function homePage() {
   const regionCards = siteData.regions.map(regionSummary).join("");
   const cityCount = siteData.regions.reduce((sum, region) => sum + region.cities.length, 0);
@@ -3680,7 +3909,7 @@ function homePage() {
         </p>
         <div class="hero-actions">
           <a class="button button-primary" href="/dui/locations/">Browse DUI/DWI guides</a>
-          <a class="button button-secondary" href="/personal-injury/">Browse personal injury guides</a>
+          <a class="button button-secondary" href="/personal-injury/locations/">Browse injury guides</a>
         </div>
       </div>
       <aside class="hero-card">
@@ -3709,6 +3938,21 @@ function homePage() {
       <div class="hero-actions">
         <a class="button button-primary" href="/dui/locations/">Browse all DUI/DWI city guides</a>
         <a class="button button-secondary" href="/dui/">View DUI/DWI hub</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Car accident crawl path</p>
+        <h2>Recently Published Personal Injury Guides</h2>
+        <p>Priority city guides for car accident, crash report, insurance, and injury claim searches, grouped into a new locations index for easier discovery.</p>
+      </div>
+      <div class="related-grid">${recentPersonalInjuryGuideLinks(18)}</div>
+      <div class="hero-actions">
+        <a class="button button-primary" href="/personal-injury/locations/">Browse all injury city guides</a>
+        <a class="button button-secondary" href="/personal-injury/">View personal injury hub</a>
       </div>
     </div>
   </section>
@@ -4268,12 +4512,143 @@ const resourcePages = {
       ],
       bullets: documentChecklist(false),
       sources: [
-        { label: "Illinois Compiled Statutes", href: "https://www.ilga.gov/legislation/ilcs/ilcs.asp" },
+        { label: "735 ILCS 5 Article XIII", href: "https://www.ilga.gov/legislation/ilcs/ilcs4.asp?ActID=2017&ChapterID=56&DocName=073500050HArt.+XIII&SeqEnd=105400000&SeqStart=99600000" },
         { label: "Illinois Courts", href: "https://www.illinoiscourts.gov/" },
       ],
       relatedLinks: [
         ["Edwardsville personal injury guide", "/personal-injury/edwardsville-il/"],
         ["Madison County accident report guide", "/resources/madison-county-accident-report-guide/"],
+      ],
+    }),
+  },
+  "/resources/north-carolina-car-accident-report-guide/": {
+    title: "North Carolina Car Accident Report Guide",
+    description:
+      "North Carolina car accident report resource covering NCDMV crash reports, local investigating agencies, insurance documentation, and injury-claim records.",
+    body: resourcePage({
+      eyebrow: "North Carolina injury resource",
+      title: "North Carolina car accident report guide.",
+      intro:
+        "A North Carolina injury claim often starts with practical records: the crash report, the responding agency, medical documentation, insurance letters, and any later court filing. This resource keeps the records path separate from legal advice.",
+      cards: [
+        ["Crash report source", "NCDMV maintains a crash-report request path for reports created by law enforcement agencies in North Carolina."],
+        ["Agency details matter", "The city police department, county sheriff, or State Highway Patrol may be the investigating agency depending on where the crash happened."],
+        ["Insurance documents", "Claim numbers, insurer letters, repair estimates, medical bills, and wage documentation can all become important later."],
+      ],
+      bullets: documentChecklist(false),
+      sources: [
+        { label: "Official NCDMV crash reports", href: "https://www.ncdot.gov/dmv/offices-services/records-reports/Pages/crash-reports.aspx" },
+        { label: "NCDOT crash data", href: "https://www.ncdot.gov/initiatives-policies/safety/traffic-safety/Pages/crash-data.aspx" },
+        { label: "NCDMV crash report form resources", href: "https://connect.ncdot.gov/business/DMV/Pages/Crash-Facts.aspx" },
+      ],
+      relatedLinks: [
+        ["Apex car accident guide", "/personal-injury/apex-nc/"],
+        ["Cary car accident guide", "/personal-injury/cary-nc/"],
+        ["Holly Springs car accident guide", "/personal-injury/holly-springs-nc/"],
+        ["Fuquay-Varina car accident guide", "/personal-injury/fuquay-varina-nc/"],
+      ],
+    }),
+  },
+  "/resources/north-carolina-personal-injury-deadlines/": {
+    title: "North Carolina Personal Injury Deadlines Guide",
+    description:
+      "North Carolina personal injury deadline resource covering injury filing periods, claim documentation, crash reports, and official statute sources.",
+    body: resourcePage({
+      eyebrow: "North Carolina injury resource",
+      title: "North Carolina personal injury deadlines guide.",
+      intro:
+        "North Carolina injury claims can involve insurance deadlines, medical-record timing, evidence preservation, and court filing periods. This guide points readers to official statute and crash-report sources before they rely on assumptions.",
+      cards: [
+        ["Filing period", "North Carolina statute sources should be checked for the filing period that applies to the specific injury claim."],
+        ["Records first", "Crash reports, photographs, medical records, bills, wage documents, and insurer letters are easier to preserve early."],
+        ["Different claim types", "Wrongful death, claims involving public entities, and other fact patterns can involve different rules than an ordinary injury claim."],
+      ],
+      bullets: documentChecklist(false),
+      sources: [
+        { label: "NC General Statutes Chapter 1 Article 3", href: "https://house.ncleg.gov/EnactedLegislation/Statutes/PDF/ByArticle/Chapter_1/Article_3.pdf" },
+        { label: "Official NCDMV crash reports", href: "https://www.ncdot.gov/dmv/offices-services/records-reports/Pages/crash-reports.aspx" },
+      ],
+      relatedLinks: [
+        ["Apex injury guide", "/personal-injury/apex-nc/"],
+        ["Cary injury guide", "/personal-injury/cary-nc/"],
+        ["North Carolina car accident report guide", "/resources/north-carolina-car-accident-report-guide/"],
+      ],
+    }),
+  },
+  "/resources/missouri-car-accident-report-guide/": {
+    title: "Missouri Car Accident Report Guide",
+    description:
+      "Missouri car accident report resource covering Missouri State Highway Patrol crash reports, local agency records, insurance documents, and injury claim records.",
+    body: resourcePage({
+      eyebrow: "Missouri injury resource",
+      title: "Missouri car accident report guide.",
+      intro:
+        "Missouri crash records depend on the investigating agency. A city police department, county sheriff, or Missouri State Highway Patrol troop may be the right starting point depending on where the crash happened.",
+      cards: [
+        ["Highway Patrol reports", "Missouri State Highway Patrol provides an official crash-report search and request path for Patrol investigations."],
+        ["Local agency reports", "If a city police department or sheriff handled the scene, the report path may start with that local agency instead."],
+        ["Useful details", "Date, county, roadway, report number, involved drivers, insurer information, and responding agency details can make records requests easier."],
+      ],
+      bullets: documentChecklist(false),
+      sources: [
+        { label: "Missouri State Highway Patrol crash reports", href: "https://www.mshp.dps.mo.gov/HP68/search.jsp" },
+        { label: "MSHP official crash report information", href: "https://www.machs.mo.gov/HP68/static/Official.html" },
+      ],
+      relatedLinks: [
+        ["Manchester car accident guide", "/personal-injury/manchester-mo/"],
+        ["O'Fallon car accident guide", "/personal-injury/ofallon-mo/"],
+        ["Wentzville car accident guide", "/personal-injury/wentzville-mo/"],
+      ],
+    }),
+  },
+  "/resources/missouri-personal-injury-deadlines/": {
+    title: "Missouri Personal Injury Deadlines Guide",
+    description:
+      "Missouri personal injury deadline resource covering injury filing periods, crash reports, insurance documents, and official Missouri statute sources.",
+    body: resourcePage({
+      eyebrow: "Missouri injury resource",
+      title: "Missouri personal injury deadlines guide.",
+      intro:
+        "Missouri injury claims can involve insurance timing, medical proof, evidence preservation, and court filing periods. This resource links to official statute and crash-report sources so readers can verify the legal source path.",
+      cards: [
+        ["Statute source", "Missouri Revised Statutes Section 516.120 is an official source readers should check for injury-to-person or rights timing language."],
+        ["Crash records", "The investigating agency matters; some crash reports start with MSHP, while others start with a city police department or sheriff."],
+        ["Evidence preservation", "Medical records, photographs, repair estimates, claim numbers, insurer letters, and witness information should be organized early."],
+      ],
+      bullets: documentChecklist(false),
+      sources: [
+        { label: "RSMo Section 516.120", href: "https://revisor.mo.gov/main/OneSection.aspx?section=516.120" },
+        { label: "Missouri State Highway Patrol crash reports", href: "https://www.mshp.dps.mo.gov/HP68/search.jsp" },
+      ],
+      relatedLinks: [
+        ["Manchester injury guide", "/personal-injury/manchester-mo/"],
+        ["Missouri car accident report guide", "/resources/missouri-car-accident-report-guide/"],
+      ],
+    }),
+  },
+  "/resources/illinois-car-accident-report-guide/": {
+    title: "Illinois Car Accident Report Guide",
+    description:
+      "Illinois car accident report resource covering Illinois State Police crash reports, local investigating agencies, report criteria, and injury claim records.",
+    body: resourcePage({
+      eyebrow: "Illinois injury resource",
+      title: "Illinois car accident report guide.",
+      intro:
+        "Illinois crash records depend on whether Illinois State Police or another law enforcement agency handled the crash. This resource helps readers start with the correct official report path.",
+      cards: [
+        ["Investigating agency", "Illinois State Police explains that if the report does not indicate Illinois State Police, readers should contact the listed investigating agency."],
+        ["Report criteria", "Illinois State Police publishes crash-report criteria and online crash-reporting resources."],
+        ["Claim documents", "A report is only one record; injury claims may also depend on medical records, bills, photographs, repair estimates, wage records, and insurer letters."],
+      ],
+      bullets: documentChecklist(false),
+      sources: [
+        { label: "Illinois traffic crash report service", href: "https://www.illinois.gov/services/service.traffic-crash-report.html" },
+        { label: "Illinois State Police crash reports", href: "https://isp.illinois.gov/CrashReports" },
+      ],
+      relatedLinks: [
+        ["Edwardsville injury guide", "/personal-injury/edwardsville-il/"],
+        ["Collinsville injury guide", "/personal-injury/collinsville-il/"],
+        ["Illinois personal injury deadlines guide", "/resources/illinois-personal-injury-deadlines/"],
       ],
     }),
   },
@@ -4815,6 +5190,14 @@ function renderStaticPages() {
       active: "/dui/",
       crumbs: ["DUI and DWI Guides by City"],
     },
+    "/personal-injury/locations/": {
+      title: `Car Accident and Personal Injury Guides by City | ${siteData.siteName}`,
+      description:
+        "Browse all Local Legal Guides car accident and personal injury city pages by state, region, local records path, and court market.",
+      body: personalInjuryLocationsPage(),
+      active: "/personal-injury/",
+      crumbs: ["Car Accident and Personal Injury Guides by City"],
+    },
     "/editorial-standards/": {
       title: `Editorial Standards | ${siteData.siteName}`,
       description: `How ${siteData.siteName} researches, sources, reviews, corrects, and separates sponsorship from legal information.`,
@@ -4899,6 +5282,7 @@ function sitemapEntries() {
     "/dui/",
     "/dui/locations/",
     "/personal-injury/",
+    "/personal-injury/locations/",
     "/regions/",
     "/editorial-standards/",
     "/terms/",
@@ -4942,6 +5326,7 @@ This site provides general legal information only. It is not legal advice, is no
 - DUI/DWI hub: ${absoluteUrl("/dui/")}
 - DUI/DWI city index: ${absoluteUrl("/dui/locations/")}
 - Personal injury hub: ${absoluteUrl("/personal-injury/")}
+- Personal injury city index: ${absoluteUrl("/personal-injury/locations/")}
 - Regions: ${absoluteUrl("/regions/")}
 - Editorial standards: ${absoluteUrl("/editorial-standards/")}
 - Contact: ${absoluteUrl("/contact/")}
