@@ -75,7 +75,7 @@ function sponsorPackage(region) {
 }
 
 function guideCount(region) {
-  return region.cities.length * siteData.practiceAreas.length;
+  return region.cities.length * practicesForRegion(region).length;
 }
 
 function cityGuideCountForPractice(region) {
@@ -206,7 +206,7 @@ function sponsorProfileCard(region, packageInfo, placement = "cluster") {
       <li>${escapeHtml(packageInfo.termLabel)}.</li>
       <li>${escapeHtml(launchPackageLabel)} for founding sponsors.</li>
       <li>${escapeHtml(packageInfo.coverageLabel)}</li>
-      <li>DUI/DWI and Personal Injury are separate sponsor inventory slots.</li>
+      <li>${escapeHtml(practiceInventoryPhrase(region))} sponsor inventory is enabled for this region.</li>
     </ul>
     <p class="sponsor-note">Attorney Advertising. Any future sponsor placement will remain separate from official legal and government resource information.</p>
     <div class="hero-actions">
@@ -357,6 +357,25 @@ function practiceSeoLabel(practice, region) {
   return practice.label;
 }
 
+function practiceInventoryPhrase(region) {
+  const practices = practicesForRegion(region).map((practice) =>
+    practice.slug === "dui" ? "DUI/DWI" : practice.label
+  );
+  return listPhrase(practices);
+}
+
+function practicesForRegion(region) {
+  const enabled = region?.practiceSlugs;
+  if (!Array.isArray(enabled) || !enabled.length) {
+    return siteData.practiceAreas;
+  }
+  return enabled.map((slug) => practiceBySlug.get(slug)).filter(Boolean);
+}
+
+function regionHasPractice(region, practiceSlug) {
+  return practicesForRegion(region).some((practice) => practice.slug === practiceSlug);
+}
+
 function duiPractice() {
   return practiceBySlug.get("dui");
 }
@@ -380,12 +399,14 @@ function personalInjuryPractice() {
 function personalInjuryCityEntries() {
   const practice = personalInjuryPractice();
   return siteData.regions.flatMap((region) =>
-    region.cities.map((city) => ({
-      city,
-      region,
-      label: practice.label,
-      href: pathForPracticeCity("personal-injury", city.slug),
-    }))
+    regionHasPractice(region, "personal-injury")
+      ? region.cities.map((city) => ({
+          city,
+          region,
+          label: practice.label,
+          href: pathForPracticeCity("personal-injury", city.slug),
+        }))
+      : []
   );
 }
 
@@ -1147,7 +1168,11 @@ function duiInternalLinksSection(city, region, practice) {
       </div>
       <div class="related-grid">
         <a class="related-card compact-related-card" href="/dui/">DUI/DWI hub</a>
-        <a class="related-card compact-related-card" href="${pathForPracticeCity("personal-injury", city.slug)}">${escapeHtml(city.name)} personal injury guide</a>
+        ${
+          regionHasPractice(region, "personal-injury")
+            ? `<a class="related-card compact-related-card" href="${pathForPracticeCity("personal-injury", city.slug)}">${escapeHtml(city.name)} personal injury guide</a>`
+            : ""
+        }
         ${nearbyLinks}
       </div>
     </div>
@@ -3095,7 +3120,7 @@ function pageShell({ title, description, body, active = "", route = "/", schema 
 
 function regionSummary(region) {
   const cityCount = region.cities.length;
-  const guideCount = cityCount * siteData.practiceAreas.length;
+  const guideCount = cityCount * practicesForRegion(region).length;
   return `<article class="region-card">
     <p class="eyebrow">${escapeHtml(region.state)}</p>
     <h3>${escapeHtml(region.name)}</h3>
@@ -3558,7 +3583,7 @@ function cityShell(city, region, practice) {
           isDui
             ? `<a class="related-card" href="/dui/locations/"><span>DUI/DWI locations</span><strong>All DUI and DWI guides by city</strong><p>Browse every DUI/DWI city guide by state and region.</p></a>`
             : ""
-        }${!isDui ? `<a class="related-card" href="/personal-injury/locations/"><span>Personal injury locations</span><strong>All car accident and injury guides by city</strong><p>Browse every injury city guide by state and region.</p></a>` : ""}${siteData.practiceAreas
+        }${!isDui ? `<a class="related-card" href="/personal-injury/locations/"><span>Personal injury locations</span><strong>All car accident and injury guides by city</strong><p>Browse every injury city guide by state and region.</p></a>` : ""}${practicesForRegion(region)
           .filter((item) => item.slug !== practice.slug)
           .map((item) => {
             const label = item.slug === "dui" ? practiceSeoLabel(item, region) : item.label;
@@ -3676,6 +3701,7 @@ function practiceHubContent(practice) {
 function practicePage(practice) {
   const isDui = practice.slug === "dui";
   const regionCards = siteData.regions
+    .filter((region) => regionHasPractice(region, practice.slug))
     .map((region) => {
       const cities = region.cities
         .map((city) => {
@@ -4033,7 +4059,8 @@ function regionPage(region) {
     )
     .join("");
 
-  const practiceLinks = siteData.practiceAreas
+  const regionPractices = practicesForRegion(region);
+  const practiceLinks = regionPractices
     .map(
       (practice) => `<a class="practice-chip" href="/${practice.slug}/">${escapeHtml(practice.label)}</a>`
     )
@@ -4052,7 +4079,7 @@ function regionPage(region) {
     .map((item) => `<article class="info-card"><h3>${escapeHtml(item[0])}</h3><p>${escapeHtml(item[1])}</p></article>`)
     .join("");
 
-  const sponsorInventoryRows = siteData.practiceAreas
+  const sponsorInventoryRows = regionPractices
     .map(
       (practice) => `<tr>
         <td>${escapeHtml(practice.label)}</td>
@@ -4088,9 +4115,9 @@ function regionPage(region) {
       <aside class="hero-card">
         <div class="hero-card-header">
           <span class="pill">${region.cities.length} cities</span>
-          <span class="pill pill-muted">${region.cities.length * siteData.practiceAreas.length} guides</span>
+          <span class="pill pill-muted">${guideCount(region)} guides</span>
         </div>
-        <p class="note">This market has separate sponsorship inventory for each practice area and future pages.</p>
+        <p class="note">This market has sponsorship inventory for the enabled practice area guides and future pages.</p>
       </aside>
     </div>
   </section>
@@ -4108,7 +4135,7 @@ function regionPage(region) {
       <div>
         <div class="section-head">
           <p class="eyebrow">Practice areas</p>
-          <h2>DUI/DWI and Personal Injury are sold separately.</h2>
+          <h2>Enabled practice-area inventory.</h2>
         </div>
         <div class="chip-grid">${practiceLinks}</div>
       </div>
@@ -4121,7 +4148,7 @@ function regionPage(region) {
         <div class="section-head">
           <p class="eyebrow">Practice-area inventory</p>
           <h2>Reserve one practice area in ${escapeHtml(region.name)}.</h2>
-          <p>DUI/DWI and Personal Injury are separate annual sponsorship slots. Buying one practice area does not include the other unless a separate package is reserved.</p>
+          <p>Each enabled practice area is treated as its own annual sponsorship slot. Buying one practice area does not include another unless a separate package is reserved.</p>
         </div>
         <div class="responsive-table"><table>
           <thead><tr><th>Practice Area</th><th>Status</th><th>Founding Price</th><th>Term</th><th>CTA</th></tr></thead>
@@ -5145,7 +5172,7 @@ function renderRegions() {
 function renderRegion(region) {
   const route = `/clusters/${region.slug}/`;
   const title = `${region.name} Legal Guides | ${siteData.siteName}`;
-  const description = compactDescription(`${region.teaser} Browse DUI, DWI, and personal injury city guides in ${region.state}.`);
+  const description = compactDescription(`${region.teaser} Browse ${practiceInventoryPhrase(region)} city guides in ${region.state}.`);
   const court = regionPrimaryCourt(region);
   const enforcement = regionEnforcementOffices(region);
   const licenseOffice = region.licenseOffice;
@@ -5293,8 +5320,9 @@ function sitemapEntries() {
 
   for (const region of siteData.regions) {
     for (const city of region.cities) {
-      entries.push(`/dui/${city.slug}/`);
-      entries.push(`/personal-injury/${city.slug}/`);
+      for (const practice of practicesForRegion(region)) {
+        entries.push(pathForPracticeCity(practice.slug, city.slug));
+      }
     }
   }
   return entries;
@@ -5407,10 +5435,7 @@ function validateContactStandard() {
   for (const region of siteData.regions) {
     for (const city of region.cities) {
       const label = `${city.name}, ${region.stateCode}`;
-      const courts = [
-        courtForCity(city, region, practiceBySlug.get("dui")),
-        courtForCity(city, region, practiceBySlug.get("personal-injury")),
-      ];
+      const courts = practicesForRegion(region).map((practice) => courtForCity(city, region, practice));
       const licenseOffice = city.licenseOfficeOverride ?? region.licenseOffice;
 
       if (!hasRequiredContactFields(city.police, requiredFields)) {
@@ -5448,7 +5473,7 @@ async function main() {
   for (const region of siteData.regions) {
     outputs.push([`clusters/${region.slug}/index.html`, renderRegion(region)]);
     for (const city of region.cities) {
-      for (const practice of siteData.practiceAreas) {
+      for (const practice of practicesForRegion(region)) {
         outputs.push([
           `${practice.slug}/${city.slug}/index.html`,
           renderCityPage(city, region, practice),

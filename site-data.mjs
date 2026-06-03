@@ -27,6 +27,10 @@ const expansionSponsorPackages = Object.fromEntries(
     ["boone-county-columbia-mo", "5 Missouri city pages for one selected practice area"],
     ["springfield-suburban-ring-mo", "5 Missouri city pages for one selected practice area"],
     ["kansas-city-northland-mo", "5 Missouri city pages for one selected practice area"],
+    ["guilford-county-triad-nc", "5 North Carolina DWI city pages"],
+    ["new-hanover-coastal-nc", "5 North Carolina DWI city pages"],
+    ["eastern-jackson-county-mo", "5 Missouri DWI city pages"],
+    ["jasper-county-joplin-mo", "5 Missouri DWI city pages"],
   ].map(([slug, coverageLabel]) => [slug, makeAvailableSponsorPackage(coverageLabel)])
 );
 
@@ -164,6 +168,60 @@ const greeneCountyCourt = office({
   hours: "Confirm current hours with the circuit clerk before visiting.",
   courtSystem: "31st Judicial Circuit",
   href: "https://www.courts.mo.gov/page.jsp?id=124636",
+});
+
+const guilfordCountyCourt = office({
+  name: "Guilford County Courthouse",
+  address: "201 S. Eugene Street, Greensboro, NC 27401",
+  phone: "(336) 412-7300",
+  hours: "Monday-Friday, 8:30 am-5:00 pm; confirm current courthouse hours before visiting.",
+  courtSystem: "North Carolina Judicial Branch - Guilford County",
+  href: "https://www.nccourts.gov/locations/guilford-county",
+});
+
+const guilfordHighPointCourt = office({
+  name: "Guilford County Courthouse - High Point",
+  address: "505 E. Green Drive, High Point, NC 27262",
+  phone: "(336) 822-6700",
+  hours: "Monday-Friday, 8:30 am-12:45 pm and 1:45 pm-5:00 pm; confirm current courthouse hours before visiting.",
+  courtSystem: "North Carolina Judicial Branch - Guilford County",
+  href: "https://www.nccourts.gov/locations/guilford-county/guilford-county-courthouse-high-point",
+});
+
+const newHanoverCountyCourt = office({
+  name: "New Hanover County Courthouse",
+  address: "316 Princess Street, Wilmington, NC 28401",
+  phone: "(910) 772-6600",
+  hours: "Monday-Friday, 8:00 am-5:00 pm; confirm current courthouse hours before visiting.",
+  courtSystem: "North Carolina Judicial Branch - New Hanover County",
+  href: "https://www.nccourts.gov/locations/new-hanover-county/new-hanover-county-courthouse",
+});
+
+const easternJacksonCountyCourt = office({
+  name: "Eastern Jackson County Courthouse",
+  address: "308 W. Kansas Avenue, Independence, MO 64050",
+  phone: "(816) 881-1619",
+  hours: "Confirm current hours with the 16th Judicial Circuit before visiting.",
+  courtSystem: "16th Judicial Circuit Court of Jackson County",
+  href: "https://www.16thcircuit.org/",
+});
+
+const jasperCountyCourt = office({
+  name: "Jasper County Circuit Court",
+  address: "302 S. Main Street, Carthage, MO 64836",
+  phone: "(417) 358-0441",
+  hours: "Monday-Friday, 8:30 am-4:30 pm, with a midday lunch closure; confirm current hours before visiting.",
+  courtSystem: "29th Judicial Circuit Court",
+  href: "https://jaspercountycourts.org/",
+});
+
+const jasperJoplinCourt = office({
+  name: "Jasper County Courts Building - Joplin",
+  address: "633 S. Pearl Avenue, Joplin, MO 64801",
+  phone: "(417) 625-4310",
+  hours: "Monday-Friday, 8:30 am-4:30 pm, with a midday lunch closure; confirm current hours before visiting.",
+  courtSystem: "29th Judicial Circuit Court",
+  href: "https://jaspercountycourts.org/contact-us",
 });
 
 const stLouisCountyLicense = office({
@@ -646,6 +704,160 @@ const expansionRegions = [
       city({ slug: "north-kansas-city-mo", name: "North Kansas City", agency: "North Kansas City Police Department", police: police("North Kansas City Police Department", "2020 Howell Street, North Kansas City, MO 64116", "(816) 274-6013", "https://www.nkc.org/", "For North Kansas City police reports, crash records, and local enforcement questions.") }),
       city({ slug: "parkville-mo", name: "Parkville", agency: "Parkville Police Department", police: police("Parkville Police Department", "8880 Clark Avenue, Parkville, MO 64152", "(816) 741-4454", "https://parkvillemo.gov/", "For Parkville police reports, crash records, and Platte County routing questions."), courtOverride: platteCountyCourt, personalInjuryCourtOverride: platteCountyCourt }),
       city({ slug: "riverside-mo", name: "Riverside", agency: "Riverside Public Safety Department", police: police("Riverside Public Safety Department", "2990 NW Vivion Road, Riverside, MO 64150", "(816) 741-1191", "https://www.riversidemo.gov/", "For Riverside public-safety reports, crash records, and Platte County routing questions.", "Public Safety Department"), courtOverride: platteCountyCourt, personalInjuryCourtOverride: platteCountyCourt }),
+    ],
+  },
+  {
+    slug: "guilford-county-triad-nc",
+    name: "Guilford County Triad",
+    state: "North Carolina",
+    stateCode: "NC",
+    practiceSlugs: ["dui"],
+    teaser: "Greensboro, High Point, Jamestown, Summerfield, and Stokesdale DWI guides around the Guilford County court system.",
+    urgentDeadline: {
+      headline: "Guilford County DWI readers need to know which courthouse and agency are tied to the paperwork.",
+      body: "Greensboro and High Point have separate courthouse locations, while smaller towns often require checking Guilford County Sheriff's Office district resources.",
+    },
+    regionHighlights: [
+      { title: "Two courthouse anchors", body: "Guilford County is distinct from the existing Wake and Charlotte clusters because Greensboro and High Point each have official courthouse touchpoints." },
+      { title: "Urban and county enforcement mix", body: "Greensboro, High Point, Jamestown, Summerfield, and Stokesdale create a real blend of city police, sheriff, and highway-patrol context." },
+      { title: "Triad attorney market", body: "The cluster is large enough for DWI outreach while still selling a focused local territory instead of a broad statewide placement." },
+    ],
+    processNotes: [
+      { label: "Courthouse", title: "Greensboro and High Point court routing can differ", body: "Readers should match the court notice to the correct Guilford County courthouse location before appearing in person." },
+      { label: "Records", title: "Start with the agency on the citation or report", body: "A stop can involve Greensboro Police, High Point Police, Guilford County deputies, or North Carolina State Highway Patrol." },
+      { label: "License", title: "NCDMV issues are separate from the criminal case", body: "A DWI arrest can create license questions that should be tracked separately from the first court date." },
+    ],
+    court: guilfordCountyCourt,
+    courtOffices: [guilfordCountyCourt, guilfordHighPointCourt],
+    licenseOffice: office({
+      name: "NCDMV Driver License Office Locator",
+      type: "NCDMV Driver License Office",
+      address: "Use the NCDMV locator for the nearest current office.",
+      phone: "(919) 715-7000",
+      hours: "Confirm current hours with the NCDMV office locator.",
+      href: "https://www.ncdot.gov/dmv/offices-services/locate-dmv-office/Pages/dmv-offices.aspx",
+      note: "Use the NCDMV locator to verify services, appointments, and current hours before visiting.",
+    }),
+    sharedEnforcement: [
+      police("Guilford County Sheriff's Office", "401 W. Sycamore Street, Greensboro, NC 27401", "(336) 641-3694", "https://www.guilfordcountync.gov/government/sheriffs-office/contact-gcso", "County law-enforcement contact for sheriff-handled matters and countywide questions.", "County Sheriff"),
+    ],
+    cities: [
+      city({ slug: "greensboro-nc", name: "Greensboro", agency: "Greensboro Police Department", police: police("Greensboro Police Department", "100 E. Police Plaza, Greensboro, NC 27402", "(336) 373-2222", "https://www.greensboro-nc.gov/departments/police?lv=true", "For Greensboro police reports, crash records, and city enforcement questions."), dui_local_data: duiData({ summary: "Greensboro Police publish department contact and records resources through the official city police site.", sourceName: "Greensboro Police Department", sourceUrl: "https://www.greensboro-nc.gov/departments/police?lv=true", roads: ["I-40", "I-85", "U.S. 29", "Battleground Avenue", "Gate City Boulevard"], jurisdictions: [jurisdiction("Greensboro Police Department", "Municipal police", "Handles city traffic stops and police records in Greensboro."), jurisdiction("Guilford County Sheriff's Office", "County sheriff", "May be involved outside city limits or on county matters."), jurisdiction("North Carolina State Highway Patrol", "State patrol", "May handle interstate and highway enforcement.")] }) }),
+      city({ slug: "high-point-nc", name: "High Point", agency: "High Point Police Department", police: police("High Point Police Department", "1730 Westchester Drive, High Point, NC 27262", "(336) 883-3224", "https://www.highpointnc.gov/police", "For High Point police reports, crash records, and city enforcement questions."), courtOverride: guilfordHighPointCourt, dui_local_data: duiData({ summary: "High Point Police publish official contact information and records-oriented department resources on the city website.", sourceName: "High Point Police Department", sourceUrl: "https://www.highpointnc.gov/police", roads: ["I-74", "U.S. 311", "North Main Street", "Eastchester Drive", "Wendover Avenue"], jurisdictions: [jurisdiction("High Point Police Department", "Municipal police", "Handles city traffic stops and police records in High Point."), jurisdiction("Guilford County Sheriff's Office", "County sheriff", "May be involved in county areas or warrant/service matters."), jurisdiction("North Carolina State Highway Patrol", "State patrol", "May handle interstate and highway enforcement.")] }) }),
+      city({ slug: "jamestown-nc", name: "Jamestown", agency: "Guilford County Sheriff's Office District 3", police: police("Guilford County Sheriff's Office District 3", "211 Hillstone Drive, Jamestown, NC 27282", "(336) 641-6691", "https://www.guilfordcountync.gov/government/sheriffs-office/services", "Jamestown readers should confirm whether Guilford County deputies, High Point Police, or another agency handled the report.", "County Sheriff"), courtOverride: guilfordHighPointCourt, dui_local_data: duiData({ summary: "The Guilford County Sheriff's Office lists District 3 in Jamestown as a patrol district office serving its geographical area.", sourceName: "Guilford County Sheriff's Office services", sourceUrl: "https://www.guilfordcountync.gov/government/sheriffs-office/services", roads: ["Main Street", "Guilford College Road", "East Fork Road", "Mackay Road", "I-74"], jurisdictions: [jurisdiction("Guilford County Sheriff's Office", "County sheriff", "Primary county agency for many Jamestown-area records questions."), jurisdiction("High Point Police Department", "Municipal police", "May be relevant near High Point jurisdictional boundaries."), jurisdiction("North Carolina State Highway Patrol", "State patrol", "May handle highway enforcement.")] }) }),
+      city({ slug: "summerfield-nc", name: "Summerfield", agency: "Guilford County Sheriff's Office District 1", police: police("Guilford County Sheriff's Office District 1", "7504 Summerfield Road, Summerfield, NC 27358", "(336) 641-2300", "https://www.guilfordcountync.gov/government/sheriffs-office/services", "Summerfield readers should start with the Guilford County Sheriff's Office district contact when deputies handled the stop or report.", "County Sheriff"), dui_local_data: duiData({ summary: "The Guilford County Sheriff's Office lists District 1 in Summerfield as one of its patrol district offices.", sourceName: "Guilford County Sheriff's Office services", sourceUrl: "https://www.guilfordcountync.gov/government/sheriffs-office/services", roads: ["U.S. 220", "N.C. 150", "Summerfield Road", "Scalesville Road", "I-73"], jurisdictions: [jurisdiction("Guilford County Sheriff's Office", "County sheriff", "Primary county agency for many Summerfield-area records questions."), jurisdiction("Greensboro Police Department", "Municipal police", "May be relevant near Greensboro boundaries."), jurisdiction("North Carolina State Highway Patrol", "State patrol", "May handle highway enforcement.")] }) }),
+      city({ slug: "stokesdale-nc", name: "Stokesdale", agency: "Guilford County Sheriff's Office District 1", police: police("Guilford County Sheriff's Office District 1", "7504 Summerfield Road, Summerfield, NC 27358", "(336) 641-2300", "https://www.guilfordcountync.gov/government/sheriffs-office/services", "Stokesdale readers should confirm whether Guilford County deputies or state patrol handled the stop or report.", "County Sheriff"), dui_local_data: duiData({ summary: "Stokesdale is covered through Guilford County Sheriff's Office patrol resources rather than a separate city police department page.", sourceName: "Guilford County Sheriff's Office services", sourceUrl: "https://www.guilfordcountync.gov/government/sheriffs-office/services", roads: ["U.S. 220", "N.C. 68", "N.C. 158", "Ellisboro Road", "Haw River Road"], jurisdictions: [jurisdiction("Guilford County Sheriff's Office", "County sheriff", "Primary county agency for many Stokesdale-area records questions."), jurisdiction("North Carolina State Highway Patrol", "State patrol", "May handle highway and state-route enforcement.")] }) }),
+    ],
+  },
+  {
+    slug: "new-hanover-coastal-nc",
+    name: "New Hanover Coastal",
+    state: "North Carolina",
+    stateCode: "NC",
+    practiceSlugs: ["dui"],
+    teaser: "Wilmington, Wrightsville Beach, Carolina Beach, Kure Beach, and Castle Hayne DWI guides tied to New Hanover County court and coastal enforcement.",
+    urgentDeadline: {
+      headline: "Coastal DWI cases can involve city, beach-town, sheriff, or highway-patrol records before the courthouse step.",
+      body: "New Hanover County readers should separate the agency that handled the stop from the courthouse and NCDMV license questions.",
+    },
+    regionHighlights: [
+      { title: "Distinct coastal pattern", body: "This cluster has beach-town and tourism context that is very different from Wake, Charlotte, or Triad suburb pages." },
+      { title: "One courthouse, several agencies", body: "Wilmington, Wrightsville Beach, Carolina Beach, Kure Beach, and Castle Hayne point to different police or sheriff records paths." },
+      { title: "Sellable Wilmington-area territory", body: "A DWI attorney can sponsor a recognizable coastal market without buying a broad statewide campaign." },
+    ],
+    processNotes: [
+      { label: "Agency first", title: "Beach-town stops are not all Wilmington cases", body: "The report source can change quickly between Wilmington Police, beach police, New Hanover deputies, and state patrol." },
+      { label: "Court", title: "The courthouse anchor is in downtown Wilmington", body: "Criminal court and traffic-court questions generally orient around the New Hanover County Courthouse on Princess Street." },
+      { label: "Seasonality", title: "Visitor traffic changes the practical questions", body: "Out-of-town drivers often need contact information, records, and license guidance before they can return to the area." },
+    ],
+    court: newHanoverCountyCourt,
+    licenseOffice: office({
+      name: "NCDMV Driver License Office Locator",
+      type: "NCDMV Driver License Office",
+      address: "Use the NCDMV locator for the nearest current office.",
+      phone: "(919) 715-7000",
+      hours: "Confirm current hours with the NCDMV office locator.",
+      href: "https://www.ncdot.gov/dmv/offices-services/locate-dmv-office/Pages/dmv-offices.aspx",
+      note: "Use the NCDMV locator to verify services, appointments, and current hours before visiting.",
+    }),
+    sharedEnforcement: [
+      police("New Hanover County Sheriff's Office", "3950 Juvenile Center Road, Castle Hayne, NC 28429", "(910) 798-4200", "https://www.newhanoversheriff.com/795/Sheriffs-Office", "County sheriff contact for sheriff-handled records and Castle Hayne-area questions.", "County Sheriff"),
+    ],
+    cities: [
+      city({ slug: "wilmington-nc", name: "Wilmington", agency: "Wilmington Police Department", police: police("Wilmington Police Department", "615 Bess Street, Wilmington, NC 28401", "(910) 343-3600", "https://www.wilmingtonnc.gov/Public-Safety/Police-Department", "For Wilmington police reports, crash records, and city enforcement questions."), dui_local_data: duiData({ summary: "Wilmington Police publish headquarters contact information and incident/accident report access through the official city police page.", sourceName: "Wilmington Police Department", sourceUrl: "https://www.wilmingtonnc.gov/Public-Safety/Police-Department", roads: ["Market Street", "College Road", "Oleander Drive", "Carolina Beach Road", "I-140"], jurisdictions: [jurisdiction("Wilmington Police Department", "Municipal police", "Handles city traffic stops and police records in Wilmington."), jurisdiction("New Hanover County Sheriff's Office", "County sheriff", "May be involved outside city limits or in county matters."), jurisdiction("North Carolina State Highway Patrol", "State patrol", "May handle highway enforcement.")] }) }),
+      city({ slug: "wrightsville-beach-nc", name: "Wrightsville Beach", agency: "Wrightsville Beach Police Department", police: police("Wrightsville Beach Police Department", "3 Bob Sawyer Drive, Wrightsville Beach, NC 28480", "(910) 256-7945", "https://www.townofwrightsvillebeach.com/160/Police", "For Wrightsville Beach police reports, accident reports, and beach-town enforcement questions."), dui_local_data: duiData({ summary: "Wrightsville Beach Police list accident-report links and partner-agency resources on the official police department page.", sourceName: "Wrightsville Beach Police Department", sourceUrl: "https://www.townofwrightsvillebeach.com/160/Police", roads: ["Eastwood Road", "Causeway Drive", "Lumina Avenue", "Salisbury Street", "U.S. 74"], jurisdictions: [jurisdiction("Wrightsville Beach Police Department", "Municipal police", "Handles local beach-town traffic stops and records."), jurisdiction("New Hanover County Sheriff's Office", "County sheriff", "May be involved in county or mutual-aid matters."), jurisdiction("North Carolina State Highway Patrol", "State patrol", "May handle highway enforcement.")] }) }),
+      city({ slug: "carolina-beach-nc", name: "Carolina Beach", agency: "Carolina Beach Police Department", police: police("Carolina Beach Police Department", "1121 N. Lake Park Boulevard, Carolina Beach, NC 28428", "(910) 458-2540", "https://www.carolinabeach.gov/167/Police", "For Carolina Beach police reports, crash records, and local enforcement questions."), dui_local_data: duiData({ summary: "Carolina Beach Police publish official department contact information, including non-emergency dispatch and administrative office phone numbers.", sourceName: "Carolina Beach Police Department", sourceUrl: "https://www.carolinabeach.gov/167/Police", roads: ["Lake Park Boulevard", "Dow Road", "Carolina Beach Road", "Cape Fear Boulevard", "Winner Avenue"], jurisdictions: [jurisdiction("Carolina Beach Police Department", "Municipal police", "Handles town traffic stops and police records."), jurisdiction("New Hanover County Sheriff's Office", "County sheriff", "May be involved in county or mutual-aid matters."), jurisdiction("North Carolina State Highway Patrol", "State patrol", "May handle highway enforcement.")] }) }),
+      city({ slug: "kure-beach-nc", name: "Kure Beach", agency: "Kure Beach Police Department", police: police("Kure Beach Police Department", "117 Settlers Lane, Kure Beach, NC 28449", "(910) 458-7586", "https://www.townofkurebeach.org/police-department", "For Kure Beach police reports and local enforcement questions."), dui_local_data: duiData({ summary: "Kure Beach Police publish official department information and contact details through the town website.", sourceName: "Kure Beach Police Department", sourceUrl: "https://www.townofkurebeach.org/police-department", roads: ["Fort Fisher Boulevard", "K Avenue", "Settlers Lane", "Dow Road", "U.S. 421"], jurisdictions: [jurisdiction("Kure Beach Police Department", "Municipal police", "Handles town traffic stops and police records."), jurisdiction("New Hanover County Sheriff's Office", "County sheriff", "May be involved in county or mutual-aid matters."), jurisdiction("North Carolina State Highway Patrol", "State patrol", "May handle highway enforcement.")] }) }),
+      city({ slug: "castle-hayne-nc", name: "Castle Hayne", agency: "New Hanover County Sheriff's Office", police: police("New Hanover County Sheriff's Office", "3950 Juvenile Center Road, Castle Hayne, NC 28429", "(910) 798-4200", "https://www.newhanoversheriff.com/795/Sheriffs-Office", "Castle Hayne readers should confirm whether New Hanover County deputies or state patrol handled the stop or report.", "County Sheriff"), dui_local_data: duiData({ summary: "The New Hanover County Sheriff's Office lists its office in Castle Hayne as the county sheriff contact point.", sourceName: "New Hanover County Sheriff's Office", sourceUrl: "https://www.newhanoversheriff.com/795/Sheriffs-Office", roads: ["U.S. 117", "N.C. 133", "Castle Hayne Road", "I-140", "Blue Clay Road"], jurisdictions: [jurisdiction("New Hanover County Sheriff's Office", "County sheriff", "Primary local agency for many Castle Hayne-area records questions."), jurisdiction("North Carolina State Highway Patrol", "State patrol", "May handle highway and state-route enforcement.")] }) }),
+    ],
+  },
+  {
+    slug: "eastern-jackson-county-mo",
+    name: "Eastern Jackson County",
+    state: "Missouri",
+    stateCode: "MO",
+    practiceSlugs: ["dui"],
+    teaser: "Independence, Blue Springs, Lee's Summit, Raytown, and Grain Valley DWI guides tied to eastern Jackson County.",
+    urgentDeadline: {
+      headline: "Eastern Jackson County DWI cases need court, police, and Missouri DOR questions separated early.",
+      body: "The cities share Jackson County court context but have distinct police departments and commuter routes.",
+    },
+    regionHighlights: [
+      { title: "Different from KC Northland", body: "This market uses Jackson County and Independence court context rather than Clay or Platte County routing." },
+      { title: "Dense suburban buyer pool", body: "Independence, Blue Springs, Lee's Summit, Raytown, and Grain Valley create a coherent attorney outreach territory." },
+      { title: "I-70 and I-470 corridor relevance", body: "Major commuter and interstate routes support DWI, traffic-defense, and records-search intent." },
+    ],
+    processNotes: [
+      { label: "Court", title: "Use the Independence courthouse anchor", body: "Eastern Jackson County readers often orient around the 16th Circuit's Independence courthouse location." },
+      { label: "Records", title: "Each city has its own police records path", body: "The agency named on the citation or report should drive the first records request." },
+      { label: "License", title: "Missouri DOR deadlines run separately", body: "DWI cases can create administrative license issues outside the criminal court calendar." },
+    ],
+    court: easternJacksonCountyCourt,
+    licenseOffice: stLouisCountyLicense,
+    sharedEnforcement: [
+      police("Missouri State Highway Patrol Troop A", "504 S.E. Blue Parkway, Lee's Summit, MO 64063", "(816) 622-0800", "https://www.mshp.dps.missouri.gov/HP71/searchTroop", "State patrol contact for highway enforcement context in the Kansas City region.", "State Patrol"),
+    ],
+    cities: [
+      city({ slug: "independence-mo", name: "Independence", agency: "Independence Police Department", police: police("Independence Police Department", "223 N. Memorial Drive, Independence, MO 64050", "(816) 325-7300", "https://www.independencemo.gov/ipd", "For Independence police reports, crash records, and local enforcement questions."), dui_local_data: duiData({ summary: "Independence Police publish official department contact information through the City of Independence police page.", sourceName: "Independence Police Department", sourceUrl: "https://www.independencemo.gov/ipd", roads: ["I-70", "U.S. 24", "Noland Road", "Truman Road", "Missouri Route 291"], jurisdictions: [jurisdiction("Independence Police Department", "Municipal police", "Handles city traffic stops and police records."), jurisdiction("Jackson County Sheriff's Office", "County sheriff", "May be involved in county matters."), jurisdiction("Missouri State Highway Patrol", "State patrol", "May handle interstate and highway enforcement.")] }) }),
+      city({ slug: "blue-springs-mo", name: "Blue Springs", agency: "Blue Springs Police Department", police: police("Blue Springs Police Department", "1100 SW Smith Street, Blue Springs, MO 64015", "(816) 228-0150", "https://www.bluespringsgov.com/police", "For Blue Springs police reports, crash records, and local enforcement questions."), dui_local_data: duiData({ summary: "Blue Springs Police publish official department contacts, records-unit contacts, and annual report links through the city police page.", sourceName: "Blue Springs Police Department", sourceUrl: "https://www.bluespringsgov.com/police", roads: ["I-70", "Missouri Route 7", "U.S. 40", "Adams Dairy Parkway", "Main Street"], jurisdictions: [jurisdiction("Blue Springs Police Department", "Municipal police", "Handles city traffic stops and police records."), jurisdiction("Jackson County Sheriff's Office", "County sheriff", "May be involved outside city limits or in county matters."), jurisdiction("Missouri State Highway Patrol", "State patrol", "May handle interstate enforcement.")] }) }),
+      city({ slug: "lees-summit-mo", name: "Lee's Summit", agency: "Lee's Summit Police Department", police: police("Lee's Summit Police Department", "10 NE Tudor Road, Lee's Summit, MO 64086", "(816) 969-1700", "https://cityofls.net/police-department/public-information/police-reports-records", "For Lee's Summit police reports, crash reports, and records-unit questions."), dui_local_data: duiData({ summary: "Lee's Summit Police publish records-unit procedures for report requests, accident reports, and discovery routing.", sourceName: "Lee's Summit Police Reports / Records", sourceUrl: "https://cityofls.net/police-department/public-information/police-reports-records", roads: ["I-470", "U.S. 50", "Missouri Route 291", "Chipman Road", "Douglas Street"], jurisdictions: [jurisdiction("Lee's Summit Police Department", "Municipal police", "Handles city traffic stops and police records."), jurisdiction("Jackson County Sheriff's Office", "County sheriff", "May be involved outside city limits or in county matters."), jurisdiction("Missouri State Highway Patrol", "State patrol", "May handle interstate and highway enforcement.")] }) }),
+      city({ slug: "raytown-mo", name: "Raytown", agency: "Raytown Police Department", police: police("Raytown Police Department", "10000 E. 59th Street, Raytown, MO 64133", "(816) 737-6020", "https://www.raytownpolice.org/", "For Raytown police reports, crash records, and local enforcement questions."), dui_local_data: duiData({ summary: "Raytown Police publish official non-emergency contact and department information through the department website.", sourceName: "Raytown Police Department", sourceUrl: "https://www.raytownpolice.org/", roads: ["Raytown Road", "350 Highway", "Blue Ridge Boulevard", "63rd Street", "I-435"], jurisdictions: [jurisdiction("Raytown Police Department", "Municipal police", "Handles city traffic stops and police records."), jurisdiction("Jackson County Sheriff's Office", "County sheriff", "May be involved outside city limits or in county matters."), jurisdiction("Missouri State Highway Patrol", "State patrol", "May handle highway enforcement.")] }) }),
+      city({ slug: "grain-valley-mo", name: "Grain Valley", agency: "Grain Valley Police Department", police: police("Grain Valley Police Department", "719 R.D. Mize Road, Grain Valley, MO 64029", "(816) 847-6250", "https://cityofgrainvalley.org/police/", "For Grain Valley police reports, crash records, and local enforcement questions."), dui_local_data: duiData({ summary: "Grain Valley Police publish official contact, dispatch, office, and patrol information through the city police page.", sourceName: "Grain Valley Police Department", sourceUrl: "https://cityofgrainvalley.org/police/", roads: ["I-70", "R.D. Mize Road", "Buckner Tarsney Road", "Main Street", "U.S. 40"], jurisdictions: [jurisdiction("Grain Valley Police Department", "Municipal police", "Handles city traffic stops and police records."), jurisdiction("Jackson County Sheriff's Office", "County sheriff", "May be involved outside city limits or in county matters."), jurisdiction("Missouri State Highway Patrol", "State patrol", "May handle interstate enforcement.")] }) }),
+    ],
+  },
+  {
+    slug: "jasper-county-joplin-mo",
+    name: "Jasper County Joplin",
+    state: "Missouri",
+    stateCode: "MO",
+    practiceSlugs: ["dui"],
+    teaser: "Joplin, Carthage, Webb City, Carl Junction, and Carterville DWI guides around Jasper County court resources.",
+    urgentDeadline: {
+      headline: "Jasper County DWI readers may need to distinguish the Carthage courthouse from the Joplin courts building.",
+      body: "Police records stay city-specific, while court and Missouri DOR license questions can move on separate tracks.",
+    },
+    regionHighlights: [
+      { title: "Southwest Missouri market", body: "This cluster is far from St. Louis, Columbia, Springfield suburbs, and Kansas City, giving it a distinct local footprint." },
+      { title: "Two court buildings", body: "Jasper County uses Carthage and Joplin court locations, which gives the pages real local detail." },
+      { title: "Route 66 and interstate context", body: "I-44, U.S. 71, Route 66, and local city corridors create DWI and traffic-defense search intent." },
+    ],
+    processNotes: [
+      { label: "Court", title: "Confirm whether Carthage or Joplin is the right court location", body: "The citation, court notice, or clerk contact should control which Jasper County building a reader uses." },
+      { label: "Records", title: "Police reports are city-specific", body: "Joplin, Carthage, Webb City, Carl Junction, and Carterville maintain separate local police contacts." },
+      { label: "License", title: "Missouri DOR issues are not the same as court", body: "Administrative license questions should be tracked separately from criminal court scheduling." },
+    ],
+    court: jasperCountyCourt,
+    courtOffices: [jasperCountyCourt, jasperJoplinCourt],
+    licenseOffice: stLouisCountyLicense,
+    sharedEnforcement: [
+      police("Missouri State Highway Patrol Troop D", "3131 E. Kearney Street, Springfield, MO 65803", "(417) 895-6868", "https://www.mshp.dps.missouri.gov/HP71/searchTroop", "State patrol contact for southwest Missouri highway enforcement context.", "State Patrol"),
+    ],
+    cities: [
+      city({ slug: "joplin-mo", name: "Joplin", agency: "Joplin Police Department", police: police("Joplin Police Department", "303 E. Third Street, Joplin, MO 64801", "(417) 623-3131", "https://www.joplinmo.org/police", "For Joplin police reports, crash records, and local enforcement questions."), courtOverride: jasperJoplinCourt, dui_local_data: duiData({ summary: "Joplin Police publish department resources and department history through the official city police page.", sourceName: "Joplin Police Department", sourceUrl: "https://www.joplinmo.org/police", roads: ["I-44", "I-49", "Range Line Road", "Main Street", "7th Street"], jurisdictions: [jurisdiction("Joplin Police Department", "Municipal police", "Handles city traffic stops and police records."), jurisdiction("Jasper County Sheriff's Office", "County sheriff", "May be involved outside city limits or in county matters."), jurisdiction("Missouri State Highway Patrol", "State patrol", "May handle interstate and highway enforcement.")] }) }),
+      city({ slug: "carthage-mo", name: "Carthage", agency: "Carthage Police Department", police: police("Carthage Police Department", "310 W. 4th Street, Carthage, MO 64836", "(417) 237-7200", "https://www.carthagemo.gov/o/cpd/page/about-us/", "For Carthage police reports, crash records, and local enforcement questions."), dui_local_data: duiData({ summary: "Carthage Police publish official department address and phone information through the city police page.", sourceName: "Carthage Police Department", sourceUrl: "https://www.carthagemo.gov/o/cpd/page/about-us/", roads: ["I-49", "Route 66", "Central Avenue", "Garrison Avenue", "Grand Avenue"], jurisdictions: [jurisdiction("Carthage Police Department", "Municipal police", "Handles city traffic stops and police records."), jurisdiction("Jasper County Sheriff's Office", "County sheriff", "May be involved outside city limits or in county matters."), jurisdiction("Missouri State Highway Patrol", "State patrol", "May handle interstate and highway enforcement.")] }) }),
+      city({ slug: "webb-city-mo", name: "Webb City", agency: "Webb City Police Department", police: police("Webb City Police Department", "200 S. Main Street, Webb City, MO 64870", "(417) 673-1911", "https://webbcitymo.org/police-department", "For Webb City police reports, crash records, and local enforcement questions."), dui_local_data: duiData({ summary: "Webb City Police publish official department information through the City of Webb City police page.", sourceName: "Webb City Police Department", sourceUrl: "https://webbcitymo.org/police-department", roads: ["Madison Street", "MacArthur Drive", "Main Street", "Route 66", "Missouri Route 171"], jurisdictions: [jurisdiction("Webb City Police Department", "Municipal police", "Handles city traffic stops and police records."), jurisdiction("Jasper County Sheriff's Office", "County sheriff", "May be involved outside city limits or in county matters."), jurisdiction("Missouri State Highway Patrol", "State patrol", "May handle highway enforcement.")] }) }),
+      city({ slug: "carl-junction-mo", name: "Carl Junction", agency: "Carl Junction Police Department", police: police("Carl Junction Police Department", "302 N. Main Street, Carl Junction, MO 64834", "(417) 649-7237", "https://carljunction.socs.net/vnews/display.v/SEC/Government%7CDepartments", "For Carl Junction police reports, crash records, and local enforcement questions."), courtOverride: jasperJoplinCourt, dui_local_data: duiData({ summary: "Carl Junction lists its police department address and phone through the city's official departments page.", sourceName: "City of Carl Junction departments", sourceUrl: "https://carljunction.socs.net/vnews/display.v/SEC/Government%7CDepartments", roads: ["Main Street", "Pennell Street", "Joplin Street", "Fir Road", "Missouri Route 171"], jurisdictions: [jurisdiction("Carl Junction Police Department", "Municipal police", "Handles city traffic stops and police records."), jurisdiction("Jasper County Sheriff's Office", "County sheriff", "May be involved outside city limits or in county matters."), jurisdiction("Missouri State Highway Patrol", "State patrol", "May handle highway enforcement.")] }) }),
+      city({ slug: "carterville-mo", name: "Carterville", agency: "Carterville Police Department", police: police("Carterville Police Department", "1200 E. First Street, Carterville, MO 64835", "(417) 673-5303", "https://cartervillemo.com/police-main", "For Carterville police reports, crash records, and local enforcement questions."), courtOverride: jasperJoplinCourt, dui_local_data: duiData({ summary: "Carterville Police publish official department information through the city police page.", sourceName: "Carterville Police Department", sourceUrl: "https://cartervillemo.com/police-main", roads: ["Main Street", "First Street", "Route 66", "Missouri Route 171", "Prosperity Road"], jurisdictions: [jurisdiction("Carterville Police Department", "Municipal police", "Handles city traffic stops and police records."), jurisdiction("Jasper County Sheriff's Office", "County sheriff", "May be involved outside city limits or in county matters."), jurisdiction("Missouri State Highway Patrol", "State patrol", "May handle highway enforcement.")] }) }),
     ],
   },
 ];
