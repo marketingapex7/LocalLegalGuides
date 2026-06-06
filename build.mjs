@@ -578,9 +578,11 @@ function cityPageTitle(city, region, practice) {
     const label = practiceSeoLabel(practice, region);
     const targetedTitles = {
       "apex-nc": `Apex DWI Guide: Misdemeanor, Dismissal, Probation & License Issues | ${siteData.siteName}`,
+      "fuquay-varina-nc": `Fuquay-Varina DWI Guide: Court, License Checklist & Next Steps | ${siteData.siteName}`,
+      "holly-springs-nc": `Holly Springs DWI Guide: Rights, Court & License Questions | ${siteData.siteName}`,
       "wentzville-mo": `Wentzville DWI Guide: Court, Traffic Charges & License Hearing | ${siteData.siteName}`,
       "north-raleigh-nc": `North Raleigh DWI Guide: Arrest, Court, License & Next Steps | ${siteData.siteName}`,
-      "cary-nc": `Cary DWI Guide: Defense Questions, Court & License Issues | ${siteData.siteName}`,
+      "cary-nc": `Cary DWI Guide: Lawyer Questions, Court & License Issues | ${siteData.siteName}`,
       "ofallon-mo": `O'Fallon DWI Guide: Lawyer Questions, Court & License Deadlines | ${siteData.siteName}`,
       "belleville-il": `Belleville DUI Guide: Charges, St. Clair County Court & License Issues | ${siteData.siteName}`,
       "edwardsville-il": `Edwardsville DUI Guide: Arrest, Court, License Suspension & Next Steps | ${siteData.siteName}`,
@@ -630,11 +632,15 @@ function cityPageDescription(city, region, practice) {
       "belleville-il":
         "Belleville DUI guide covering St. Clair County court, DUI charge questions, Belleville Police records, Illinois statutory summary suspension, and license consequences.",
       "apex-nc":
-        "Apex DWI guide covering North Carolina DWI probation, misdemeanor consequences, restricted license questions, Apex Police records, Wake County court, and NCDMV issues.",
+        "Apex DWI guide covering dismissal questions, misdemeanor consequences, probation, restricted license issues, Apex Police records, Wake County court, and NCDMV steps.",
+      "fuquay-varina-nc":
+        "Fuquay-Varina DWI guide covering Wake County court, Fuquay-Varina Police records, NCDMV license issues, and a practical court and license checklist.",
+      "holly-springs-nc":
+        "Holly Springs DWI guide covering rights after an arrest, Wake County court, police records, license consequences, and questions to ask before court.",
       "north-raleigh-nc":
         "North Raleigh DWI guide covering Raleigh Police records, Wake County court, NCDMV license consequences, restricted license questions, and what to ask after a DWI arrest.",
       "cary-nc":
-        "Cary DWI guide covering Wake County court context, North Carolina misdemeanor consequences, NCDMV license issues, local police records, and questions to ask a DWI lawyer.",
+        "Cary DWI guide covering lawyer-selection questions, Wake County court context, NCDMV license issues, Cary Police records, and defense documents to gather.",
       "pineville-nc":
         "Pineville DWI guide covering Mecklenburg County court context, North Carolina DWI consequences, police records, license questions, and what to ask a DWI lawyer.",
     };
@@ -1175,6 +1181,78 @@ function duiInternalLinksSection(city, region, practice) {
         }
         ${nearbyLinks}
       </div>
+    </div>
+  </section>`;
+}
+
+function wakeSouthwestDwiTopicLinks(currentSlug = "") {
+  const topics = [
+    {
+      slug: "apex-nc",
+      href: "/dui/apex-nc/",
+      label: "Apex DWI dismissal and misdemeanor questions",
+      body: "Dismissal, misdemeanor exposure, probation, and restricted-license issues.",
+    },
+    {
+      slug: "cary-nc",
+      href: "/dui/cary-nc/",
+      label: "Cary DWI lawyer questions",
+      body: "What to ask about Wake County court, Cary Police records, testing, and NCDMV issues.",
+    },
+    {
+      slug: "fuquay-varina-nc",
+      href: "/dui/fuquay-varina-nc/",
+      label: "Fuquay-Varina DWI court and license checklist",
+      body: "Court notice, local records, NCDMV paperwork, and documents to gather.",
+    },
+    {
+      slug: "holly-springs-nc",
+      href: "/dui/holly-springs-nc/",
+      label: "Holly Springs DWI rights and records questions",
+      body: "Rights, police records, Wake County court, and license consequences after a stop.",
+    },
+  ];
+
+  return topics
+    .filter((topic) => topic.slug !== currentSlug)
+    .map(
+      (topic) => `<a class="related-card compact-related-card" href="${topic.href}"><span>Wake Southwest DWI</span><strong>${escapeHtml(
+        topic.label
+      )}</strong><p>${escapeHtml(topic.body)}</p></a>`
+    )
+    .join("");
+}
+
+function wakeSouthwestDwiInternalLinksSection(city, region, isDui) {
+  if (!isDui || region.slug !== "wake-southwest-nc") {
+    return "";
+  }
+
+  return `<section class="section" id="wake-southwest-dwi-topics">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Wake Southwest DWI topics</p>
+        <h2>Related questions across Apex, Cary, Fuquay-Varina, and Holly Springs.</h2>
+        <p>These nearby guides cover the same Wake County court and NCDMV system, but each page keeps the police records and local next steps tied to its town.</p>
+      </div>
+      <div class="related-grid">${wakeSouthwestDwiTopicLinks(city.slug)}</div>
+    </div>
+  </section>`;
+}
+
+function wakeSouthwestRegionalTopicSection(region) {
+  if (region.slug !== "wake-southwest-nc") {
+    return "";
+  }
+
+  return `<section class="section section-alt">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Current DWI topic paths</p>
+        <h2>Common Wake Southwest DWI questions by city.</h2>
+        <p>Apex, Cary, Fuquay-Varina, and Holly Springs share Wake County court and NCDMV context, but the best page depends on the town, police agency, and paperwork involved.</p>
+      </div>
+      <div class="related-grid">${wakeSouthwestDwiTopicLinks()}</div>
     </div>
   </section>`;
 }
@@ -2192,31 +2270,27 @@ function rankingOpportunitySection(city, region, isDui, basics) {
       eyebrow: "Consequences and probation context",
       title: "Apex DWI probation, dismissal, misdemeanor, and restricted-license questions.",
       intro:
-        "People searching for Apex DWI probation, Apex DUI consequences, Apex DWI dismissal, misdemeanor DWI, arrests, or restricted-license issues are usually trying to understand what can happen after the stop. North Carolina DWI cases can involve Wake County court, probation conditions, punishment levels, a NCDMV license issue, and possible limited-driving-privilege questions.",
+        "People searching for Apex DWI dismissal, misdemeanor exposure, probation, or restricted-license issues are usually trying to understand what can happen after the stop. North Carolina DWI cases can involve Wake County court, punishment levels, probation conditions, a NCDMV license issue, and possible limited-driving-privilege questions.",
       cards: [
         [
-          "Probation and punishment levels",
-          "North Carolina DWI sentencing uses punishment levels, and probation terms can include conditions such as assessment, treatment, monitoring, community service, or active time depending on the level and facts.",
-        ],
-        [
-          "Misdemeanor consequences",
-          "Many North Carolina DWI cases are misdemeanors, but the consequences can still be serious because sentencing level, prior history, aggravating factors, and license consequences can change the practical outcome.",
-        ],
-        [
           "Dismissal questions",
-          "A dismissal depends on the facts, evidence, procedure, and prosecutor or court decisions. Ask what issues could affect the stop, arrest, chemical testing, witness proof, and admissibility of evidence.",
+          "A dismissal depends on facts, procedure, evidence, and court rulings. The useful question is what might affect the stop, arrest, testing, witness proof, video, or admissibility of evidence.",
+        ],
+        [
+          "Misdemeanor does not mean minor",
+          "Many North Carolina DWI cases are misdemeanors, but punishment level, prior history, aggravating factors, and license consequences can still make the case serious.",
+        ],
+        [
+          "Probation and punishment levels",
+          "North Carolina DWI sentencing uses punishment levels. Probation terms can include assessment, treatment, monitoring, community service, or active time depending on the level and facts.",
         ],
         [
           "Restricted license questions",
-          "A limited driving privilege is a court order under North Carolina law. Eligibility and terms depend on the revocation, timing, facts, and statutory requirements.",
+          "A limited driving privilege is a court order under North Carolina law. Eligibility and terms depend on the revocation, timing, case facts, and statutory requirements.",
         ],
         [
-          "Defense resources",
-          "Useful defense-resource questions include what police records, video, chemical-test evidence, witness details, and NCDMV notices should be gathered before court.",
-        ],
-        [
-          "Community impact",
-          "A DWI case can affect work, school, transportation, insurance, and family logistics even before final sentencing, which is why early deadline review matters.",
+          "Documents to gather",
+          "Useful defense-resource questions include what police records, video, chemical-test evidence, witness details, release paperwork, and NCDMV notices should be gathered before court.",
         ],
         [
           "Case outcomes and updates",
@@ -2292,29 +2366,97 @@ function rankingOpportunitySection(city, region, isDui, basics) {
       eyebrow: "Cary DWI search context",
       title: "Cary DWI lawyer questions and Wake County license issues.",
       intro:
-        "People searching for a Cary DWI lawyer or DWI defense tips are usually trying to understand Wake County court timing, Cary Police records, NCDMV license consequences, and what evidence should be gathered before court.",
+        "People searching for a Cary DWI lawyer are usually trying to connect Wake County court timing, Cary Police records, NCDMV license consequences, and defense documents before making a hiring decision.",
       cards: [
         [
-          "Wake County court context",
-          "A Cary DWI case may involve local police paperwork while the court process connects to Wake County resources and the specific court notice.",
+          "Lawyer-selection questions",
+          "Ask whether the lawyer handles Cary and Wake County DWI cases, punishment-level analysis, probation questions, limited driving privilege, chemical testing, and refusal issues.",
         ],
         [
-          "Defense records",
-          "Useful records may include the citation, release paperwork, police report, video references, chemical-test documents, refusal paperwork, and any crash report.",
+          "Wake County court context",
+          "A Cary DWI case may start with local police paperwork while the court process connects to Wake County resources and the specific court notice.",
         ],
         [
           "License consequences",
           "North Carolina DWI cases can involve NCDMV consequences separately from the court case, so license notices and limited-driving-privilege questions should be tracked early.",
         ],
         [
-          "Attorney questions",
-          "Ask whether the lawyer handles Cary and Wake County DWI cases, punishment-level analysis, probation questions, limited driving privilege, and testing evidence.",
+          "Defense records",
+          "Useful records may include the citation, release paperwork, police report, video references, chemical-test documents, refusal paperwork, and any crash report.",
         ],
       ],
       sources: [
         {
           label: "North Carolina State Highway Patrol DWI law summary",
           href: "https://www.ncshp.gov/ncshp/commercial-vehicles/laws",
+        },
+        {
+          label: "NCDMV license suspension",
+          href: "https://www.ncdot.gov/dmv/license-id/license-suspension/Pages/",
+        },
+      ],
+    },
+    "fuquay-varina-nc": {
+      eyebrow: "Fuquay-Varina DWI checklist",
+      title: "Fuquay-Varina DWI court, license, and records checklist.",
+      intro:
+        "A Fuquay-Varina DWI search often starts with a simple question: what needs to be handled first? This page separates the local police records path, Wake County court notice, NCDMV license issues, and documents to gather before a lawyer conversation.",
+      cards: [
+        [
+          "Court notice",
+          "Use the citation, release paperwork, or North Carolina Judicial Branch record to confirm the Wake County court date and appearance requirements.",
+        ],
+        [
+          "Fuquay-Varina Police records",
+          "If Fuquay-Varina Police handled the stop or crash, the department may be the starting point for local report and records questions.",
+        ],
+        [
+          "License track",
+          "A DWI arrest can create NCDMV issues separately from the court case, so license notices and limited-driving-privilege questions should be reviewed early.",
+        ],
+        [
+          "Documents to bring",
+          "Gather the citation, release paperwork, chemical-test or refusal paperwork, crash information, witness names, and any NCDMV notice before asking for legal advice.",
+        ],
+      ],
+      sources: [
+        {
+          label: "North Carolina Judicial Branch - Wake County",
+          href: "https://www.nccourts.gov/locations/wake-county",
+        },
+        {
+          label: "NCDMV license suspension",
+          href: "https://www.ncdot.gov/dmv/license-id/license-suspension/Pages/",
+        },
+      ],
+    },
+    "holly-springs-nc": {
+      eyebrow: "Holly Springs DWI rights context",
+      title: "Holly Springs DWI rights, records, court, and license questions.",
+      intro:
+        "People searching for Holly Springs DWI rights are usually trying to understand what to save, what not to miss, and which offices may matter after a stop. The practical path is to keep the police paperwork, confirm the Wake County court date, and separate NCDMV license issues from the criminal case.",
+      cards: [
+        [
+          "Right to legal advice",
+          "A reader should not rely on court staff, police, or this guide for legal advice. A licensed North Carolina attorney can explain rights and options for the specific facts.",
+        ],
+        [
+          "Records and evidence",
+          "Holly Springs Police records, video references, chemical-test paperwork, witness details, towing records, or crash reports may matter depending on what happened.",
+        ],
+        [
+          "Court date",
+          "The official Wake County court notice should control the court date, location, and appearance requirements.",
+        ],
+        [
+          "License questions",
+          "NCDMV consequences can move separately from court, so civil revocation and limited-driving-privilege questions should be tracked early.",
+        ],
+      ],
+      sources: [
+        {
+          label: "North Carolina Judicial Branch - Wake County",
+          href: "https://www.nccourts.gov/locations/wake-county",
         },
         {
           label: "NCDMV license suspension",
@@ -2600,6 +2742,40 @@ function targetedDuiFaqs(city, region, basics) {
       {
         q: "Can a Cary DWI affect my license separately from court?",
         a: "Yes. North Carolina DWI cases can involve NCDMV license consequences and possible limited-driving-privilege questions in addition to the court case.",
+      },
+    ];
+  }
+
+  if (city.slug === "fuquay-varina-nc") {
+    return [
+      {
+        q: "What should I do first after a Fuquay-Varina DWI?",
+        a: "Save the citation, release paperwork, court date, Fuquay-Varina Police information, chemical-test or refusal paperwork, and any NCDMV notice. Then confirm the Wake County court date from the official source.",
+      },
+      {
+        q: "Can a Fuquay-Varina DWI affect my license separately from court?",
+        a: "Yes. North Carolina DWI cases can create NCDMV license consequences outside the criminal court timeline, including civil revocation and limited-driving-privilege questions.",
+      },
+      {
+        q: "What should I ask a Fuquay-Varina DWI lawyer?",
+        a: "Ask about Wake County DWI experience, Fuquay-Varina Police records, chemical-test evidence, punishment levels, probation conditions, and limited-driving-privilege issues.",
+      },
+    ];
+  }
+
+  if (city.slug === "holly-springs-nc") {
+    return [
+      {
+        q: "What rights should I think about after a Holly Springs DWI?",
+        a: "Important questions may include whether to make statements, how chemical-test evidence was handled, what records should be requested, and how court and license deadlines interact. A licensed North Carolina attorney can apply those rights to the facts.",
+      },
+      {
+        q: "Where do Holly Springs DWI records usually start?",
+        a: "If Holly Springs Police handled the stop or crash, the department may be the starting point for local report and records questions. County or state agencies may matter depending on where the stop happened.",
+      },
+      {
+        q: "Can a Holly Springs DWI create NCDMV license issues?",
+        a: "Yes. North Carolina DWI cases can involve license consequences separately from the court case, so NCDMV notices and limited-driving-privilege questions should be tracked early.",
       },
     ];
   }
@@ -3149,6 +3325,8 @@ function cityShell(city, region, practice) {
     (isDui &&
       [
         "apex-nc",
+        "fuquay-varina-nc",
+        "holly-springs-nc",
         "nixa-mo",
         "manchester-mo",
         "wentzville-mo",
@@ -3569,6 +3747,8 @@ function cityShell(city, region, practice) {
   </section>
 
   ${relatedResourceLinks(region, isDui)}
+
+  ${wakeSouthwestDwiInternalLinksSection(city, region, isDui)}
 
   ${isDui ? duiInternalLinksSection(city, region, practice) : ""}
 
@@ -4141,6 +4321,8 @@ function regionPage(region) {
       </div>
     </div>
   </section>
+
+  ${wakeSouthwestRegionalTopicSection(region)}
 
   <section class="section section-alt" id="regional-sponsor">
     <div class="container split-grid">
