@@ -424,6 +424,9 @@ function personalInjuryCityLink(entry, className = "city-link") {
 
 const priorityDuiCitySlugs = [
   "apex-nc",
+  "concord-nc",
+  "durham-nc",
+  "chapel-hill-nc",
   "wentzville-mo",
   "st-charles-mo",
   "lake-saint-louis-mo",
@@ -598,6 +601,15 @@ function cityPageTitle(city, region, practice) {
       "st-peters-mo": `St. Peters DWI Guide: Court, License & Police Records | ${siteData.siteName}`,
       "moscow-mills-mo": `Moscow Mills DWI Guide: Attorney Questions & License Hearing | ${siteData.siteName}`,
       "knightdale-nc": `Knightdale DWI Guide: Lawyer Questions, Court & License Issues | ${siteData.siteName}`,
+      "concord-nc": `Concord DWI Guide: Court, Police Records & License Issues | ${siteData.siteName}`,
+      "kannapolis-nc": `Kannapolis DWI Guide: Court, Police Records & License Issues | ${siteData.siteName}`,
+      "harrisburg-nc": `Harrisburg DWI Guide: Sheriff Records, Court & License Issues | ${siteData.siteName}`,
+      "mount-pleasant-nc": `Mount Pleasant DWI Guide: Sheriff Records, Court & License Issues | ${siteData.siteName}`,
+      "midland-nc": `Midland DWI Guide: Sheriff Records, Court & License Questions | ${siteData.siteName}`,
+      "durham-nc": `Durham DWI Guide: Court, Police Records & License Issues | ${siteData.siteName}`,
+      "chapel-hill-nc": `Chapel Hill DWI Guide: Court, Police Records & License Issues | ${siteData.siteName}`,
+      "carrboro-nc": `Carrboro DWI Guide: Court, Police Records & License Issues | ${siteData.siteName}`,
+      "hillsborough-nc": `Hillsborough DWI Guide: Court, Police Records & License Issues | ${siteData.siteName}`,
     };
 
     if (targetedTitles[city.slug]) {
@@ -663,6 +675,24 @@ function cityPageDescription(city, region, practice) {
         "Moscow Mills DWI guide covering DWI attorney questions, Lincoln County court context, Missouri DOR administrative hearings, Form 2385, and license deadlines.",
       "knightdale-nc":
         "Knightdale DWI guide covering Wake County court, Knightdale Police records, NCDMV license consequences, Spanish-language legal searches, and lawyer questions.",
+      "concord-nc":
+        "Concord DWI guide covering Cabarrus County court, Concord Police records, NCDMV license consequences, local roads, and questions to ask a DWI lawyer.",
+      "kannapolis-nc":
+        "Kannapolis DWI guide covering Cabarrus County court, Kannapolis Police records, NCDMV license issues, local roads, and attorney questions.",
+      "harrisburg-nc":
+        "Harrisburg DWI guide covering Cabarrus County court, sheriff records, NCDMV license consequences, NC 49 context, and lawyer questions.",
+      "mount-pleasant-nc":
+        "Mount Pleasant DWI guide covering Cabarrus County court, sheriff records, NCDMV license questions, NC 49 and NC 73 context, and next steps.",
+      "midland-nc":
+        "Midland DWI guide covering Cabarrus County court, sheriff records, NCDMV license issues, NC 24/27 context, and questions to ask.",
+      "durham-nc":
+        "Durham DWI guide covering Durham County court, Durham Police records, NCDMV license consequences, NC 147 and I-85 context, and lawyer questions.",
+      "chapel-hill-nc":
+        "Chapel Hill DWI guide covering Orange County court, Chapel Hill Police records, NCDMV license issues, Franklin Street and 15-501 context, and attorney questions.",
+      "carrboro-nc":
+        "Carrboro DWI guide covering Orange County court, Carrboro Police records, NCDMV license consequences, NC 54 context, and questions to ask.",
+      "hillsborough-nc":
+        "Hillsborough DWI guide covering Orange County court, Hillsborough Police records, NCDMV license issues, I-85 and Churton Street context, and next steps.",
     };
     if (targetedDescriptions[city.slug]) {
       return compactDescription(targetedDescriptions[city.slug]);
@@ -2083,6 +2113,17 @@ function rankingOpportunitySection(city, region, isDui, basics) {
     },
   ];
 
+  const ncDwiSources = [
+    {
+      label: "NCDMV license suspension",
+      href: "https://www.ncdot.gov/dmv/license-id/license-suspension/Pages/",
+    },
+    {
+      label: "NCGS 20-179.3 limited driving privilege",
+      href: "https://www.ncleg.gov/EnactedLegislation/Statutes/PDF/BySection/Chapter_20/GS_20-179.3.pdf",
+    },
+  ];
+
   const sections = {
     "nixa-mo": {
       eyebrow: "Administrative hearing focus",
@@ -2560,6 +2601,168 @@ function rankingOpportunitySection(city, region, isDui, basics) {
           label: "NCDMV license suspension",
           href: "https://www.ncdot.gov/dmv/license-id/license-suspension/Pages/",
         },
+      ],
+    },
+    "concord-nc": {
+      eyebrow: "Cabarrus County DWI search context",
+      title: "Concord DWI court, police-record, and license questions.",
+      intro:
+        "Concord DWI searches should start by separating Concord Police records from Cabarrus County court and NCDMV license consequences. The city page is built around the courthouse in Concord, local police paperwork, and the practical documents a driver may need before asking a lawyer what happens next.",
+      cards: [
+        ["Police records", "Concord Police may be the starting point for the report, citation, crash details, video, or local records questions tied to a city stop."],
+        ["County court", "The official court notice should control the Cabarrus County court date and location, even when the stop began with city police."],
+        ["NCDMV track", "North Carolina DWI cases can create license consequences separately from court, including civil revocation and limited-driving-privilege questions."],
+        ["Road context", "I-85, U.S. 29, NC 49, Concord Parkway, Cabarrus Avenue, and Church Street are useful context for agency and records questions."],
+        ["Lawyer questions", "Ask about Cabarrus County DWI practice, Concord Police records, chemical-test evidence, punishment levels, and license options."],
+      ],
+      sources: [
+        ...ncDwiSources,
+        { label: "Cabarrus County Courthouse", href: "https://www.nccourts.gov/locations/cabarrus-county/cabarrus-county-courthouse" },
+        { label: "Concord Police Department", href: "https://concordnc.gov/Departments/Police" },
+      ],
+    },
+    "kannapolis-nc": {
+      eyebrow: "Cabarrus County DWI search context",
+      title: "Kannapolis DWI police records, court, and license questions.",
+      intro:
+        "A Kannapolis DWI search usually means the reader needs to connect Kannapolis Police paperwork, Cabarrus County court resources, and NCDMV license questions without confusing those offices as one process.",
+      cards: [
+        ["Police records", "Kannapolis Police may be the starting point for report, crash-record, video, citation, or local enforcement questions."],
+        ["County court", "Cabarrus County court timing should be confirmed from the citation, release paperwork, or official court resources."],
+        ["License issue", "NCDMV consequences may move on a separate timeline from court, so civil revocation or limited-driving-privilege questions should be tracked early."],
+        ["Local corridors", "I-85, U.S. 29, Dale Earnhardt Boulevard, Cannon Boulevard, and Main Street are useful context for records and agency questions."],
+        ["Attorney questions", "Ask whether the lawyer handles Kannapolis DWI cases, Cabarrus County court, police records, testing issues, and license consequences."],
+      ],
+      sources: [
+        ...ncDwiSources,
+        { label: "Cabarrus County Courthouse", href: "https://www.nccourts.gov/locations/cabarrus-county/cabarrus-county-courthouse" },
+        { label: "Kannapolis Police Department", href: "https://www.kannapolisnc.gov/Government-Departments/Police" },
+      ],
+    },
+    "harrisburg-nc": {
+      eyebrow: "Cabarrus sheriff and court context",
+      title: "Harrisburg DWI sheriff records, Cabarrus court, and license questions.",
+      intro:
+        "Harrisburg is not just a city-name swap from Concord. The town's law-enforcement setup points readers toward Cabarrus County Sheriff's Office resources, while the court and NCDMV questions still need to be tracked separately.",
+      cards: [
+        ["Sheriff coverage", "Harrisburg law-enforcement questions often begin with Cabarrus County Sheriff's Office rather than a standalone town police department."],
+        ["Court notice", "The citation or court notice should control the Cabarrus County court path and appearance details."],
+        ["License timing", "Civil revocation and limited-driving-privilege issues can arise separately from the criminal case."],
+        ["Road context", "NC 49, Roberta Road, Morehead Road, Harrisburg Veterans Road, and Rocky River Road give the page specific local context."],
+        ["Lawyer questions", "Ask about sheriff records, Cabarrus County DWI practice, chemical-test evidence, court deadlines, and NCDMV consequences."],
+      ],
+      sources: [
+        ...ncDwiSources,
+        { label: "Harrisburg law enforcement", href: "https://www.harrisburgnc.gov/167/Law-Enforcement" },
+        { label: "Cabarrus County Courthouse", href: "https://www.nccourts.gov/locations/cabarrus-county/cabarrus-county-courthouse" },
+      ],
+    },
+    "mount-pleasant-nc": {
+      eyebrow: "Cabarrus sheriff and court context",
+      title: "Mount Pleasant DWI sheriff records, court, and NCDMV questions.",
+      intro:
+        "Mount Pleasant DWI questions need local sheriff-contract context, Cabarrus County court orientation, and NCDMV license separation. That makes the page materially different from the Concord and Kannapolis city-police pages.",
+      cards: [
+        ["Sheriff records", "Mount Pleasant public-safety context points to Cabarrus County Sheriff's Department for enhanced community policing."],
+        ["County court", "Use the court notice to confirm Cabarrus County court date, location, and appearance requirements."],
+        ["License issue", "NCDMV consequences should be tracked apart from court, especially when civil revocation or limited-driving-privilege questions exist."],
+        ["Local roads", "NC 49, NC 73, Main Street, Franklin Street, and Mount Pleasant Road are useful for records and stop-location questions."],
+        ["Attorney questions", "Ask whether a lawyer handles sheriff records, Cabarrus County DWI cases, chemical-test evidence, punishment levels, and license issues."],
+      ],
+      sources: [
+        ...ncDwiSources,
+        { label: "Mount Pleasant public safety", href: "https://mtpleasantnc.gov/Government/Public-Safety" },
+        { label: "Cabarrus County Courthouse", href: "https://www.nccourts.gov/locations/cabarrus-county/cabarrus-county-courthouse" },
+      ],
+    },
+    "midland-nc": {
+      eyebrow: "Cabarrus sheriff and court context",
+      title: "Midland DWI sheriff records, NC 24/27, and license questions.",
+      intro:
+        "Midland DWI searches should identify whether Cabarrus County deputies, state patrol, or another agency handled the stop before turning to court and license questions. The local context is centered on NC 24/27 and county-service routing.",
+      cards: [
+        ["Agency first", "Midland readers should confirm whether Cabarrus County Sheriff's Office, state patrol, or another agency created the paperwork."],
+        ["Cabarrus court", "The Cabarrus County court path should be checked against the official citation or court notice."],
+        ["NCDMV issue", "License consequences can move separately from the court case and may affect driving before final resolution."],
+        ["Road context", "NC 24/27, Bethel School Road, Midland Road, U.S. 601, and Flowes Store Road are useful local context."],
+        ["Lawyer questions", "Ask about Cabarrus County DWI defense, sheriff records, stop location, chemical testing, and limited-driving-privilege options."],
+      ],
+      sources: [
+        ...ncDwiSources,
+        { label: "Cabarrus County Sheriff's Office", href: "https://www.cabarruslaw.us/" },
+        { label: "Cabarrus County Courthouse", href: "https://www.nccourts.gov/locations/cabarrus-county/cabarrus-county-courthouse" },
+      ],
+    },
+    "durham-nc": {
+      eyebrow: "Durham DWI search context",
+      title: "Durham DWI police records, county court, and license questions.",
+      intro:
+        "Durham DWI searches should connect Durham Police records, Durham County court, and NCDMV consequences without blending them into one step. This page keeps those paths separate and local.",
+      cards: [
+        ["Durham Police records", "Durham Police may be the starting point for reports, crash records, video, citation details, or local enforcement questions."],
+        ["Durham County court", "The official court notice should control the courthouse, court date, and appearance requirements."],
+        ["NCDMV track", "A DWI can create civil revocation and limited-driving-privilege questions outside the criminal court timeline."],
+        ["Road context", "NC 147, I-85, U.S. 15-501, Roxboro Street, Main Street, and Fayetteville Street are useful local context."],
+        ["Attorney questions", "Ask about Durham County DWI practice, Durham Police records, chemical-test evidence, punishment levels, and NCDMV license issues."],
+      ],
+      sources: [
+        ...ncDwiSources,
+        { label: "Durham County Courthouse", href: "https://www.nccourts.gov/locations/durham-county/durham-county-courthouse" },
+        { label: "Durham Police Department", href: "https://www.durhamnc.gov/149/Police" },
+      ],
+    },
+    "chapel-hill-nc": {
+      eyebrow: "Orange County DWI search context",
+      title: "Chapel Hill DWI police records, Orange County court, and license questions.",
+      intro:
+        "Chapel Hill DWI searches often involve college-town traffic, Franklin Street context, Chapel Hill Police records, Orange County court, and NCDMV license consequences. The page separates the town record path from the county court path.",
+      cards: [
+        ["Chapel Hill Police records", "Chapel Hill Police may be the starting point for report, crash, video, citation, or town enforcement questions."],
+        ["Orange County court", "The official court notice should confirm the Orange County courthouse path and court date."],
+        ["License issue", "NCDMV consequences can move separately from court, including civil revocation and limited-driving-privilege questions."],
+        ["Local corridors", "U.S. 15-501, NC 54, Franklin Street, Fordham Boulevard, and Martin Luther King Jr Boulevard are useful local context."],
+        ["Lawyer questions", "Ask about Orange County DWI practice, Chapel Hill Police records, campus-area context, chemical testing, and license issues."],
+      ],
+      sources: [
+        ...ncDwiSources,
+        { label: "Orange County Courthouse", href: "https://www.nccourts.gov/locations/orange-county/orange-county-courthouse" },
+        { label: "Chapel Hill Police Department", href: "https://www.chapelhillnc.gov/Town-Government/Departments-and-Offices/Police" },
+      ],
+    },
+    "carrboro-nc": {
+      eyebrow: "Orange County DWI search context",
+      title: "Carrboro DWI police records, Orange County court, and license questions.",
+      intro:
+        "Carrboro DWI searches need a town-level records path and an Orange County court path. The practical next step is saving the police paperwork, confirming court timing, and separating NCDMV license issues from the criminal case.",
+      cards: [
+        ["Carrboro Police records", "Carrboro Police may be the first records source for local reports, citation details, video references, or crash questions."],
+        ["Orange County court", "Court date and courthouse details should be checked against the official notice rather than assumed from a general Chapel Hill search."],
+        ["NCDMV issue", "Civil revocation and limited-driving-privilege questions can arise before the criminal case is finished."],
+        ["Local roads", "NC 54, Main Street, N. Greensboro Street, Jones Ferry Road, and Weaver Street give the page specific Carrboro context."],
+        ["Attorney questions", "Ask whether the lawyer handles Orange County DWI cases, Carrboro Police records, chemical-test evidence, and license consequences."],
+      ],
+      sources: [
+        ...ncDwiSources,
+        { label: "Orange County Courthouse", href: "https://www.nccourts.gov/locations/orange-county/orange-county-courthouse" },
+        { label: "Carrboro Police Department", href: "https://www.carrboronc.gov/225/Police" },
+      ],
+    },
+    "hillsborough-nc": {
+      eyebrow: "Orange County DWI search context",
+      title: "Hillsborough DWI police records, Orange County court, and license questions.",
+      intro:
+        "Hillsborough is the Orange County courthouse anchor, so a DWI search here can involve both town police records and the county court building. The useful path is confirming the agency, the court notice, and the NCDMV license issue separately.",
+      cards: [
+        ["Hillsborough Police records", "Hillsborough Police may be the starting point for local report, crash, citation, video, or records questions."],
+        ["Courthouse anchor", "The Orange County Courthouse is in Hillsborough, but the citation or court notice should still control the date and room details."],
+        ["License issue", "NCDMV consequences can move separately from court and may involve civil revocation or limited-driving-privilege questions."],
+        ["Local roads", "I-85, I-40, Churton Street, U.S. 70, and NC 86 are useful local context for records and stop-location questions."],
+        ["Lawyer questions", "Ask about Orange County DWI practice, Hillsborough Police records, chemical testing, punishment levels, and NCDMV consequences."],
+      ],
+      sources: [
+        ...ncDwiSources,
+        { label: "Orange County Courthouse", href: "https://www.nccourts.gov/locations/orange-county/orange-county-courthouse" },
+        { label: "Hillsborough Police Department", href: "https://www.hillsboroughnc.gov/about-us/contact-us/contact-police" },
       ],
     },
     "cary-nc": {
@@ -3086,6 +3289,53 @@ function targetedDuiFaqs(city, region, basics) {
       {
         q: "What if I searched in Spanish for Knightdale DWI legal representation?",
         a: "This guide is written in English, but Spanish-language searches can still point to the same Knightdale police, Wake County court, and NCDMV issues. Ask any attorney or law firm whether Spanish-language consultation or translation support is available.",
+      },
+    ];
+  }
+
+  if (region.slug === "cabarrus-county-nc") {
+    const court = courtForCity(city, region, duiPractice());
+    const sheriffCities = new Set(["harrisburg-nc", "mount-pleasant-nc", "midland-nc"]);
+    return [
+      {
+        q: `Where do ${city.name} DWI cases connect locally?`,
+        a: `${city.name} DWI questions usually connect to ${court.name}, ${city.police.name}, and NCDMV license consequences. The citation and court notice should control the official court path.`,
+      },
+      {
+        q: `Does ${city.name} use city police or Cabarrus County sheriff records?`,
+        a: sheriffCities.has(city.slug)
+          ? `${city.name} readers should usually start with Cabarrus County Sheriff's Office context for sheriff-handled records, then confirm the exact agency listed on the citation or report.`
+          : `${city.name} has a municipal police department listed on this guide, but county deputies or state patrol may still matter depending on where the stop happened.`,
+      },
+      {
+        q: `Can a ${city.name} DWI affect my license separately from court?`,
+        a: "Yes. North Carolina DWI cases can involve NCDMV consequences outside the criminal court timeline, including civil revocation and possible limited-driving-privilege questions.",
+      },
+      {
+        q: `What should I ask a ${city.name} DWI lawyer?`,
+        a: `Ask about Cabarrus County DWI practice, ${city.police.name} records, chemical-test evidence, punishment levels, limited-driving-privilege options, and what deadlines should be handled first.`,
+      },
+    ];
+  }
+
+  if (region.slug === "durham-orange-triangle-nc") {
+    const court = courtForCity(city, region, duiPractice());
+    return [
+      {
+        q: `Which courthouse matters for a ${city.name} DWI?`,
+        a: `${court.name} is the court reference used for this guide. The official citation or court notice should still control the date, location, and appearance requirements.`,
+      },
+      {
+        q: `Where do ${city.name} DWI records usually start?`,
+        a: `If ${city.police.name} handled the stop or crash, that agency may be the starting point for report, video, crash-record, citation, or records questions. County or state agencies may matter depending on the location.`,
+      },
+      {
+        q: `Can a ${city.name} DWI create NCDMV license issues?`,
+        a: "Yes. North Carolina DWI cases can involve NCDMV consequences outside the criminal court timeline, including civil revocation and possible limited-driving-privilege questions.",
+      },
+      {
+        q: `What should I ask a ${city.name} DWI lawyer?`,
+        a: `Ask about local court experience, ${city.police.name} records, chemical-test evidence, punishment levels, limited-driving-privilege options, and whether the case involves Durham County or Orange County routing.`,
       },
     ];
   }
@@ -3623,6 +3873,15 @@ function cityShell(city, region, practice) {
         "lake-saint-louis-mo",
         "st-peters-mo",
         "moscow-mills-mo",
+        "concord-nc",
+        "kannapolis-nc",
+        "harrisburg-nc",
+        "mount-pleasant-nc",
+        "midland-nc",
+        "durham-nc",
+        "chapel-hill-nc",
+        "carrboro-nc",
+        "hillsborough-nc",
         "edwardsville-il",
         "north-raleigh-nc",
         "knightdale-nc",

@@ -31,6 +31,8 @@ const expansionSponsorPackages = Object.fromEntries(
     ["new-hanover-coastal-nc", "5 North Carolina DWI city pages"],
     ["eastern-jackson-county-mo", "5 Missouri DWI city pages"],
     ["jasper-county-joplin-mo", "5 Missouri DWI city pages"],
+    ["cabarrus-county-nc", "5 North Carolina DWI city pages"],
+    ["durham-orange-triangle-nc", "4 North Carolina DWI city pages"],
   ].map(([slug, coverageLabel]) => [slug, makeAvailableSponsorPackage(coverageLabel)])
 );
 
@@ -195,6 +197,33 @@ const newHanoverCountyCourt = office({
   hours: "Monday-Friday, 8:00 am-5:00 pm; confirm current courthouse hours before visiting.",
   courtSystem: "North Carolina Judicial Branch - New Hanover County",
   href: "https://www.nccourts.gov/locations/new-hanover-county/new-hanover-county-courthouse",
+});
+
+const cabarrusCountyCourt = office({
+  name: "Cabarrus County Courthouse",
+  address: "61 Union Street S, Concord, NC 28025",
+  phone: "(704) 262-5500",
+  hours: "Monday-Friday, 8:00 am-5:00 pm; confirm current courthouse hours before visiting.",
+  courtSystem: "North Carolina Judicial Branch - Cabarrus County",
+  href: "https://www.nccourts.gov/locations/cabarrus-county/cabarrus-county-courthouse",
+});
+
+const durhamCountyCourt = office({
+  name: "Durham County Courthouse",
+  address: "510 S. Dillard Street, Durham, NC 27701",
+  phone: "(919) 808-3000",
+  hours: "Monday-Friday, 8:30 am-5:00 pm; confirm current courthouse hours before visiting.",
+  courtSystem: "North Carolina Judicial Branch - Durham County",
+  href: "https://www.nccourts.gov/locations/durham-county/durham-county-courthouse",
+});
+
+const orangeCountyCourt = office({
+  name: "Orange County Courthouse",
+  address: "106 E. Margaret Lane, Hillsborough, NC 27278",
+  phone: "(919) 644-4500",
+  hours: "Monday-Friday, 8:30 am-5:00 pm; confirm current courthouse hours before visiting.",
+  courtSystem: "North Carolina Judicial Branch - Orange County",
+  href: "https://www.nccourts.gov/locations/orange-county/orange-county-courthouse",
 });
 
 const easternJacksonCountyCourt = office({
@@ -858,6 +887,90 @@ const expansionRegions = [
       city({ slug: "webb-city-mo", name: "Webb City", agency: "Webb City Police Department", police: police("Webb City Police Department", "200 S. Main Street, Webb City, MO 64870", "(417) 673-1911", "https://webbcitymo.org/police-department", "For Webb City police reports, crash records, and local enforcement questions."), dui_local_data: duiData({ summary: "Webb City Police publish official department information through the City of Webb City police page.", sourceName: "Webb City Police Department", sourceUrl: "https://webbcitymo.org/police-department", roads: ["Madison Street", "MacArthur Drive", "Main Street", "Route 66", "Missouri Route 171"], jurisdictions: [jurisdiction("Webb City Police Department", "Municipal police", "Handles city traffic stops and police records."), jurisdiction("Jasper County Sheriff's Office", "County sheriff", "May be involved outside city limits or in county matters."), jurisdiction("Missouri State Highway Patrol", "State patrol", "May handle highway enforcement.")] }) }),
       city({ slug: "carl-junction-mo", name: "Carl Junction", agency: "Carl Junction Police Department", police: police("Carl Junction Police Department", "302 N. Main Street, Carl Junction, MO 64834", "(417) 649-7237", "https://carljunction.socs.net/vnews/display.v/SEC/Government%7CDepartments", "For Carl Junction police reports, crash records, and local enforcement questions."), courtOverride: jasperJoplinCourt, dui_local_data: duiData({ summary: "Carl Junction lists its police department address and phone through the city's official departments page.", sourceName: "City of Carl Junction departments", sourceUrl: "https://carljunction.socs.net/vnews/display.v/SEC/Government%7CDepartments", roads: ["Main Street", "Pennell Street", "Joplin Street", "Fir Road", "Missouri Route 171"], jurisdictions: [jurisdiction("Carl Junction Police Department", "Municipal police", "Handles city traffic stops and police records."), jurisdiction("Jasper County Sheriff's Office", "County sheriff", "May be involved outside city limits or in county matters."), jurisdiction("Missouri State Highway Patrol", "State patrol", "May handle highway enforcement.")] }) }),
       city({ slug: "carterville-mo", name: "Carterville", agency: "Carterville Police Department", police: police("Carterville Police Department", "1200 E. First Street, Carterville, MO 64835", "(417) 673-5303", "https://cartervillemo.com/police-main", "For Carterville police reports, crash records, and local enforcement questions."), courtOverride: jasperJoplinCourt, dui_local_data: duiData({ summary: "Carterville Police publish official department information through the city police page.", sourceName: "Carterville Police Department", sourceUrl: "https://cartervillemo.com/police-main", roads: ["Main Street", "First Street", "Route 66", "Missouri Route 171", "Prosperity Road"], jurisdictions: [jurisdiction("Carterville Police Department", "Municipal police", "Handles city traffic stops and police records."), jurisdiction("Jasper County Sheriff's Office", "County sheriff", "May be involved outside city limits or in county matters."), jurisdiction("Missouri State Highway Patrol", "State patrol", "May handle highway enforcement.")] }) }),
+    ],
+  },
+  {
+    slug: "cabarrus-county-nc",
+    name: "Cabarrus County",
+    state: "North Carolina",
+    stateCode: "NC",
+    practiceSlugs: ["dui"],
+    teaser: "Concord, Kannapolis, Harrisburg, Mount Pleasant, and Midland DWI guides tied to Cabarrus County court and law-enforcement routing.",
+    urgentDeadline: {
+      headline: "Cabarrus County DWI paperwork can involve city police, sheriff coverage, and county court on separate tracks.",
+      body: "Concord and Kannapolis have municipal departments, while Harrisburg, Mount Pleasant, and Midland often route law-enforcement questions through Cabarrus County Sheriff's Office resources.",
+    },
+    regionHighlights: [
+      { title: "New Charlotte-adjacent county", body: "Cabarrus gives the site a separate county-court footprint from Mecklenburg, Union, Wake, Guilford, and New Hanover." },
+      { title: "Agency mix is real", body: "Concord and Kannapolis are city-police pages, while the smaller-town pages need sheriff and county-service context." },
+      { title: "Strong sponsor story", body: "A Concord or Cabarrus DWI attorney can understand this as one coherent package rather than a broad Charlotte placement." },
+    ],
+    processNotes: [
+      { label: "Court", title: "Cabarrus County Courthouse is the court anchor", body: "DWI court questions should be checked through the official notice and Cabarrus County court resources in Concord." },
+      { label: "Records", title: "The agency on the paperwork matters", body: "A stop may involve Concord Police, Kannapolis Police, Cabarrus County deputies, or North Carolina State Highway Patrol." },
+      { label: "License", title: "NCDMV consequences can move separately", body: "Civil revocation and limited-driving-privilege questions should be separated from the first court date." },
+    ],
+    court: cabarrusCountyCourt,
+    licenseOffice: office({
+      name: "NCDMV Driver License Office Locator",
+      type: "NCDMV Driver License Office",
+      address: "Use the NCDMV locator for the nearest current office.",
+      phone: "(919) 715-7000",
+      hours: "Confirm current hours with the NCDMV office locator.",
+      href: "https://www.ncdot.gov/dmv/offices-services/locate-dmv-office/Pages/dmv-offices.aspx",
+      note: "Use the NCDMV locator to verify services, appointments, and current hours before visiting.",
+    }),
+    sharedEnforcement: [
+      police("Cabarrus County Sheriff's Office", "30 Corban Avenue SE, Concord, NC 28025", "(704) 920-3000", "https://www.cabarruslaw.us/", "County law-enforcement contact for sheriff-handled matters, courthouse security, county records, and smaller-town coverage.", "County Sheriff"),
+    ],
+    cities: [
+      city({ slug: "concord-nc", name: "Concord", agency: "Concord Police Department", police: police("Concord Police Department", "41 Cabarrus Avenue W, Concord, NC 28026", "(704) 920-5000", "https://concordnc.gov/Departments/Police", "For Concord police reports, crash records, video questions, and city enforcement records."), dui_local_data: duiData({ summary: "Concord Police publish department directory, records, communications, and public-safety contact information through the official city police site.", sourceName: "Concord Police Department", sourceUrl: "https://concordnc.gov/Departments/Police", roads: ["I-85", "U.S. 29", "NC 49", "Concord Parkway", "Cabarrus Avenue", "Church Street"], jurisdictions: [jurisdiction("Concord Police Department", "Municipal police", "Handles city traffic stops and police records inside Concord."), jurisdiction("Cabarrus County Sheriff's Office", "County sheriff", "May be involved in county matters, courthouse security, or incidents outside city limits."), jurisdiction("North Carolina State Highway Patrol", "State patrol", "May handle interstate and highway enforcement.")] }) }),
+      city({ slug: "kannapolis-nc", name: "Kannapolis", agency: "Kannapolis Police Department", police: police("Kannapolis Police Department", "401 Laureate Way, Kannapolis, NC 28081", "(704) 920-4444", "https://www.kannapolisnc.gov/Government-Departments/Police", "For Kannapolis police reports, crash records, and city enforcement questions."), dui_local_data: duiData({ summary: "Kannapolis Police publish official department information, service links, and contact information through the City of Kannapolis police page.", sourceName: "Kannapolis Police Department", sourceUrl: "https://www.kannapolisnc.gov/Government-Departments/Police", roads: ["I-85", "U.S. 29", "Dale Earnhardt Boulevard", "Cannon Boulevard", "Main Street"], jurisdictions: [jurisdiction("Kannapolis Police Department", "Municipal police", "Handles city traffic stops and police records in Kannapolis."), jurisdiction("Cabarrus County Sheriff's Office", "County sheriff", "May be involved outside city limits or on county matters."), jurisdiction("North Carolina State Highway Patrol", "State patrol", "May handle interstate and highway enforcement.")] }) }),
+      city({ slug: "harrisburg-nc", name: "Harrisburg", agency: "Cabarrus County Sheriff's Office", police: police("Cabarrus County Sheriff's Office", "30 Corban Avenue SE, Concord, NC 28025", "(704) 920-3000", "https://www.harrisburgnc.gov/167/Law-Enforcement", "Harrisburg law-enforcement questions generally route through Cabarrus County Sheriff's Office services.", "County Sheriff"), dui_local_data: duiData({ summary: "The Town of Harrisburg says it partners with Cabarrus County Sheriff's Office for law-enforcement services.", sourceName: "Harrisburg law enforcement", sourceUrl: "https://www.harrisburgnc.gov/167/Law-Enforcement", roads: ["NC 49", "Roberta Road", "Morehead Road", "Harrisburg Veterans Road", "Rocky River Road"], jurisdictions: [jurisdiction("Cabarrus County Sheriff's Office", "County sheriff", "Primary law-enforcement reference for Harrisburg records and local enforcement questions."), jurisdiction("Concord Police Department", "Municipal police", "May be relevant near jurisdictional boundaries."), jurisdiction("North Carolina State Highway Patrol", "State patrol", "May handle state-route and highway enforcement.")] }) }),
+      city({ slug: "mount-pleasant-nc", name: "Mount Pleasant", agency: "Cabarrus County Sheriff's Office", police: police("Cabarrus County Sheriff's Office", "30 Corban Avenue SE, Concord, NC 28025", "(704) 920-3000", "https://mtpleasantnc.gov/Government/Public-Safety", "Mount Pleasant contracts with Cabarrus County Sheriff's Department for enhanced community policing.", "County Sheriff"), dui_local_data: duiData({ summary: "The Town of Mount Pleasant public-safety page says the town contracts with Cabarrus County Sheriff's Department for enhanced community policing.", sourceName: "Mount Pleasant public safety", sourceUrl: "https://mtpleasantnc.gov/Government/Public-Safety", roads: ["NC 49", "NC 73", "Main Street", "Franklin Street", "Mount Pleasant Road"], jurisdictions: [jurisdiction("Cabarrus County Sheriff's Office", "County sheriff", "Primary law-enforcement reference for many Mount Pleasant records questions."), jurisdiction("North Carolina State Highway Patrol", "State patrol", "May handle highway and state-route enforcement.")] }) }),
+      city({ slug: "midland-nc", name: "Midland", agency: "Cabarrus County Sheriff's Office", police: police("Cabarrus County Sheriff's Office", "30 Corban Avenue SE, Concord, NC 28025", "(704) 920-3000", "https://www.cabarruslaw.us/", "Midland readers should confirm whether Cabarrus County deputies, state patrol, or another agency handled the stop or report.", "County Sheriff"), dui_local_data: duiData({ summary: "Cabarrus County Sheriff's Office is the county law-enforcement contact for sheriff-handled matters; Midland is a separate town with its own local-government identity and county-service context.", sourceName: "Cabarrus County Sheriff's Office", sourceUrl: "https://www.cabarruslaw.us/", roads: ["NC 24/27", "Bethel School Road", "Midland Road", "U.S. 601", "Flowes Store Road"], jurisdictions: [jurisdiction("Cabarrus County Sheriff's Office", "County sheriff", "Primary records reference for many Midland-area law-enforcement questions."), jurisdiction("North Carolina State Highway Patrol", "State patrol", "May handle highway and state-route enforcement.")] }) }),
+    ],
+  },
+  {
+    slug: "durham-orange-triangle-nc",
+    name: "Durham / Orange Triangle",
+    state: "North Carolina",
+    stateCode: "NC",
+    practiceSlugs: ["dui"],
+    teaser: "Durham, Chapel Hill, Carrboro, and Hillsborough DWI guides with two courthouse systems and college-town traffic context.",
+    urgentDeadline: {
+      headline: "Triangle West DWI readers need to know whether the case points to Durham County or Orange County.",
+      body: "Durham has its own courthouse and police department, while Chapel Hill, Carrboro, and Hillsborough generally point to Orange County court resources and separate town police records.",
+    },
+    regionHighlights: [
+      { title: "Two courthouse systems", body: "Durham County and Orange County make this cluster meaningfully different from Wake County and the Charlotte-area pages." },
+      { title: "College-town and commuter context", body: "UNC, downtown Durham, I-40, U.S. 15-501, NC 54, and town-center traffic create distinct DWI search intent." },
+      { title: "High-value attorney market", body: "The package gives a sponsor focused Triangle West visibility without trying to sell a broad Raleigh-Durham placement." },
+    ],
+    processNotes: [
+      { label: "County line", title: "Court routing is the first local question", body: "Durham cases and Orange County cases may involve different courthouse addresses, clerks, and local traffic-court resources." },
+      { label: "Agency", title: "Police records are city-specific", body: "Durham, Chapel Hill, Carrboro, and Hillsborough have separate police records and public-safety contacts." },
+      { label: "License", title: "NCDMV issues remain separate", body: "Civil revocation and limited-driving-privilege questions should be tracked apart from the criminal court calendar." },
+    ],
+    court: durhamCountyCourt,
+    courtOffices: [durhamCountyCourt, orangeCountyCourt],
+    licenseOffice: office({
+      name: "NCDMV Driver License Office Locator",
+      type: "NCDMV Driver License Office",
+      address: "Use the NCDMV locator for the nearest current office.",
+      phone: "(919) 715-7000",
+      hours: "Confirm current hours with the NCDMV office locator.",
+      href: "https://www.ncdot.gov/dmv/offices-services/locate-dmv-office/Pages/dmv-offices.aspx",
+      note: "Use the NCDMV locator to verify services, appointments, and current hours before visiting.",
+    }),
+    sharedEnforcement: [
+      police("Orange County Sheriff's Office", "106 E. Margaret Lane, Hillsborough, NC 27278", "(919) 245-2900", "https://www.ocsonc.com/", "County law-enforcement contact for Orange County sheriff-handled matters and countywide records questions.", "County Sheriff"),
+    ],
+    cities: [
+      city({ slug: "durham-nc", name: "Durham", agency: "Durham Police Department", police: police("Durham Police Department", "602 E. Main Street, Durham, NC 27701", "(919) 560-4427", "https://www.durhamnc.gov/149/Police", "For Durham police reports, crash records, and city enforcement questions."), dui_local_data: duiData({ summary: "Durham Police publish official headquarters, contact, reporting, and district information through the city police site.", sourceName: "Durham Police Department", sourceUrl: "https://www.durhamnc.gov/149/Police", roads: ["NC 147", "I-85", "U.S. 15-501", "Roxboro Street", "Main Street", "Fayetteville Street"], jurisdictions: [jurisdiction("Durham Police Department", "Municipal police", "Handles city traffic stops and police records inside Durham."), jurisdiction("Durham County Sheriff's Office", "County sheriff", "May be involved in county matters or courthouse-related issues."), jurisdiction("North Carolina State Highway Patrol", "State patrol", "May handle highway enforcement.")] }) }),
+      city({ slug: "chapel-hill-nc", name: "Chapel Hill", agency: "Chapel Hill Police Department", police: police("Chapel Hill Police Department", "7300 Millhouse Road, Chapel Hill, NC 27516", "(919) 968-2760", "https://www.chapelhillnc.gov/Town-Government/Departments-and-Offices/Police", "For Chapel Hill police reports, crash records, and town enforcement questions."), courtOverride: orangeCountyCourt, dui_local_data: duiData({ summary: "Chapel Hill Police publish official department contact, report, crisis, and service resources through the town police page.", sourceName: "Chapel Hill Police Department", sourceUrl: "https://www.chapelhillnc.gov/Town-Government/Departments-and-Offices/Police", roads: ["U.S. 15-501", "NC 54", "Franklin Street", "Fordham Boulevard", "Martin Luther King Jr Boulevard"], jurisdictions: [jurisdiction("Chapel Hill Police Department", "Municipal police", "Handles town traffic stops and police records."), jurisdiction("Orange County Sheriff's Office", "County sheriff", "May be involved outside town limits or on county matters."), jurisdiction("North Carolina State Highway Patrol", "State patrol", "May handle highway and state-route enforcement.")] }) }),
+      city({ slug: "carrboro-nc", name: "Carrboro", agency: "Carrboro Police Department", police: police("Carrboro Police Department", "100 N. Greensboro Street, Carrboro, NC 27510", "(919) 918-7397", "https://www.carrboronc.gov/225/Police", "For Carrboro police reports, crash records, and town enforcement questions."), courtOverride: orangeCountyCourt, dui_local_data: duiData({ summary: "Carrboro Police publish official department information, directory details, and public-service resources through the town site.", sourceName: "Carrboro Police Department", sourceUrl: "https://www.carrboronc.gov/225/Police", roads: ["NC 54", "Main Street", "N. Greensboro Street", "Jones Ferry Road", "Weaver Street"], jurisdictions: [jurisdiction("Carrboro Police Department", "Municipal police", "Handles town traffic stops and police records."), jurisdiction("Orange County Sheriff's Office", "County sheriff", "May be involved outside town limits or on county matters."), jurisdiction("North Carolina State Highway Patrol", "State patrol", "May handle state-route enforcement.")] }) }),
+      city({ slug: "hillsborough-nc", name: "Hillsborough", agency: "Hillsborough Police Department", police: police("Hillsborough Police Department", "127 N. Churton Street, Hillsborough, NC 27278", "(919) 296-9500", "https://www.hillsboroughnc.gov/about-us/contact-us/contact-police", "For Hillsborough police reports, crash records, and town enforcement questions."), courtOverride: orangeCountyCourt, dui_local_data: duiData({ summary: "Hillsborough Police publish contact information for the police station and weekday office coverage through the town police contact page.", sourceName: "Hillsborough Police Department", sourceUrl: "https://www.hillsboroughnc.gov/about-us/contact-us/contact-police", roads: ["I-85", "I-40", "Churton Street", "U.S. 70", "NC 86"], jurisdictions: [jurisdiction("Hillsborough Police Department", "Municipal police", "Handles town traffic stops and police records."), jurisdiction("Orange County Sheriff's Office", "County sheriff", "May be involved outside town limits or on county matters."), jurisdiction("North Carolina State Highway Patrol", "State patrol", "May handle interstate and highway enforcement.")] }) }),
     ],
   },
 ];
