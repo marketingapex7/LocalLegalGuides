@@ -425,9 +425,14 @@ function personalInjuryCityLink(entry, className = "city-link") {
 const priorityDuiCitySlugs = [
   "apex-nc",
   "wentzville-mo",
+  "st-charles-mo",
+  "lake-saint-louis-mo",
+  "st-peters-mo",
   "north-raleigh-nc",
+  "knightdale-nc",
   "belleville-il",
   "ofallon-mo",
+  "moscow-mills-mo",
   "nixa-mo",
   "manchester-mo",
   "cary-nc",
@@ -588,6 +593,11 @@ function cityPageTitle(city, region, practice) {
       "edwardsville-il": `Edwardsville DUI Guide: Arrest, Court, License Suspension & Next Steps | ${siteData.siteName}`,
       "manchester-mo": `Manchester DWI Guide: DUI Attorney Searches, Court & License Issues | ${siteData.siteName}`,
       "nixa-mo": `Nixa DWI Guide: Administrative Hearing, Court & License Deadlines | ${siteData.siteName}`,
+      "st-charles-mo": `St. Charles DWI Guide: Lawyer Questions, Court & License Hearing | ${siteData.siteName}`,
+      "lake-saint-louis-mo": `Lake Saint Louis DWI Guide: Court, Police Records & License Issues | ${siteData.siteName}`,
+      "st-peters-mo": `St. Peters DWI Guide: Court, License & Police Records | ${siteData.siteName}`,
+      "moscow-mills-mo": `Moscow Mills DWI Guide: Attorney Questions & License Hearing | ${siteData.siteName}`,
+      "knightdale-nc": `Knightdale DWI Guide: Lawyer Questions, Court & License Issues | ${siteData.siteName}`,
     };
 
     if (targetedTitles[city.slug]) {
@@ -643,6 +653,16 @@ function cityPageDescription(city, region, practice) {
         "Cary DWI guide covering lawyer-selection questions, Wake County court context, NCDMV license issues, Cary Police records, and defense documents to gather.",
       "pineville-nc":
         "Pineville DWI guide covering Mecklenburg County court context, North Carolina DWI consequences, police records, license questions, and what to ask a DWI lawyer.",
+      "st-charles-mo":
+        "St. Charles DWI guide covering lawyer questions, police records, St. Charles County court context, Missouri DOR administrative hearing issues, and license deadlines.",
+      "lake-saint-louis-mo":
+        "Lake Saint Louis DWI guide covering local police records, St. Charles County court context, Missouri DOR license issues, and questions to ask a DWI attorney.",
+      "st-peters-mo":
+        "St. Peters DWI guide covering police records, St. Charles County court context, Missouri DOR license deadlines, local roads, and DWI lawyer questions.",
+      "moscow-mills-mo":
+        "Moscow Mills DWI guide covering DWI attorney questions, Lincoln County court context, Missouri DOR administrative hearings, Form 2385, and license deadlines.",
+      "knightdale-nc":
+        "Knightdale DWI guide covering Wake County court, Knightdale Police records, NCDMV license consequences, Spanish-language legal searches, and lawyer questions.",
     };
     if (targetedDescriptions[city.slug]) {
       return compactDescription(targetedDescriptions[city.slug]);
@@ -2093,6 +2113,35 @@ function rankingOpportunitySection(city, region, isDui, basics) {
       ],
       sources: moAdminSources,
     },
+    "moscow-mills-mo": {
+      eyebrow: "Administrative hearing focus",
+      title: "Moscow Mills DWI attorney questions and Missouri license hearing deadlines.",
+      intro:
+        "Moscow Mills searches are already showing interest in DWI attorney and administrative-hearing language. A local DWI case can create both a Lincoln County court issue and a separate Missouri DOR license issue, so readers should treat court paperwork and Form 2385 or DOR notices as separate items to check.",
+      cards: [
+        [
+          "Attorney search intent",
+          "A search for DWI attorney Moscow Mills usually means the reader needs help sorting citation paperwork, police records, court dates, and license deadlines.",
+        ],
+        [
+          "Administrative hearing",
+          "Missouri DOR hearing requests can be deadline-driven. Any Form 2385 or administrative alcohol paperwork should be reviewed before waiting for the court date.",
+        ],
+        [
+          "Lincoln County court",
+          "The official citation or court notice should control where to appear. Moscow Mills police records and the county court path may be separate practical steps.",
+        ],
+        [
+          "Records to organize",
+          "Useful documents may include the ticket, release paperwork, chemical-test or refusal paperwork, officer notices, crash details, towing information, and any DOR mailing.",
+        ],
+        [
+          "Local context",
+          "U.S. 61, Highway MM, Route C, and Main Street are useful Moscow Mills context when organizing where the stop happened and which agency may have records.",
+        ],
+      ],
+      sources: moAdminSources,
+    },
     "manchester-mo": {
       eyebrow: "Attorney search context",
       title: "Manchester DUI attorney searches and Missouri DWI wording.",
@@ -2183,6 +2232,115 @@ function rankingOpportunitySection(city, region, isDui, basics) {
         {
           label: "O'Fallon Police Department",
           href: "https://www.ofallon.mo.us/police",
+        },
+      ],
+    },
+    "st-charles-mo": {
+      eyebrow: "St. Charles DWI search context",
+      title: "St. Charles DWI lawyer questions, court process, and license hearing issues.",
+      intro:
+        "People searching for DWI in St. Charles or a St. Charles DWI lawyer are usually trying to connect police paperwork, St. Charles County court, Missouri Department of Revenue license deadlines, and what to ask before hiring counsel. The useful starting point is separating the criminal court path from the DOR administrative track.",
+      cards: [
+        [
+          "DWI vs DUI wording",
+          "Missouri official materials commonly use DWI, but readers may still search St. Charles DUI lawyer, DWI lawyer, drunk-driving attorney, or traffic lawyer.",
+        ],
+        [
+          "Local records",
+          "St. Charles Police records, crash reports, video, chemical-test paperwork, towing records, and citation details may all matter depending on the stop.",
+        ],
+        [
+          "County court path",
+          "The official citation or court notice should control the court date and location, especially when local police paperwork and St. Charles County court resources overlap.",
+        ],
+        [
+          "DOR hearing track",
+          "Missouri DOR license issues can move separately from court. Any Form 2385 or administrative alcohol notice should be checked quickly against official instructions.",
+        ],
+        [
+          "Road context",
+          "I-70, Route 94, Fifth Street, Zumbehl Road, and First Capitol Drive are useful St. Charles context when organizing records and agency questions.",
+        ],
+        [
+          "Attorney questions",
+          "Ask whether the lawyer handles St. Charles County DWI cases, DOR administrative hearings, refusal issues, license stays, chemical-test evidence, and local police records.",
+        ],
+      ],
+      sources: [
+        ...moAdminSources,
+        {
+          label: "St. Charles Police Department",
+          href: "https://www.stcharlescitymo.gov/166/Police",
+        },
+      ],
+    },
+    "lake-saint-louis-mo": {
+      eyebrow: "Lake Saint Louis DWI search context",
+      title: "Lake Saint Louis DWI court, police-record, and license questions.",
+      intro:
+        "Lake Saint Louis DWI searches are often about the first practical steps after a local stop: which police department has records, how the St. Charles County court notice works, whether a Missouri DOR hearing deadline exists, and what questions to ask a DWI attorney.",
+      cards: [
+        [
+          "Police report path",
+          "If Lake Saint Louis Police handled the stop or crash, the department may be the starting point for local report, records, and video questions.",
+        ],
+        [
+          "Court notice",
+          "Use the citation or release paperwork to confirm the court path. Do not assume the police station, court, and license office are the same next step.",
+        ],
+        [
+          "License deadline",
+          "A Missouri DOR administrative alcohol issue can move on its own timeline, so Form 2385 or other DOR paperwork should be reviewed quickly.",
+        ],
+        [
+          "Local corridors",
+          "I-70, I-64, Lake Saint Louis Boulevard, Hawk Ridge Trail, and Veterans Memorial Parkway are useful context for traffic stops, crash reports, and records questions.",
+        ],
+        [
+          "Attorney questions",
+          "Ask whether the lawyer handles St. Charles County DWI cases, Lake Saint Louis Police records, DOR hearing requests, license options, and chemical-test paperwork.",
+        ],
+      ],
+      sources: [
+        ...moAdminSources,
+        {
+          label: "Lake Saint Louis Police Department",
+          href: "https://www.lakesaintlouis.com/154/Police",
+        },
+      ],
+    },
+    "st-peters-mo": {
+      eyebrow: "St. Peters DWI search context",
+      title: "St. Peters DWI court, license, and police-record questions.",
+      intro:
+        "People searching for St. Peters DWI help are usually trying to understand local police records, St. Charles County court timing, Missouri DOR license consequences, and whether a DWI attorney should review the stop, testing, and paperwork before court.",
+      cards: [
+        [
+          "St. Peters Police records",
+          "Police reports, annual-report context, citation details, video references, crash records, and towing paperwork may matter depending on how the stop started.",
+        ],
+        [
+          "St. Charles County court",
+          "The court notice should control the next appearance. St. Peters Police paperwork may be local while the court path can point to county-level resources.",
+        ],
+        [
+          "DOR administrative issue",
+          "Missouri DOR license deadlines can be separate from court, especially when a Form 2385 or administrative alcohol notice is issued.",
+        ],
+        [
+          "Road context",
+          "I-70, Mexico Road, Mid Rivers Mall Drive, Salt River Road, and Spencer Road are useful local context for reports and agency questions.",
+        ],
+        [
+          "Lawyer questions",
+          "Ask about St. Peters DWI stops, St. Charles County court experience, DOR hearing requests, refusal or test issues, and license-restoration planning.",
+        ],
+      ],
+      sources: [
+        ...moAdminSources,
+        {
+          label: "St. Peters Police Department",
+          href: "https://www.stpetersmo.net/254/Police-Department",
         },
       ],
     },
@@ -2351,6 +2509,48 @@ function rankingOpportunitySection(city, region, isDui, basics) {
         {
           label: "Raleigh Police Department",
           href: "https://raleighnc.gov/police",
+        },
+        {
+          label: "North Carolina Judicial Branch - Wake County",
+          href: "https://www.nccourts.gov/locations/wake-county",
+        },
+        {
+          label: "NCDMV license suspension",
+          href: "https://www.ncdot.gov/dmv/license-id/license-suspension/Pages/",
+        },
+      ],
+    },
+    "knightdale-nc": {
+      eyebrow: "Knightdale DWI search context",
+      title: "Knightdale DWI lawyer questions, Wake County court, and license issues.",
+      intro:
+        "Knightdale DWI searches are starting to show Wake County and Spanish-language legal-representation intent. The practical path is to identify the police agency, confirm the Wake County court notice, save DWI paperwork, and track NCDMV consequences separately from the criminal case.",
+      cards: [
+        [
+          "Knightdale Police records",
+          "If Knightdale Police handled the stop or crash, the department may be the starting point for report, video, citation, crash-record, and records questions.",
+        ],
+        [
+          "Wake County court",
+          "The official court notice should control the court date and location. Knightdale police paperwork and Wake County court tasks may require separate follow-up.",
+        ],
+        [
+          "NCDMV license track",
+          "North Carolina DWI cases can involve license consequences outside the ordinary court timeline, including civil revocation and limited-driving-privilege questions.",
+        ],
+        [
+          "Spanish-language searches",
+          "Some people search for DWI legal representation in Spanish. Ask any attorney or law firm whether Spanish-language consultation or translation support is available.",
+        ],
+        [
+          "Attorney questions",
+          "Ask about Wake County DWI experience, Knightdale Police records, chemical-test evidence, punishment levels, probation conditions, and limited-driving-privilege issues.",
+        ],
+      ],
+      sources: [
+        {
+          label: "Knightdale Police Department",
+          href: "https://www.knightdalenc.gov/departments/police",
         },
         {
           label: "North Carolina Judicial Branch - Wake County",
@@ -2649,6 +2849,78 @@ function targetedDuiFaqs(city, region, basics) {
     ];
   }
 
+  if (city.slug === "st-charles-mo") {
+    return [
+      {
+        q: "What should I ask a St. Charles DWI lawyer?",
+        a: "Ask about St. Charles County DWI experience, St. Charles Police records, Missouri DOR administrative hearing deadlines, Form 2385, refusal issues, chemical-test paperwork, and license options.",
+      },
+      {
+        q: "Can a St. Charles DWI create a license hearing issue?",
+        a: sharedMissouriAdminAnswer,
+      },
+      {
+        q: "What records matter after a St. Charles DWI stop?",
+        a: "Useful records may include the citation, release paperwork, St. Charles Police report, video, chemical-test or refusal paperwork, crash records, towing documents, and any DOR notice.",
+      },
+      {
+        q: "Is St. Charles DWI the same search intent as St. Charles DUI?",
+        a: "Missouri commonly uses DWI in official materials, while many people still search DUI. The practical question is whether the case involves impaired-driving allegations, police records, court paperwork, and license consequences.",
+      },
+    ];
+  }
+
+  if (city.slug === "lake-saint-louis-mo") {
+    return [
+      {
+        q: "What should I do first after a Lake Saint Louis DWI?",
+        a: "Save the citation, release paperwork, court date, Lake Saint Louis Police information, chemical-test or refusal paperwork, crash details, and any DOR notice. Then confirm the court path from the official paperwork.",
+      },
+      {
+        q: "Can Lake Saint Louis DWI license issues move separately from court?",
+        a: sharedMissouriAdminAnswer,
+      },
+      {
+        q: "What should I ask a Lake Saint Louis DWI attorney?",
+        a: "Ask about St. Charles County DWI cases, Lake Saint Louis Police records, DOR hearing requests, Form 2385, chemical-test issues, refusal allegations, and license options.",
+      },
+    ];
+  }
+
+  if (city.slug === "st-peters-mo") {
+    return [
+      {
+        q: "Where do St. Peters DWI records usually start?",
+        a: "If St. Peters Police handled the stop or crash, the department may be the starting point for local report, video, crash-record, and records questions. County or state agencies may matter depending on where the stop happened.",
+      },
+      {
+        q: "Can a St. Peters DWI affect my license separately from court?",
+        a: sharedMissouriAdminAnswer,
+      },
+      {
+        q: "What should I ask a St. Peters DWI lawyer?",
+        a: "Ask about St. Charles County court experience, St. Peters Police records, Missouri DOR deadlines, Form 2385, chemical-test evidence, refusal issues, and traffic citations tied to the stop.",
+      },
+    ];
+  }
+
+  if (city.slug === "moscow-mills-mo") {
+    return [
+      {
+        q: "Why do people search for a DWI attorney in Moscow Mills?",
+        a: "A Moscow Mills DWI attorney search usually means the reader needs help connecting police paperwork, Lincoln County court, Missouri DOR license deadlines, and what records should be reviewed before court.",
+      },
+      {
+        q: "What is a DWI administrative hearing after a Moscow Mills arrest?",
+        a: "It is a Missouri Department of Revenue license process that can move separately from the criminal court case. Any Form 2385 or DOR notice should be checked quickly against official hearing-request instructions.",
+      },
+      {
+        q: "What documents matter for a Moscow Mills DWI?",
+        a: "Useful documents may include the ticket, release paperwork, police agency information, chemical-test records, refusal paperwork, officer notices, crash or towing details, and any DOR mailing.",
+      },
+    ];
+  }
+
   if (city.slug === "belleville-il") {
     return [
       {
@@ -2797,6 +3069,23 @@ function targetedDuiFaqs(city, region, basics) {
       {
         q: "What should I ask a North Raleigh DWI lawyer?",
         a: "Ask about Wake County DWI experience, Raleigh Police records, NCDMV license consequences, punishment levels, probation conditions, chemical-test evidence, and limited-driving-privilege issues.",
+      },
+    ];
+  }
+
+  if (city.slug === "knightdale-nc") {
+    return [
+      {
+        q: "What should I ask a Knightdale DWI lawyer?",
+        a: "Ask about Wake County DWI experience, Knightdale Police records, chemical-test evidence, punishment levels, probation conditions, limited-driving-privilege issues, and NCDMV license consequences.",
+      },
+      {
+        q: "Can a Knightdale DWI affect my license separately from court?",
+        a: "Yes. North Carolina DWI cases can involve NCDMV consequences outside the criminal court timeline, including civil revocation and possible limited-driving-privilege questions.",
+      },
+      {
+        q: "What if I searched in Spanish for Knightdale DWI legal representation?",
+        a: "This guide is written in English, but Spanish-language searches can still point to the same Knightdale police, Wake County court, and NCDMV issues. Ask any attorney or law firm whether Spanish-language consultation or translation support is available.",
       },
     ];
   }
@@ -3330,8 +3619,13 @@ function cityShell(city, region, practice) {
         "nixa-mo",
         "manchester-mo",
         "wentzville-mo",
+        "st-charles-mo",
+        "lake-saint-louis-mo",
+        "st-peters-mo",
+        "moscow-mills-mo",
         "edwardsville-il",
         "north-raleigh-nc",
+        "knightdale-nc",
         "cary-nc",
         "ofallon-mo",
         "belleville-il",
