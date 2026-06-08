@@ -61,6 +61,10 @@ function sponsorPackageHref(region) {
   return `/clusters/${region.slug}/#regional-sponsor`;
 }
 
+function clusterHref(region) {
+  return `/clusters/${region.slug}/`;
+}
+
 function sponsorPackage(region) {
   const configured = siteData.sponsorPackages?.[region.slug] ?? {};
   const sponsor = configured.sponsor ?? {};
@@ -510,7 +514,7 @@ function groupedDuiLocationSections({ compact = false } = {}) {
             ({ region, entries: regionEntries }) => `<article class="region-block">
               <div class="region-block-head">
                 <p class="eyebrow">${escapeHtml(region.stateCode)}</p>
-                <h3>${escapeHtml(region.name)}</h3>
+                <h3><a class="text-link" href="${clusterHref(region)}">${escapeHtml(region.name)} DWI guides</a></h3>
               </div>
               <div class="city-link-grid">${regionEntries.map((entry) => duiCityLink(entry)).join("")}</div>
             </article>`
@@ -551,7 +555,7 @@ function groupedPersonalInjuryLocationSections({ compact = false } = {}) {
             ({ region, entries: regionEntries }) => `<article class="region-block">
               <div class="region-block-head">
                 <p class="eyebrow">${escapeHtml(region.stateCode)}</p>
-                <h3>${escapeHtml(region.name)}</h3>
+                <h3><a class="text-link" href="${clusterHref(region)}">${escapeHtml(region.name)} legal guides</a></h3>
               </div>
               <div class="city-link-grid">${regionEntries.map((entry) => personalInjuryCityLink(entry)).join("")}</div>
             </article>`
@@ -1224,6 +1228,7 @@ function duiInternalLinksSection(city, region, practice) {
       </div>
       <div class="related-grid">
         <a class="related-card compact-related-card" href="/dui/">DUI/DWI hub</a>
+        <a class="related-card compact-related-card" href="${clusterHref(region)}">${escapeHtml(region.name)} ${escapeHtml(practiceSeoLabel(practice, region))} cluster</a>
         ${
           regionHasPractice(region, "personal-injury")
             ? `<a class="related-card compact-related-card" href="${pathForPracticeCity("personal-injury", city.slug)}">${escapeHtml(city.name)} personal injury guide</a>`
@@ -3838,7 +3843,7 @@ function regionSummary(region) {
   const guideCount = cityCount * practicesForRegion(region).length;
   return `<article class="region-card">
     <p class="eyebrow">${escapeHtml(region.state)}</p>
-    <h3>${escapeHtml(region.name)}</h3>
+    <h3><a class="text-link" href="${clusterHref(region)}">${escapeHtml(region.name)}</a></h3>
     <p>${escapeHtml(region.teaser)}</p>
     <div class="region-meta">${cityCount} cities | ${guideCount} guides</div>
     <div class="region-city-list">
@@ -3847,6 +3852,7 @@ function regionSummary(region) {
         .map((city) => `<a class="region-city-pill" href="${pathForPracticeCity("dui", city.slug)}">${escapeHtml(city.name)}</a>`)
         .join("")}
     </div>
+    <a class="text-link" href="${clusterHref(region)}" aria-label="Open ${escapeHtml(region.name)} cluster hub">Open cluster hub</a>
     <a class="text-link" href="/dui/locations/" aria-label="Browse DUI and DWI city guides">Browse DUI/DWI guides</a>
   </article>`;
 }
@@ -4032,7 +4038,7 @@ function cityShell(city, region, practice) {
   const breadcrumbs = [
     { name: "Home", href: "/" },
     { name: practice.title, href: `/${practice.slug}/` },
-    { name: region.name, href: "/regions/" },
+    { name: region.name, href: clusterHref(region) },
     { name: city.name, href: pathForPracticeCity(practice.slug, city.slug) },
   ];
 
@@ -4316,7 +4322,7 @@ function cityShell(city, region, practice) {
           isDui
             ? `<a class="related-card" href="/dui/locations/"><span>DUI/DWI locations</span><strong>All DUI and DWI guides by city</strong><p>Browse every DUI/DWI city guide by state and region.</p></a>`
             : ""
-        }${!isDui ? `<a class="related-card" href="/personal-injury/locations/"><span>Personal injury locations</span><strong>All car accident and injury guides by city</strong><p>Browse every injury city guide by state and region.</p></a>` : ""}${practicesForRegion(region)
+        }<a class="related-card" href="${clusterHref(region)}"><span>${escapeHtml(region.name)}</span><strong>Legal guide cluster</strong><p>Compare the city guides tied to this local court market and regional agency path.</p></a>${!isDui ? `<a class="related-card" href="/personal-injury/locations/"><span>Personal injury locations</span><strong>All car accident and injury guides by city</strong><p>Browse every injury city guide by state and region.</p></a>` : ""}${practicesForRegion(region)
           .filter((item) => item.slug !== practice.slug)
           .map((item) => {
             const label = item.slug === "dui" ? practiceSeoLabel(item, region) : item.label;
@@ -4343,6 +4349,7 @@ function cityShell(city, region, practice) {
           return `<a class="city-chip" href="${pathForPracticeCity(practice.slug, nearby.slug)}">${escapeHtml(nearbyLabel)}</a>`;
         })
         .join("")}
+        <a class="practice-chip" href="${clusterHref(region)}">${escapeHtml(region.name)} cluster hub</a>
         <a class="practice-chip" href="${isDui ? "/dui/locations/" : "/personal-injury/locations/"}">Browse all ${escapeHtml(
           isDui ? "DUI/DWI" : "personal injury"
         )} guides</a>
@@ -4445,7 +4452,7 @@ function practicePage(practice) {
       return `<article class="region-block">
         <div class="region-block-head">
           <p class="eyebrow">${escapeHtml(region.state)}</p>
-          <h3>${escapeHtml(region.name)}</h3>
+          <h3><a class="text-link" href="${clusterHref(region)}">${escapeHtml(region.name)} cluster</a></h3>
         </div>
         <div class="city-link-grid">${cities}</div>
       </article>`;
@@ -4779,6 +4786,24 @@ function regionsPage() {
   </section>`;
 }
 
+function clusterCityGuideCards(region) {
+  return region.cities
+    .map((city) => {
+      const links = practicesForRegion(region)
+        .map((practice) => {
+          const label = practice.slug === "dui" ? `${practiceSeoLabel(practice, region)} guide` : `${practice.label} guide`;
+          return `<a class="practice-chip" href="${pathForPracticeCity(practice.slug, city.slug)}">${escapeHtml(label)}</a>`;
+        })
+        .join("");
+      return `<article class="info-card">
+        <h3>${escapeHtml(city.name)}</h3>
+        <p>${escapeHtml(city.local_context_intro ?? `Use the city guide that matches where the case, stop, crash, or claim happened inside ${region.name}.`)}</p>
+        <div class="chip-grid">${links}</div>
+      </article>`;
+    })
+    .join("");
+}
+
 function regionPage(region) {
   const packageInfo = sponsorPackage(region);
   const court = regionPrimaryCourt(region);
@@ -4786,11 +4811,7 @@ function regionPage(region) {
   const licenseOffice = region.licenseOffice;
   const faq = regionFaq(region, court);
   const sources = regionSourceList(region, court, licenseOffice, enforcement);
-  const cityLinks = region.cities
-    .map(
-      (city) => `<a class="city-chip" href="/dui/${city.slug}/">${escapeHtml(city.name)}</a>`
-    )
-    .join("");
+  const cityGuideCards = clusterCityGuideCards(region);
 
   const regionPractices = practicesForRegion(region);
   const practiceLinks = regionPractices
@@ -4850,60 +4871,23 @@ function regionPage(region) {
           <span class="pill">${region.cities.length} cities</span>
           <span class="pill pill-muted">${guideCount(region)} guides</span>
         </div>
-        <p class="note">This market has sponsorship inventory for the enabled practice area guides and future pages.</p>
+        <p class="note">Use this regional page to compare city guides, court references, law-enforcement paths, and state agency links before choosing one local page.</p>
       </aside>
     </div>
   </section>
 
   <section class="section">
-    <div class="container split-grid">
-      <div>
-        <div class="section-head">
-          <p class="eyebrow">City coverage</p>
-          <h2>${escapeHtml(region.name)} city coverage.</h2>
-          <p>Each sponsor package covers the selected practice area across the city guides in this region.</p>
-        </div>
-        <div class="chip-grid">${cityLinks}</div>
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">City coverage</p>
+        <h2>${escapeHtml(region.name)} city guides.</h2>
+        <p>Start with the city closest to where the stop, arrest, crash, injury, or court notice is connected. Each city page keeps its local police, court, records, and source links separate.</p>
       </div>
-      <div>
-        <div class="section-head">
-          <p class="eyebrow">Practice areas</p>
-          <h2>Enabled practice-area inventory.</h2>
-        </div>
-        <div class="chip-grid">${practiceLinks}</div>
-      </div>
+      <div class="card-grid three-up">${cityGuideCards}</div>
     </div>
   </section>
 
   ${wakeSouthwestRegionalTopicSection(region)}
-
-  <section class="section section-alt" id="regional-sponsor">
-    <div class="container split-grid">
-      <div>
-        <div class="section-head">
-          <p class="eyebrow">Practice-area inventory</p>
-          <h2>Reserve one practice area in ${escapeHtml(region.name)}.</h2>
-          <p>Each enabled practice area is treated as its own annual sponsorship slot. Buying one practice area does not include another unless a separate package is reserved.</p>
-        </div>
-        <div class="responsive-table"><table>
-          <thead><tr><th>Practice Area</th><th>Status</th><th>Founding Price</th><th>Term</th><th>CTA</th></tr></thead>
-          <tbody>${sponsorInventoryRows}</tbody>
-        </table></div>
-        <div class="section-head section-head-compact">
-          <p class="eyebrow">What the sponsor gets</p>
-          <h2>A focused regional placement.</h2>
-        </div>
-        <div class="card-grid two-up">${sponsorPackageDetails}</div>
-      </div>
-      <div>
-        ${sponsorProfileCard(region, packageInfo, "cluster")}
-        <div class="sponsor-disclosure">
-          <strong>Included city coverage</strong>
-          <ul class="sponsor-coverage-list">${sponsorCoverage}</ul>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <section class="section section-directory" id="regional-directory">
     <div class="container">
@@ -4936,10 +4920,6 @@ function regionPage(region) {
         <h2>Local legal intent in one county-level territory.</h2>
       </div>
       <div class="card-grid four-up">${regionWhyItMatters(region, court, licenseOffice, enforcement)}</div>
-      <div class="sponsor-disclosure sponsor-disclosure-inline">
-        <strong>Why lawyers sponsor this territory</strong>
-        <ul class="sponsor-coverage-list">${sponsorReasons}</ul>
-      </div>
     </div>
   </section>
 
@@ -4970,6 +4950,38 @@ function regionPage(region) {
           <h2>County and state references used for this regional page.</h2>
         </div>
         <div class="source-grid">${sourceCards(sources)}</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="regional-sponsor">
+    <div class="container split-grid">
+      <div>
+        <div class="section-head">
+          <p class="eyebrow">Attorney advertising</p>
+          <h2>Practice-area sponsorship availability in ${escapeHtml(region.name)}.</h2>
+          <p>Each enabled practice area is treated as its own annual sponsorship slot. Sponsored placements are labeled advertising and kept separate from official local information.</p>
+        </div>
+        <div class="responsive-table"><table>
+          <thead><tr><th>Practice Area</th><th>Status</th><th>Founding Price</th><th>Term</th><th>CTA</th></tr></thead>
+          <tbody>${sponsorInventoryRows}</tbody>
+        </table></div>
+        <div class="section-head section-head-compact">
+          <p class="eyebrow">Why attorneys sponsor this territory</p>
+          <h2>A focused regional placement.</h2>
+        </div>
+        <div class="card-grid two-up">${sponsorPackageDetails}</div>
+        <div class="sponsor-disclosure sponsor-disclosure-inline">
+          <strong>Market notes</strong>
+          <ul class="sponsor-coverage-list">${sponsorReasons}</ul>
+        </div>
+      </div>
+      <div>
+        ${sponsorProfileCard(region, packageInfo, "cluster")}
+        <div class="sponsor-disclosure">
+          <strong>Included city coverage</strong>
+          <ul class="sponsor-coverage-list">${sponsorCoverage}</ul>
+        </div>
       </div>
     </div>
   </section>`;
@@ -5924,7 +5936,6 @@ function renderRegion(region) {
     body: `${breadcrumbTrail(breadcrumbs)}${regionPage(region)}`,
     active: "/regions/",
     route,
-    noindex: true,
     schema: [
       webPageSchema({ title, description, route }),
       breadcrumbSchema(breadcrumbs),
@@ -6054,6 +6065,7 @@ function sitemapEntries() {
   ];
 
   for (const region of siteData.regions) {
+    entries.push(clusterHref(region));
     for (const city of region.cities) {
       for (const practice of practicesForRegion(region)) {
         entries.push(pathForPracticeCity(practice.slug, city.slug));
