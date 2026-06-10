@@ -643,7 +643,10 @@ function cityPageTitle(city, region, practice) {
 
     const county = countyLabelForCity(city, region, practice);
     const courtPhrase = county ? `${county} Court` : "Local Court";
-    return `${city.name} ${label} Guide: Lawyer Questions, ${courtPhrase} & License Issues | ${siteData.siteName}`;
+    const detailedTitle = `${city.name} ${label} Guide: ${courtPhrase}, Lawyer & License`;
+    return detailedTitle.length <= 70
+      ? detailedTitle
+      : `${city.name} ${label} Guide: Lawyer, Court & License`;
   }
 
   const targetedPiTitles = {
@@ -730,11 +733,12 @@ function cityPageDescription(city, region, practice) {
     }
     const county = countyLabelForCity(city, region, practice);
     const licensePhrase = licensePhraseByState[region.stateCode] ?? "state license deadlines";
-    return compactDescription(
-      `${city.name} ${label} guide covering ${county ? `${county} court` : "local court"} context, ${
-        city.agency ?? "local police"
-      } records, ${licensePhrase}, and questions to ask a ${label} lawyer.`
-    );
+    const courtPhrase = county ? `${county} court` : "local court";
+    const detailedDescription = `${city.name} ${label} guide covering ${courtPhrase}, ${
+      city.agency ?? "local police"
+    } records, ${licensePhrase}, and lawyer questions.`;
+    const conciseDescription = `${city.name} ${label} guide covering ${courtPhrase}, local police records, ${licensePhrase}, and lawyer questions.`;
+    return compactDescription(detailedDescription.length <= 155 ? detailedDescription : conciseDescription);
   }
 
   const targetedPiDescriptions = {
