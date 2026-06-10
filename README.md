@@ -107,3 +107,17 @@ Current event patterns:
 - Pages render with a visible last-verified date
 - Structured data includes `dateModified`
 - `robots.txt`, `sitemap.xml`, and canonicals are generated into `dist`
+
+## Lastmod manifest
+
+`lastmod-manifest.json` stores a content hash and last-modified date per route. The build:
+
+- keeps a page's stored date when its rendered HTML is unchanged
+- bumps the date to the build date when content changes or a page is new
+- writes real `<lastmod>` values into both sitemaps and per-page schema `dateModified`
+
+Commit manifest changes together with content changes. If the manifest is missing (fresh clone without the file), all dates reset to that build's date.
+
+## 404 handling
+
+The build emits `dist/404.html`. Cloudflare Pages serves it with a real 404 status for unknown URLs. Without this file, Pages falls back to SPA mode and serves the homepage with HTTP 200 for every unknown path (soft-404s).

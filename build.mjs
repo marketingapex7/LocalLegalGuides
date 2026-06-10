@@ -1,10 +1,15 @@
-import { copyFile, mkdir, rm, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { deflateSync } from "node:zlib";
 import path from "node:path";
 import { siteData } from "./site-data.mjs";
 
 const root = process.cwd();
 const outputRoot = path.join(root, "dist");
+// Placeholder injected into rendered HTML, resolved to a real date after
+// content hashing so dateModified never feeds back into its own hash.
+const PAGE_LASTMOD_PLACEHOLDER = "__PAGE_LASTMOD__";
+const lastmodManifestPath = path.join(root, "lastmod-manifest.json");
 const practiceBySlug = new Map(siteData.practiceAreas.map((p) => [p.slug, p]));
 const googleAnalyticsId = "G-VLQC2KYC9E";
 const brandIconPath = "/favicon.svg";
@@ -587,6 +592,18 @@ function recentPersonalInjuryGuideLinks(limit = 18) {
     .join("");
 }
 
+function countyLabelForCity(city, region, practice) {
+  const court = courtForCity(city, region, practice);
+  const match = (court?.name ?? "").match(/^(?:Eastern |Western |Northern |Southern )?(.*?\bCounty\b)/);
+  return match ? match[1].trim() : null;
+}
+
+const licensePhraseByState = {
+  MO: "Missouri DOR license deadlines",
+  IL: "Illinois Secretary of State license issues",
+  NC: "NCDMV license consequences",
+};
+
 function cityPageTitle(city, region, practice) {
   if (practice.slug === "dui") {
     const label = practiceSeoLabel(practice, region);
@@ -624,7 +641,9 @@ function cityPageTitle(city, region, practice) {
       return targetedTitles[city.slug];
     }
 
-    return `Arrested for ${label} in ${city.name}, ${region.stateCode}? What to Do Next | ${siteData.siteName}`;
+    const county = countyLabelForCity(city, region, practice);
+    const courtPhrase = county ? `${county} Court` : "Local Court";
+    return `${city.name} ${label} Guide: Lawyer Questions, ${courtPhrase} & License Issues | ${siteData.siteName}`;
   }
 
   const targetedPiTitles = {
@@ -709,8 +728,12 @@ function cityPageDescription(city, region, practice) {
     if (targetedDescriptions[city.slug]) {
       return compactDescription(targetedDescriptions[city.slug]);
     }
+    const county = countyLabelForCity(city, region, practice);
+    const licensePhrase = licensePhraseByState[region.stateCode] ?? "state license deadlines";
     return compactDescription(
-      `Arrested for ${label} in ${city.name}? Learn what to do next, court and license deadlines, local police records, questions to ask a ${label} attorney, and official sources.`
+      `${city.name} ${label} guide covering ${county ? `${county} court` : "local court"} context, ${
+        city.agency ?? "local police"
+      } records, ${licensePhrase}, and questions to ask a ${label} lawyer.`
     );
   }
 
@@ -1955,7 +1978,7 @@ function officeSchema(offices) {
   }));
 }
 
-function webPageSchema({ title, description, route, modifiedDate = siteData.lastVerified }) {
+function webPageSchema({ title, description, route, modifiedDate = PAGE_LASTMOD_PLACEHOLDER }) {
   return {
     "@context": "https://schema.org",
     "@type": "WebPage",
@@ -6103,6 +6126,29 @@ function renderRegion(region) {
   });
 }
 
+function render404() {
+  const title = `Page Not Found | ${siteData.siteName}`;
+  const description =
+    "The page you are looking for does not exist or has moved. Browse DUI/DWI and personal injury guides by city, or use the location indexes.";
+  const body = `
+      <section class="hero hero-tight">
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <span class="eyebrow">404 - Page not found</span>
+            <h1>This page does not exist.</h1>
+            <p class="lede">The address may have changed, or the guide you are looking for may not be published yet. These indexes list every live guide.</p>
+            <div class="hero-actions">
+              <a class="button button-primary" href="/dui/locations/">DUI/DWI city guides</a>
+              <a class="button button-secondary" href="/personal-injury/locations/">Injury city guides</a>
+              <a class="button button-secondary" href="/regions/">Browse regions</a>
+            </div>
+          </div>
+        </div>
+      </section>`;
+
+  return pageShell({ title, description, body, route: "/404.html", noindex: true });
+}
+
 function renderStaticPages() {
   const pages = {
     ...resourcePages,
@@ -6364,6 +6410,19 @@ function validateContactStandard() {
   }
 }
 
+function routeForOutputPath(filePath) {
+  if (!filePath.endsWith("index.html")) return null;
+  return `/${filePath.slice(0, -"index.html".length)}`;
+}
+
+async function loadLastmodManifest() {
+  try {
+    return JSON.parse(await readFile(lastmodManifestPath, "utf8"));
+  } catch {
+    return {};
+  }
+}
+
 async function main() {
   validateContactStandard();
   await rm(outputRoot, { recursive: true, force: true });
@@ -6371,6 +6430,7 @@ async function main() {
   const outputs = [];
 
   outputs.push(["index.html", renderHome()]);
+  outputs.push(["404.html", render404()]);
   outputs.push(["dui/index.html", renderPracticePage(practiceBySlug.get("dui"))]);
   outputs.push(["personal-injury/index.html", renderPracticePage(practiceBySlug.get("personal-injury"))]);
   outputs.push(["regions/index.html", renderRegions()]);
@@ -6393,27 +6453,60 @@ async function main() {
     outputs.push([`${normalized}index.html`, content]);
   }
 
+  // Resolve per-page lastmod: hash rendered HTML (placeholder still inside,
+  // so the date never influences its own hash). Unchanged pages keep their
+  // stored date; changed or new pages get today's build date.
+  const previousManifest = await loadLastmodManifest();
+  const buildDate = new Date().toISOString().slice(0, 10);
+  const nextManifest = {};
+  const lastmodByRoute = {};
+
+  for (const [filePath, content] of outputs) {
+    const route = routeForOutputPath(filePath);
+    if (!route || typeof content !== "string") continue;
+    const hash = createHash("sha1").update(content).digest("hex");
+    const previous = previousManifest[route];
+    const lastmod = previous && previous.hash === hash ? previous.lastmod : buildDate;
+    nextManifest[route] = { hash, lastmod };
+    lastmodByRoute[route] = lastmod;
+  }
+
   for (const [filePath, content] of outputs) {
     await ensureDir(filePath);
-    await writeTarget(filePath, content);
+    const route = routeForOutputPath(filePath);
+    const finalContent =
+      typeof content === "string"
+        ? content.replaceAll(PAGE_LASTMOD_PLACEHOLDER, (route && lastmodByRoute[route]) ?? siteData.lastVerified)
+        : content;
+    await writeTarget(filePath, finalContent);
   }
+
+  const sortedManifest = Object.fromEntries(
+    Object.keys(nextManifest)
+      .sort()
+      .map((key) => [key, nextManifest[key]])
+  );
+  await writeFile(lastmodManifestPath, `${JSON.stringify(sortedManifest, null, 2)}\n`, "utf8");
 
   await copyStaticAssets();
   await writeBrandAssets();
 
+  const sitemapUrlTag = (route) => {
+    const lastmod = lastmodByRoute[route];
+    return lastmod
+      ? `  <url><loc>${absoluteUrl(route)}</loc><lastmod>${lastmod}</lastmod></url>`
+      : `  <url><loc>${absoluteUrl(route)}</loc></url>`;
+  };
+
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${sitemapEntries()
-  .map((route) => `  <url><loc>${absoluteUrl(route)}</loc></url>`)
-  .join("\n")}
+${sitemapEntries().map(sitemapUrlTag).join("\n")}
 </urlset>
 `;
 
   const duiSitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${duiSitemapEntries()
-  .map((route) => `  <url><loc>${absoluteUrl(route)}</loc></url>`)
-  .join("\n")}
+${duiSitemapEntries().map(sitemapUrlTag).join("\n")}
 </urlset>
 `;
 
