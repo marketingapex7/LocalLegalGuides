@@ -2343,4 +2343,138 @@ export const siteData = {
     },
     ...expansionRegions,
   ],
+  countyHubs: [
+    {
+      slug: "wake-county-nc",
+      practiceSlug: "dui",
+      countyName: "Wake County",
+      state: "North Carolina",
+      stateCode: "NC",
+      pageTitle: "Wake County DWI Guide: Court, License & Lawyer Questions",
+      metaDescription:
+        "Wake County DWI guide: Justice Center court process, NCDMV license consequences, lawyer questions, and DWI city guides for Apex, Cary, and nearby towns.",
+      teaser:
+        "One Wake County court path connecting the Apex, Cary, Holly Springs, Fuquay-Varina, Knightdale, North Raleigh, Rolesville, and Wake Forest DWI guides.",
+      heroEyebrow: "Wake County, North Carolina",
+      heroTitle: "DWI in Wake County: one county court path, eight city guides.",
+      heroLede:
+        "A DWI stop in Apex, Cary, Holly Springs, Fuquay-Varina, Knightdale, North Raleigh, Rolesville, or Wake Forest starts with a local agency, then moves through the Wake County Justice Center in Raleigh. Start with the shared county path below, then open your city guide for local records and contacts.",
+      regionSlugs: ["wake-southwest-nc", "raleigh-north-nc"],
+      processSteps: [
+        {
+          label: "Step 1",
+          title: "Identify the arresting agency",
+          body: "Town police handle most stops inside these eight communities, but a stop can also involve county or state officers. The agency named on your paperwork determines where police records and report requests start.",
+        },
+        {
+          label: "Step 2",
+          title: "Confirm the county court date",
+          body: "DWI court dates for these towns run through the Wake County Justice Center at 300 S. Salisbury Street in Raleigh. Verify the date and location printed on your citation or release paperwork.",
+        },
+        {
+          label: "Step 3",
+          title: "Review license paperwork quickly",
+          body: "A North Carolina DWI arrest can create immediate license consequences, including a civil revocation in qualifying cases. Limited-driving-privilege timing and eligibility should be reviewed quickly.",
+        },
+        {
+          label: "Step 4",
+          title: "Gather documents before consultations",
+          body: "Collect the citation, release paperwork, and any towing or testing documents. Each city guide includes a document checklist plus the local records contacts for that police department.",
+        },
+      ],
+      licensePoints: [
+        {
+          title: "Civil revocation can start early",
+          body: "A DWI arrest can create immediate license consequences, including a civil revocation in qualifying cases, before the criminal case is resolved.",
+        },
+        {
+          title: "The NCDMV track is separate",
+          body: "License questions run through NCDMV offices and the NCDMV locator, on a separate track from the criminal courtroom.",
+        },
+        {
+          title: "Limited driving privilege has timing rules",
+          body: "Eligibility and timing for a limited driving privilege are explained in the North Carolina DWI consequences resource guide linked below.",
+        },
+      ],
+      cityTopics: [
+        { slug: "apex-nc", focus: "Dismissal, misdemeanor exposure, probation, and restricted-license questions." },
+        { slug: "cary-nc", focus: "Lawyer-selection questions, Wake County court context, and Cary Police records." },
+        { slug: "holly-springs-nc", focus: "Rights after an arrest, police records, and license consequences." },
+        { slug: "fuquay-varina-nc", focus: "Court and license checklist with local records steps." },
+        { slug: "knightdale-nc", focus: "Knightdale Police records, license consequences, and Spanish-language search context." },
+        { slug: "north-raleigh-nc", focus: "Raleigh Police records, Wake County court, and restricted-license questions." },
+        { slug: "rolesville-nc", focus: "Rolesville Police records, U.S. 401 context, and license issues." },
+        { slug: "wake-forest-nc", focus: "Traffic enforcement context, Capital Boulevard, and license issues." },
+      ],
+      enforcementContext: {
+        intro:
+          "These eight towns share commuter corridors where impaired-driving enforcement can involve town police, county officers, or the North Carolina State Highway Patrol depending on where the stop happens.",
+        corridors: ["I-40", "I-440", "I-540", "US-1", "US-64", "US-401", "NC-55", "Capital Boulevard"],
+        availabilityNote:
+          "Wake County does not publish one combined town-by-town DWI arrest table. Each city guide lists the local police department contact and records path, and uses official state sources for enforcement context.",
+      },
+      lawyerQuestions: [
+        {
+          q: "How often do you handle DWI cases at the Wake County Justice Center?",
+          why: "County-specific calendar and courtroom familiarity is different from general criminal experience.",
+        },
+        {
+          q: "What should happen with my license in the first days?",
+          why: "Civil revocation and limited-driving-privilege timing are early, deadline-driven questions.",
+        },
+        {
+          q: "Which agency's records will matter in my case?",
+          why: "Town police, county officers, and state troopers keep separate records paths.",
+        },
+        {
+          q: "What outcomes have you seen in cases like mine?",
+          why: "Dismissal, reduction, and sentencing exposure depend on the facts. Ask for realistic ranges, not promises.",
+        },
+        {
+          q: "How are fees structured?",
+          why: "Flat fees, stage-based fees, and what is included vary between firms.",
+        },
+        {
+          q: "Who will actually appear in court with me?",
+          why: "Some firms send different attorneys to different settings.",
+        },
+      ],
+      faq: [
+        {
+          q: "Which court handles DWI cases for these Wake County towns?",
+          a: "The Wake County Justice Center at 300 S. Salisbury Street in Raleigh is the court reference used across these city guides. Verify your specific date and location on your citation or release paperwork.",
+        },
+        {
+          q: "Does a DWI from a town police stop stay in that town?",
+          a: "No single town court handles these cases. Local police vary by town while court scheduling and broader case structure run through the same county system.",
+        },
+        {
+          q: "Can license consequences start before the criminal case ends?",
+          a: "Yes. A North Carolina DWI arrest can create immediate license consequences, including a civil revocation in qualifying cases. The NCDMV license track can move separately from the courtroom.",
+        },
+        {
+          q: "Is 0.08% alcohol concentration the only basis for a DWI charge?",
+          a: "No. North Carolina can also focus on impairment, controlled substances, or combinations of substances depending on the evidence.",
+        },
+        {
+          q: "Do I need a Wake County DWI lawyer?",
+          a: "This site does not recommend specific lawyers. The county and city guides explain the court, records, and license path so you can ask sharper questions in any consultation.",
+        },
+        {
+          q: "Where do I find my town's police records contact?",
+          a: "Each city guide lists the local police department address, phone, and records context for Apex, Cary, Holly Springs, Fuquay-Varina, Knightdale, North Raleigh, Rolesville, and Wake Forest.",
+        },
+      ],
+      resourceLinks: [
+        {
+          label: "North Carolina DWI misdemeanor, probation, and dismissal guide",
+          href: "/resources/north-carolina-dwi-misdemeanor-probation-dismissal/",
+        },
+        {
+          label: "North Carolina DWI consequences and limited driving privilege",
+          href: "/resources/north-carolina-dwi-consequences-limited-driving-privilege/",
+        },
+      ],
+    },
+  ],
 };
