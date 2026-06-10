@@ -1978,7 +1978,7 @@ export const siteData = {
       name: "Raleigh North",
       state: "North Carolina",
       stateCode: "NC",
-      teaser: "North Raleigh suburbs with separate district and DMV touchpoints.",
+      teaser: "North Raleigh, Knightdale, Rolesville, and Wake Forest DWI guides tied to Wake County court, Raleigh-area police records, and NCDMV license issues.",
       urgentDeadline: {
         headline: "Wake County DWI paperwork can feel centralized even when the stop happened in the suburbs.",
         body: "North Raleigh, Wake Forest, Rolesville, and Knightdale readers still need a fast read on the Wake County court path and DMV consequences.",
@@ -1998,7 +1998,7 @@ export const siteData = {
         },
         {
           title: "Fast-growth suburbs change local search intent",
-          body: "People often search by town first, but the real next steps can be county-based, especially for DWI court dates, records, and license questions.",
+          body: "People often search by town first, including English and Spanish-language lawyer searches, but the real next steps can be county-based for DWI court dates, records, and license questions.",
         },
       ],
       processNotes: [
@@ -2048,14 +2048,29 @@ export const siteData = {
           slug: "knightdale-nc",
           name: "Knightdale",
           agency: "Knightdale Police Department",
+          local_context_intro:
+            "This guide focuses on DWI cases connected to Knightdale, including Knightdale Police records, Wake County court paperwork, and NCDMV license questions involving I-540, Knightdale Boulevard, U.S. 64 Business, Smithfield Road, and Hodge Road.",
+          common_roads: ["I-540", "Knightdale Boulevard", "U.S. 64 Business", "Smithfield Road", "Hodge Road"],
           police: {
             name: "Knightdale Police Department",
             type: "Municipal Police",
             address: "979 Steeple Square Court, Knightdale, NC 27545",
             phone: "(919) 217-2261",
-            href: "https://www.knightdalenc.gov/departments/police",
+            href: "https://www.knightdalenc.gov/police",
             note: "For Knightdale police reports, crash records, and local enforcement questions.",
           },
+          dui_local_data: duiData({
+            summary:
+              "Knightdale Police publish local police contact and records paths, including online report and police-report-copy options, which can matter when a DWI stop or crash starts with city officers.",
+            sourceName: "Knightdale Police",
+            sourceUrl: "https://www.knightdalenc.gov/police",
+            roads: ["I-540", "Knightdale Boulevard", "U.S. 64 Business", "Smithfield Road", "Hodge Road"],
+            jurisdictions: [
+              jurisdiction("Knightdale Police Department", "Municipal police", "Handles local traffic stops, crash reports, and police-report questions inside Knightdale."),
+              jurisdiction("Wake County Sheriff's Office", "County sheriff", "May be involved outside town limits or in county-level processes."),
+              jurisdiction("North Carolina State Highway Patrol", "State patrol", "May handle state-route and highway enforcement."),
+            ],
+          }),
         },
         {
           slug: "north-raleigh-nc",
@@ -2077,6 +2092,9 @@ export const siteData = {
           slug: "rolesville-nc",
           name: "Rolesville",
           agency: "Rolesville Police Department",
+          local_context_intro:
+            "This guide focuses on DWI cases connected to Rolesville, including Rolesville Police records, Wake County court paperwork, and NCDMV license questions involving U.S. 401/Louisburg Road, Rolesville Road, Main Street, Jones Dairy Road, and Mitchell Mill Road.",
+          common_roads: ["U.S. 401/Louisburg Road", "Rolesville Road", "Main Street", "Jones Dairy Road", "Mitchell Mill Road"],
           police: {
             name: "Rolesville Police Department",
             type: "Municipal Police",
@@ -2085,11 +2103,26 @@ export const siteData = {
             href: "https://www.rolesvillenc.gov/police",
             note: "For Rolesville police records, crash reports, and local enforcement questions.",
           },
+          dui_local_data: duiData({
+            summary:
+              "Rolesville Police are the local municipal agency reference for Rolesville DWI record questions, while Wake County court and NCDMV license issues remain separate practical tracks.",
+            sourceName: "Rolesville Police",
+            sourceUrl: "https://www.rolesvillenc.gov/police",
+            roads: ["U.S. 401/Louisburg Road", "Rolesville Road", "Main Street", "Jones Dairy Road", "Mitchell Mill Road"],
+            jurisdictions: [
+              jurisdiction("Rolesville Police Department", "Municipal police", "Handles local traffic stops, crash reports, and records questions inside Rolesville."),
+              jurisdiction("Wake County Sheriff's Office", "County sheriff", "May be involved outside town limits or in county-level processes."),
+              jurisdiction("North Carolina State Highway Patrol", "State patrol", "May handle state-route and highway enforcement."),
+            ],
+          }),
         },
         {
           slug: "wake-forest-nc",
           name: "Wake Forest",
           agency: "Wake Forest Police Department",
+          local_context_intro:
+            "This guide focuses on DWI cases connected to Wake Forest, including Wake Forest Police traffic-enforcement context, Wake County court paperwork, and NCDMV license questions involving Capital Boulevard/U.S. 1, NC 98, S. Main Street, Rogers Road, and downtown Wake Forest traffic.",
+          common_roads: ["Capital Boulevard", "U.S. 1", "NC 98", "S. Main Street", "Rogers Road"],
           police: {
             name: "Wake Forest Police Department",
             type: "Municipal Police",

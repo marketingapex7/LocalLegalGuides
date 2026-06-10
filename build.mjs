@@ -437,6 +437,8 @@ const priorityDuiCitySlugs = [
   "st-peters-mo",
   "north-raleigh-nc",
   "knightdale-nc",
+  "rolesville-nc",
+  "wake-forest-nc",
   "belleville-il",
   "ofallon-mo",
   "moscow-mills-mo",
@@ -593,7 +595,7 @@ function cityPageTitle(city, region, practice) {
       "fuquay-varina-nc": `Fuquay-Varina DWI Guide: Court, License Checklist & Next Steps | ${siteData.siteName}`,
       "holly-springs-nc": `Holly Springs DWI Guide: Rights, Court & License Questions | ${siteData.siteName}`,
       "wentzville-mo": `Wentzville DWI Guide: Court, Traffic Charges & License Hearing | ${siteData.siteName}`,
-      "north-raleigh-nc": `North Raleigh DWI Guide: Arrest, Court, License & Next Steps | ${siteData.siteName}`,
+      "north-raleigh-nc": `North Raleigh DWI Guide: Raleigh Police, Wake County Court & License Issues | ${siteData.siteName}`,
       "cary-nc": `Cary DWI Guide: Lawyer Questions, Court & License Issues | ${siteData.siteName}`,
       "ofallon-mo": `O'Fallon DWI Guide: Lawyer Questions, Court & License Deadlines | ${siteData.siteName}`,
       "belleville-il": `Belleville DUI Guide: Charges, St. Clair County Court & License Issues | ${siteData.siteName}`,
@@ -604,7 +606,9 @@ function cityPageTitle(city, region, practice) {
       "lake-saint-louis-mo": `Lake Saint Louis DWI Guide: Court, Police Records & License Issues | ${siteData.siteName}`,
       "st-peters-mo": `St. Peters DWI Guide: Court, License & Police Records | ${siteData.siteName}`,
       "moscow-mills-mo": `Moscow Mills DWI Guide: Attorney Questions & License Hearing | ${siteData.siteName}`,
-      "knightdale-nc": `Knightdale DWI Guide: Lawyer Questions, Court & License Issues | ${siteData.siteName}`,
+      "knightdale-nc": `Knightdale DWI Guide: Lawyer Questions, Police Records & License Issues | ${siteData.siteName}`,
+      "rolesville-nc": `Rolesville DWI Guide: Police Records, Wake County Court & License Issues | ${siteData.siteName}`,
+      "wake-forest-nc": `Wake Forest DWI Guide: Traffic Enforcement, Court & License Issues | ${siteData.siteName}`,
       "concord-nc": `Concord DWI Guide: Court, Police Records & License Issues | ${siteData.siteName}`,
       "kannapolis-nc": `Kannapolis DWI Guide: Court, Police Records & License Issues | ${siteData.siteName}`,
       "harrisburg-nc": `Harrisburg DWI Guide: Sheriff Records, Court & License Issues | ${siteData.siteName}`,
@@ -664,7 +668,7 @@ function cityPageDescription(city, region, practice) {
       "holly-springs-nc":
         "Holly Springs DWI guide covering rights after an arrest, Wake County court, police records, license consequences, and questions to ask before court.",
       "north-raleigh-nc":
-        "North Raleigh DWI guide covering Raleigh Police records, Wake County court, NCDMV license consequences, restricted license questions, and what to ask after a DWI arrest.",
+        "North Raleigh DWI guide covering Raleigh Police records, Wake County court, NCDMV license consequences, restricted license questions, and lawyer questions.",
       "cary-nc":
         "Cary DWI guide covering lawyer-selection questions, Wake County court context, NCDMV license issues, Cary Police records, and defense documents to gather.",
       "pineville-nc":
@@ -679,6 +683,10 @@ function cityPageDescription(city, region, practice) {
         "Moscow Mills DWI guide covering DWI attorney questions, Lincoln County court context, Missouri DOR administrative hearings, Form 2385, and license deadlines.",
       "knightdale-nc":
         "Knightdale DWI guide covering Wake County court, Knightdale Police records, NCDMV license consequences, Spanish-language legal searches, and lawyer questions.",
+      "rolesville-nc":
+        "Rolesville DWI guide covering Rolesville Police records, Wake County court, NCDMV license consequences, U.S. 401 context, and lawyer questions.",
+      "wake-forest-nc":
+        "Wake Forest DWI guide covering Wake Forest Police traffic enforcement, Wake County court, NCDMV license issues, Capital Boulevard context, and lawyer questions.",
       "concord-nc":
         "Concord DWI guide covering Cabarrus County court, Concord Police records, NCDMV license consequences, local roads, and questions to ask a DWI lawyer.",
       "kannapolis-nc":
@@ -1068,6 +1076,22 @@ function questionsToAskAttorneySection({ city, region, isDui, basics }) {
     "apex-nc": [
       "How do Apex DWI punishment levels, probation, and limited-driving-privilege issues usually get reviewed?",
       "What evidence could affect dismissal, reduction, or sentencing arguments in Wake County court?",
+    ],
+    "north-raleigh-nc": [
+      "How do Raleigh Police records, Wake County court dates, and NCDMV license consequences fit together?",
+      "What should I gather if I am worried about a restricted license or limited driving privilege?",
+    ],
+    "knightdale-nc": [
+      "Will you review Knightdale Police records, chemical-test paperwork, and Wake County court notices together?",
+      "Do you offer Spanish-language consultation or translation support if I searched for DWI legal representation in Spanish?",
+    ],
+    "rolesville-nc": [
+      "Will you review Rolesville Police records, Wake County court paperwork, and NCDMV license issues together?",
+      "Do you offer Spanish-language consultation or translation support if I searched for DWI legal representation in Spanish?",
+    ],
+    "wake-forest-nc": [
+      "Will you review Wake Forest Police records, traffic-enforcement evidence, and chemical-test paperwork?",
+      "How do Wake County court dates and NCDMV license consequences fit together after a Wake Forest DWI arrest?",
     ],
   };
   const questions = isDui
@@ -2596,7 +2620,7 @@ function rankingOpportunitySection(city, region, isDui, basics) {
       sources: [
         {
           label: "Knightdale Police Department",
-          href: "https://www.knightdalenc.gov/departments/police",
+          href: "https://www.knightdalenc.gov/police",
         },
         {
           label: "North Carolina Judicial Branch - Wake County",
@@ -2605,6 +2629,96 @@ function rankingOpportunitySection(city, region, isDui, basics) {
         {
           label: "NCDMV license suspension",
           href: "https://www.ncdot.gov/dmv/license-id/license-suspension/Pages/",
+        },
+      ],
+    },
+    "rolesville-nc": {
+      eyebrow: "Rolesville DWI search context",
+      title: "Rolesville DWI representation, Wake County court, and license questions.",
+      intro:
+        "Rolesville DWI searches are starting to overlap with legal-representation, Spanish-language, and Wake County court intent. The useful path is practical: identify whether Rolesville Police or another agency handled the stop, confirm the Wake County court notice, preserve DWI paperwork, and track NCDMV license consequences separately from the criminal case.",
+      cards: [
+        [
+          "Rolesville Police records",
+          "If Rolesville Police handled the stop or crash, the department may be the starting point for report, citation, crash-record, video, and local records questions.",
+        ],
+        [
+          "Wake County court",
+          "Criminal court questions should be checked against the official citation or court notice. A Rolesville police contact and the Wake County court path can require different follow-up steps.",
+        ],
+        [
+          "NCDMV license track",
+          "North Carolina DWI cases can create license consequences outside the ordinary court timeline, including civil revocation and limited-driving-privilege questions.",
+        ],
+        [
+          "U.S. 401 context",
+          "U.S. 401/Louisburg Road, Rolesville Road, Main Street, Jones Dairy Road, and Mitchell Mill Road are useful local context for records and agency questions.",
+        ],
+        [
+          "Spanish-language searches",
+          "Some readers search for legal representation using Spanish terms. Ask any attorney or law firm whether Spanish-language consultation or translation support is available.",
+        ],
+        [
+          "Attorney questions",
+          "Ask about Wake County DWI experience, Rolesville Police records, chemical-test evidence, punishment levels, probation conditions, and limited-driving-privilege issues.",
+        ],
+      ],
+      sources: [
+        ...ncDwiSources,
+        {
+          label: "Rolesville Police Department",
+          href: "https://www.rolesvillenc.gov/police",
+        },
+        {
+          label: "Wake County Justice Center",
+          href: "https://www.nccourts.gov/locations/wake-county/wake-county-justice-center",
+        },
+      ],
+    },
+    "wake-forest-nc": {
+      eyebrow: "Wake Forest DWI enforcement context",
+      title: "Wake Forest DWI traffic enforcement, Wake County court, and license questions.",
+      intro:
+        "Wake Forest DWI searches deserve a more specific answer than a generic Wake County page. Wake Forest Police publish traffic-enforcement context, including a DWI Traffic Team, while court paperwork still points readers back to the Wake County court system and license consequences can move through NCDMV separately.",
+      cards: [
+        [
+          "Traffic Enforcement Unit",
+          "Wake Forest Police describe a Traffic Enforcement Unit with a DWI Traffic Team focused on impaired-driving enforcement in town.",
+        ],
+        [
+          "Wake County court",
+          "The official court notice should control the date and location. Wake Forest police paperwork and Wake County criminal court tasks may be separate practical steps.",
+        ],
+        [
+          "NCDMV license track",
+          "North Carolina DWI cases can involve license consequences outside the criminal court timeline, including civil revocation and limited-driving-privilege questions.",
+        ],
+        [
+          "Local road context",
+          "Capital Boulevard, U.S. 1, NC 98, S. Main Street, and Rogers Road are useful Wake Forest context for organizing reports, stops, and agency questions.",
+        ],
+        [
+          "Records to organize",
+          "Useful documents may include the citation, release paperwork, chemical-test paperwork, crash details, towing records, video references, and NCDMV notices.",
+        ],
+        [
+          "Attorney questions",
+          "Ask about Wake County DWI experience, Wake Forest Police records, traffic-enforcement evidence, license consequences, and limited-driving-privilege options.",
+        ],
+      ],
+      sources: [
+        ...ncDwiSources,
+        {
+          label: "Wake Forest Police Traffic Enforcement Unit",
+          href: "https://www.wakeforestnc.gov/police/operations/special-operations/impact-division/traffic-enforcement-unit",
+        },
+        {
+          label: "Wake Forest Police DWI enforcement release",
+          href: "https://www.wakeforestnc.gov/news/wake-forest-police-warn-motorists-not-drink-drive-after-10-dwi-weekend-arrests",
+        },
+        {
+          label: "Wake County Justice Center",
+          href: "https://www.nccourts.gov/locations/wake-county/wake-county-justice-center",
         },
       ],
     },
@@ -3298,6 +3412,48 @@ function targetedDuiFaqs(city, region, basics) {
     ];
   }
 
+  if (city.slug === "rolesville-nc") {
+    return [
+      {
+        q: "Where do Rolesville DWI cases usually connect?",
+        a: "Rolesville DWI questions usually connect to Rolesville Police records, Wake County court paperwork, and NCDMV license consequences. The citation and court notice should control the official court path.",
+      },
+      {
+        q: "What if I searched in Spanish for Rolesville DWI legal representation?",
+        a: "This guide is written in English, but Spanish-language searches can still point to the same Rolesville police, Wake County court, and NCDMV issues. Ask any attorney or law firm whether Spanish-language consultation or translation support is available.",
+      },
+      {
+        q: "Can a Rolesville DWI affect my license separately from court?",
+        a: "Yes. North Carolina DWI cases can involve NCDMV consequences outside the criminal court timeline, including civil revocation and possible limited-driving-privilege questions.",
+      },
+      {
+        q: "What should I ask a Rolesville DWI lawyer?",
+        a: "Ask about Wake County DWI experience, Rolesville Police records, chemical-test evidence, punishment levels, probation conditions, limited-driving-privilege options, and what deadlines should be handled first.",
+      },
+    ];
+  }
+
+  if (city.slug === "wake-forest-nc") {
+    return [
+      {
+        q: "Why does Wake Forest DWI traffic enforcement matter?",
+        a: "Wake Forest Police publish traffic-enforcement context, including a DWI Traffic Team. That does not decide any case outcome, but it can help readers understand which local agency may have reports, video, or enforcement paperwork.",
+      },
+      {
+        q: "Where do Wake Forest DWI records usually start?",
+        a: "If Wake Forest Police handled the stop or crash, local police records may be the first records path. The court notice, NCDMV paperwork, and any chemical-test documents should still be tracked separately.",
+      },
+      {
+        q: "Can a Wake Forest DWI affect my license separately from court?",
+        a: "Yes. North Carolina DWI cases can involve NCDMV consequences outside the criminal court timeline, including civil revocation and possible limited-driving-privilege questions.",
+      },
+      {
+        q: "What should I ask a Wake Forest DWI lawyer?",
+        a: "Ask about Wake County DWI experience, Wake Forest Police records, traffic-enforcement evidence, chemical-test paperwork, limited-driving-privilege options, and what deadlines should be handled first.",
+      },
+    ];
+  }
+
   if (region.slug === "cabarrus-county-nc") {
     const court = courtForCity(city, region, duiPractice());
     const sheriffCities = new Set(["harrisburg-nc", "mount-pleasant-nc", "midland-nc"]);
@@ -3891,6 +4047,8 @@ function cityShell(city, region, practice) {
         "edwardsville-il",
         "north-raleigh-nc",
         "knightdale-nc",
+        "rolesville-nc",
+        "wake-forest-nc",
         "cary-nc",
         "ofallon-mo",
         "belleville-il",
