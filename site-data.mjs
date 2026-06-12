@@ -2515,8 +2515,8 @@ export const siteData = {
         },
         {
           label: "Step 3",
-          title: "Watch the 15-day DOR hearing deadline",
-          body: "A Missouri DWI arrest can start a Department of Revenue administrative license case that is separate from the criminal case. A written hearing request has a 15-day deadline; if the DOR upholds the action, you may then petition the circuit court for review.",
+          title: "Check the license deadline for your test result",
+          body: "A Missouri DWI can create a license case separate from the criminal case, and the path depends on the chemical test. If you tested at or above the limit, you have 15 days from the notice to request an administrative hearing with the Department of Revenue. If you refused testing, the result is a one-year revocation that is challenged by a petition for review filed in the circuit court.",
         },
         {
           label: "Step 4",
@@ -2527,7 +2527,7 @@ export const siteData = {
       licensePoints: [
         {
           title: "The DOR runs a separate administrative track",
-          body: "Missouri's administrative suspension or revocation is imposed by the Department of Revenue, separate from the criminal case. You can request a DOR hearing within 15 days, then petition the circuit court for review if it is upheld.",
+          body: "Missouri's license action runs separately from the criminal case and depends on the test. An over-the-limit result is an administrative action you can contest by requesting a Department of Revenue hearing within 15 days; a refusal is a one-year revocation contested by a petition for review filed in the circuit court.",
         },
         {
           title: "A limited driving privilege can come from the court or DOR",
@@ -2563,7 +2563,7 @@ export const siteData = {
       faq: [
         { q: "Which court handles DWI cases for these St. Charles County cities?", a: "The St. Charles County Circuit Court (11th Judicial Circuit) at 300 N. Second Street in St. Charles is the court reference used across these city guides. Confirm your date and division on your paperwork." },
         { q: "Where is a Missouri DWI charged?", a: "In the county where the offense occurred. For these five cities that is St. Charles County, but confirm the county shown on your citation if a stop happened elsewhere." },
-        { q: "Can the license case move separately from the criminal case?", a: "Yes. The Missouri Department of Revenue runs an administrative suspension or revocation separate from the court case. A written hearing request has a 15-day deadline, with circuit-court review available if the DOR upholds the action." },
+        { q: "Can the license case move separately from the criminal case?", a: "Yes. Missouri handles the license action separately from the criminal case, and the route depends on the chemical test. An over-the-limit result allows a 15-day request for a Department of Revenue administrative hearing; a refusal is a one-year revocation challenged by a petition for review in the circuit court." },
         { q: "Who can grant a limited driving privilege?", a: "Depending on the action, a limited driving privilege may be granted by the circuit court or issued by the Department of Revenue." },
         { q: "Do I need a St. Charles County DWI lawyer?", a: "This site does not recommend specific lawyers. The county and city guides explain the court, records, and DOR license path so you can ask sharper questions in any consultation." },
         { q: "Where do I find my city's police records contact?", a: "Each city guide lists the local police department address, phone, and records context for St. Charles, O'Fallon, St. Peters, Lake Saint Louis, and Wentzville." },
@@ -2606,8 +2606,8 @@ export const siteData = {
         },
         {
           label: "Step 3",
-          title: "Watch the 46-day summary-suspension clock",
-          body: "The Secretary of State imposes a statutory summary suspension that begins 46 days after notice. It is challenged by a petition to rescind filed in the same circuit court as the DUI case (625 ILCS 5/2-118.1), so timing is strict.",
+          title: "Know when the summary suspension begins",
+          body: "The Secretary of State imposes a statutory summary suspension that begins on the 46th day after notice. It is challenged by a petition to rescind filed in the same circuit court as the DUI case (625 ILCS 5/2-118.1), which sets its own hearing timing, so act quickly.",
         },
         {
           label: "Step 4",
@@ -2618,7 +2618,7 @@ export const siteData = {
       licensePoints: [
         {
           title: "The Secretary of State imposes the suspension",
-          body: "The statutory summary suspension is an administrative action by the Illinois Secretary of State that begins 46 days after notice, commonly 6 months for a failed test or 12 months for a refusal on a first offense.",
+          body: "The statutory summary suspension is an administrative action by the Illinois Secretary of State that begins on the 46th day after notice, commonly 6 months for a failed test or 12 months for a refusal on a first offense.",
         },
         {
           title: "It is challenged in the same court as the DUI",
@@ -2645,7 +2645,7 @@ export const siteData = {
       },
       lawyerQuestions: [
         { q: "How often do you handle DUI cases in the St. Clair County Courthouse?", why: "County-specific 20th Circuit calendar and courtroom familiarity differs from general criminal experience." },
-        { q: "Should I file a petition to rescind the summary suspension?", why: "The petition is filed in the same court and is time-sensitive after the 46-day notice." },
+        { q: "Should I file a petition to rescind the summary suspension?", why: "The petition is filed in the same court, and the suspension begins on the 46th day after notice, so it is time-sensitive." },
         { q: "Am I eligible for an MDDP to keep driving?", why: "First-offender eligibility and BAIID requirements affect day-to-day driving during the suspension." },
         { q: "Which agency's records will matter in my case?", why: "City police, the county sheriff, and the state police keep separate records." },
         { q: "How are fees structured?", why: "Flat, staged, and what-is-included terms vary between firms." },
@@ -2654,17 +2654,17 @@ export const siteData = {
       faq: [
         { q: "Which court handles DUI cases for these St. Clair County cities?", a: "The St. Clair County Courthouse at 10 Public Square in Belleville (20th Judicial Circuit) is the court reference used across these city guides. Confirm your date and courtroom on your paperwork." },
         { q: "Where is an Illinois DUI charged?", a: "In the county where the offense occurred. For these five cities that is St. Clair County, but confirm the county shown on your citation if a stop happened elsewhere." },
-        { q: "When does the statutory summary suspension start?", a: "It begins 46 days after notice and is imposed by the Illinois Secretary of State, separate from the criminal charge." },
+        { q: "When does the statutory summary suspension start?", a: "It begins on the 46th day after notice and is imposed by the Illinois Secretary of State, separate from the criminal charge." },
         { q: "How is the summary suspension challenged?", a: "By a petition to rescind filed in the same circuit court handling the DUI case (625 ILCS 5/2-118.1), not a separate administrative forum. Timing is strict." },
         { q: "Do I need a St. Clair County DUI lawyer?", a: "This site does not recommend specific lawyers. The county and city guides explain the court, records, and Secretary of State license path so you can ask sharper questions in any consultation." },
         { q: "Where do I find my city's police records contact?", a: "Each city guide lists the local police department address, phone, and records context for Belleville, O'Fallon, Fairview Heights, Shiloh, and Swansea." },
       ],
       sources: [
         { label: "Illinois DUI statute (625 ILCS 5/11-501)", href: "https://www.ilga.gov/documents/legislation/ilcs/documents/062500050K11-501.htm" },
+        { label: "Illinois statutory summary suspension hearing statute (625 ILCS 5/2-118.1)", href: "https://www.ilga.gov/documents/legislation/ilcs/documents/062500050K2-118.1.htm" },
       ],
       resourceLinks: [
         { label: "Illinois DUI license suspension guide", href: "/resources/illinois-dui-license-suspension/" },
-        { label: "Madison County DUI process guide", href: "/resources/madison-county-dui-process/" },
       ],
     },
   ],

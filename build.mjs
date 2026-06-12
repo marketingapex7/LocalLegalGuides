@@ -6271,17 +6271,13 @@ function renderCountyHub(hub) {
     { name: `${hub.countyName} ${label}`, href: route },
   ];
 
-  const countySponsorSection = packageInfo
+  const hubSponsor = packageInfo ? activeSponsor(packageInfo) : null;
+  const countySponsorSection = hubSponsor
     ? `
 
   <section class="section" id="county-sponsor">
     <div class="container">
-      <div class="section-head">
-        <p class="eyebrow">Cluster sponsor</p>
-        <h2>One exclusive ${escapeHtml(label)} sponsor for ${escapeHtml(regions[0].name)}.</h2>
-        <p>This county hub is included with the five ${escapeHtml(regions[0].name)} city guides in a single exclusive ${escapeHtml(label)} sponsor package — six placements, one sponsor. The <a class="text-link" href="${clusterHref(regions[0])}">${escapeHtml(regions[0].name)} cluster page</a> is the sponsorship sales page.</p>
-      </div>
-      ${sponsorProfileCard(regions[0], packageInfo, "city")}
+      ${citySponsorNotice({ slug: hub.slug, name: hub.countyName }, regions[0], packageInfo, practice)}
     </div>
   </section>`
     : "";
