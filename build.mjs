@@ -1283,7 +1283,7 @@ function relatedResourceLinks(region, isDui) {
 function duiInternalLinksSection(city, region, practice) {
   const countyHub = countyHubForCity(practice.slug, city.slug);
   const countyHubLink = countyHub
-    ? `<a class="related-card compact-related-card" href="${countyHubHref(countyHub)}">${escapeHtml(countyHub.countyName)} ${escapeHtml(practiceSeoLabel(practice, region))} guide</a>`
+    ? `\n        <a class="related-card compact-related-card" href="${countyHubHref(countyHub)}">${escapeHtml(countyHub.countyName)} ${escapeHtml(practiceSeoLabel(practice, region))} guide</a>`
     : "";
   const nearbyLinks = region.cities
     .filter((nearby) => nearby.slug !== city.slug)
@@ -1302,8 +1302,7 @@ function duiInternalLinksSection(city, region, practice) {
         <p>Use these internal links to compare nearby city pages, switch to the matching injury guide, or return to the main DUI/DWI hub.</p>
       </div>
       <div class="related-grid">
-        <a class="related-card compact-related-card" href="/dui/">DUI/DWI hub</a>
-        ${countyHubLink}
+        <a class="related-card compact-related-card" href="/dui/">DUI/DWI hub</a>${countyHubLink}
         <a class="related-card compact-related-card" href="${clusterHref(region)}">${escapeHtml(region.name)} ${escapeHtml(practiceSeoLabel(practice, region))} cluster</a>
         ${
           regionHasPractice(region, "personal-injury")
@@ -4721,21 +4720,21 @@ function practicePage(practice) {
     <div class="container">
       <div class="section-head">
         <p class="eyebrow">County-level guides</p>
-        <h2>County ${escapeHtml(practiceSeoLabel(practice, { stateCode: "NC" }))} hubs that connect nearby city guides.</h2>
+        <h2>County-level guides that connect nearby city pages.</h2>
         <p>County pages explain the shared court and license path for a market, then link down to every city guide inside it.</p>
       </div>
       <div class="related-grid">${countyHubsList()
         .filter((hub) => hub.practiceSlug === "dui")
         .map(
           (hub) =>
-            `<a class="related-card" href="${countyHubHref(hub)}"><span>${escapeHtml(hub.state)}</span><strong>${escapeHtml(hub.countyName)} DWI guide</strong><p>${escapeHtml(hub.teaser)}</p></a>`
+            `<a class="related-card" href="${countyHubHref(hub)}"><span>${escapeHtml(hub.state)}</span><strong>${escapeHtml(hub.countyName)} ${escapeHtml(practiceSeoLabel(practice, hub))} guide</strong><p>${escapeHtml(hub.teaser)}</p></a>`
         )
         .join("")}</div>
     </div>
-  </section>`
+  </section>
+  `
       : ""
-  }
-  ${practiceHubContent(practice)}
+  }${practiceHubContent(practice)}
   ${
     isDui
       ? ""
@@ -6239,6 +6238,7 @@ function renderCountyHub(hub) {
   const sources = [
     court?.href ? { label: court.name, href: court.href } : null,
     licenseOffice?.href ? { label: licenseOffice.name, href: licenseOffice.href } : null,
+    ...(hub.sources ?? []),
     ...(basics?.sources ?? []).filter((source) => /impaired|sentencing/i.test(source.label)),
   ].filter(Boolean);
 
@@ -6299,7 +6299,7 @@ function renderCountyHub(hub) {
     <div class="container">
       <div class="section-head">
         <p class="eyebrow">License consequences</p>
-        <h2>License rules move on their own track in ${escapeHtml(hub.state)}.</h2>
+        <h2>How license consequences work in ${escapeHtml(hub.state)}.</h2>
       </div>
       <div class="card-grid two-up">${licenseCards}</div>
       <div class="related-grid">${resourceCards}</div>

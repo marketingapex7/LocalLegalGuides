@@ -2358,7 +2358,7 @@ export const siteData = {
       heroEyebrow: "Wake County, North Carolina",
       heroTitle: "DWI in Wake County: one county court path, eight city guides.",
       heroLede:
-        "A DWI stop in Apex, Cary, Holly Springs, Fuquay-Varina, Knightdale, North Raleigh, Rolesville, or Wake Forest starts with a local agency, then moves through the Wake County Justice Center in Raleigh. Start with the shared county path below, then open your city guide for local records and contacts.",
+        "A DWI stop in Apex, Cary, Holly Springs, Fuquay-Varina, Knightdale, North Raleigh, Rolesville, or Wake Forest starts with a local agency. Cases charged in Wake County then move through the Wake County Justice Center in Raleigh. Start with the shared county path below, then open your city guide for local records and contacts.",
       regionSlugs: ["wake-southwest-nc", "raleigh-north-nc"],
       processSteps: [
         {
@@ -2369,7 +2369,7 @@ export const siteData = {
         {
           label: "Step 2",
           title: "Confirm the county court date",
-          body: "DWI court dates for these towns run through the Wake County Justice Center at 300 S. Salisbury Street in Raleigh. Verify the date and location printed on your citation or release paperwork.",
+          body: "Cases charged in Wake County run through the Wake County Justice Center at 300 S. Salisbury Street in Raleigh. Parts of Cary and Wake Forest extend into neighboring counties, so verify the county, date, and location printed on your citation or release paperwork.",
         },
         {
           label: "Step 3",
@@ -2388,8 +2388,8 @@ export const siteData = {
           body: "A DWI arrest can create immediate license consequences, including a civil revocation in qualifying cases, before the criminal case is resolved.",
         },
         {
-          title: "The NCDMV track is separate",
-          body: "License questions run through NCDMV offices and the NCDMV locator, on a separate track from the criminal courtroom.",
+          title: "Court and NCDMV each handle part of the path",
+          body: "A qualifying pretrial civil revocation under G.S. 20-16.5 moves through judicial officials and the clerk of court, and a limited driving privilege under G.S. 20-179.3 is signed by a judge. NCDMV handles the driving record, revocation periods, and restoration steps.",
         },
         {
           title: "Limited driving privilege has timing rules",
@@ -2442,7 +2442,7 @@ export const siteData = {
       faq: [
         {
           q: "Which court handles DWI cases for these Wake County towns?",
-          a: "The Wake County Justice Center at 300 S. Salisbury Street in Raleigh is the court reference used across these city guides. Verify your specific date and location on your citation or release paperwork.",
+          a: "For cases charged in Wake County, the Wake County Justice Center at 300 S. Salisbury Street in Raleigh is the court reference used across these city guides. Parts of Cary and Wake Forest cross county lines, so confirm the county shown on your citation or release paperwork.",
         },
         {
           q: "Does a DWI from a town police stop stay in that town?",
@@ -2450,7 +2450,7 @@ export const siteData = {
         },
         {
           q: "Can license consequences start before the criminal case ends?",
-          a: "Yes. A North Carolina DWI arrest can create immediate license consequences, including a civil revocation in qualifying cases. The NCDMV license track can move separately from the courtroom.",
+          a: "Yes. A North Carolina DWI arrest can create immediate license consequences, including a pretrial civil revocation in qualifying cases under G.S. 20-16.5. The civil revocation and any limited driving privilege move through the court, while NCDMV handles the driving record and restoration steps.",
         },
         {
           q: "Is 0.08% alcohol concentration the only basis for a DWI charge?",
@@ -2463,6 +2463,16 @@ export const siteData = {
         {
           q: "Where do I find my town's police records contact?",
           a: "Each city guide lists the local police department address, phone, and records context for Apex, Cary, Holly Springs, Fuquay-Varina, Knightdale, North Raleigh, Rolesville, and Wake Forest.",
+        },
+      ],
+      sources: [
+        {
+          label: "North Carolina civil license revocation statute (G.S. 20-16.5)",
+          href: "https://www.ncleg.gov/EnactedLegislation/Statutes/HTML/BySection/Chapter_20/GS_20-16.5.html",
+        },
+        {
+          label: "North Carolina limited driving privilege statute (G.S. 20-179.3)",
+          href: "https://www.ncleg.gov/EnactedLegislation/Statutes/HTML/BySection/Chapter_20/GS_20-179.3.html",
         },
       ],
       resourceLinks: [
