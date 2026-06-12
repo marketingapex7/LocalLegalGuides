@@ -1538,7 +1538,7 @@ function duiDeadlineCards(region, court) {
       {
         label: "First court date",
         title: `Appear in ${court.name}`,
-        body: `Check the citation, bond paperwork, court notice, or circuit clerk record for the actual date, division, and courtroom. ${court.name} is the court reference used for this guide; confirm the county shown on your paperwork, since stops near a county line can be handled by a neighboring county's court.`,
+        body: `Check the citation, bond paperwork, court notice, or circuit clerk record for the actual date, division, and courtroom. ${court.name} is the court reference used for this guide; confirm the county shown on your paperwork, because a Missouri DWI is handled by the court for the county where the offense occurred, which can differ from where you live.`,
       },
       {
         label: "Before reinstatement",
@@ -1696,7 +1696,7 @@ function duiLawCardsBase(region, city) {
     },
     {
       title: "Implied consent",
-      body: "Refusal or a qualifying test result can trigger a civil license revocation under G.S. 20-16.5, which is ordered by a judicial official rather than NCDMV. NCDMV separately keeps the driving record and handles restoration steps.",
+      body: "A refusal or qualifying result can trigger an immediate court-ordered civil revocation under G.S. 20-16.5. A willful refusal can also trigger a separate 12-month Division revocation under G.S. 20-16.2, subject to a DMV hearing.",
     },
     {
       title: "Local ordinances",
