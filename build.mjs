@@ -1513,12 +1513,12 @@ function duiDeadlineCards(region, court) {
       {
         label: "46 days after notice",
         title: "Illinois summary suspension can begin",
-        body: "Illinois statutory summary suspension is separate from the criminal DUI case. A driver can petition to challenge the suspension, but timing is strict.",
+        body: "Illinois statutory summary suspension is imposed by the Secretary of State. A driver can challenge it by a petition to rescind filed in the same circuit court as the DUI case, but timing is strict.",
       },
       {
         label: "First court date",
         title: `Appear in ${court.name}`,
-        body: `Check the citation, bond paperwork, or circuit clerk for the actual date and courtroom. ${court.name} is the court reference used for this guide.`,
+        body: `Check the citation, bond paperwork, or circuit clerk for the actual date and courtroom. ${court.name} is the court reference used for this guide; confirm the county shown on your paperwork, because a stop in an area that crosses into a neighboring county is handled by that county's court.`,
       },
       {
         label: "Before reinstatement",
@@ -1538,7 +1538,7 @@ function duiDeadlineCards(region, court) {
       {
         label: "First court date",
         title: `Appear in ${court.name}`,
-        body: "Check the citation, bond paperwork, court notice, or circuit clerk record for the actual date, division, and courtroom.",
+        body: `Check the citation, bond paperwork, court notice, or circuit clerk record for the actual date, division, and courtroom. ${court.name} is the court reference used for this guide; confirm the county shown on your paperwork, because a Missouri DWI is handled by the court for the county where the offense occurred, which can differ from where you live.`,
       },
       {
         label: "Before reinstatement",
@@ -1557,7 +1557,7 @@ function duiDeadlineCards(region, court) {
     {
       label: "First court date",
       title: `Appear in ${court.name}`,
-      body: "Check the citation, release paperwork, court notice, or North Carolina Judicial Branch record for the actual date, courtroom, and appearance requirements.",
+      body: `Check the citation, release paperwork, court notice, or North Carolina Judicial Branch record for the actual date, courtroom, and appearance requirements. ${court.name} is the court reference used for this guide; confirm the county shown on your paperwork, because parts of some towns cross into a neighboring county handled by a different court.`,
     },
     {
       label: "Before restoration",
@@ -1622,7 +1622,27 @@ function missouriDwiAdministrativeHearingSection({ city, region, court, basics }
   </section>`;
 }
 
+const countyLineNotes = {
+  "cary-nc":
+    "Parts of western Cary lie in Chatham County, and a small area reaches Durham County. A stop in those areas is charged in that county's court, not Wake County.",
+  "wake-forest-nc":
+    "A northeastern portion of Wake Forest lies in Franklin County. A stop there is charged in Franklin County, not Wake County.",
+  "kannapolis-nc":
+    "A large northern share of Kannapolis lies in Rowan County. A stop there is charged in Rowan County, not Cabarrus County.",
+  "lees-summit-mo":
+    "Western and southern parts of Lee's Summit lie in Cass County. A stop there is charged in Cass County, not Jackson County.",
+};
+
 function duiLawCards(region, city) {
+  const cards = duiLawCardsBase(region, city);
+  const note = countyLineNotes[city.slug];
+  if (note) {
+    cards.push({ title: "County lines", body: note });
+  }
+  return cards;
+}
+
+function duiLawCardsBase(region, city) {
   if (region.stateCode === "IL") {
     return [
       {
@@ -1635,7 +1655,7 @@ function duiLawCards(region, city) {
       },
       {
         title: "Implied consent",
-        body: "Refusing chemical testing or testing over the legal limit can trigger Secretary of State license consequences separate from the criminal case.",
+        body: "Refusing chemical testing or testing over the legal limit leads the Secretary of State to impose a statutory summary suspension, which is challenged by a petition to rescind filed in the same circuit court as the DUI case.",
       },
       {
         title: "Local ordinances",
@@ -1676,7 +1696,7 @@ function duiLawCards(region, city) {
     },
     {
       title: "Implied consent",
-      body: "Refusal or a qualifying test result can create NCDMV license consequences separate from the criminal impaired-driving case.",
+      body: "A refusal or qualifying result can trigger an immediate court-ordered civil revocation under G.S. 20-16.5. A willful refusal can also trigger a separate 12-month Division revocation under G.S. 20-16.2, subject to a DMV hearing.",
     },
     {
       title: "Local ordinances",
@@ -3306,7 +3326,7 @@ function targetedDuiFaqs(city, region, basics) {
       },
       {
         q: "Can Illinois license suspension issues move separately from court?",
-        a: "Yes. Illinois statutory summary suspension is separate from the criminal DUI case and can begin 46 days after notice unless successfully challenged.",
+        a: "Illinois statutory summary suspension is an administrative action imposed by the Secretary of State and can begin 46 days after notice. It is challenged by a petition to rescind filed in the same circuit court as the DUI case.",
       },
       {
         q: "What should I ask a Belleville DUI lawyer?",
@@ -3361,7 +3381,7 @@ function targetedDuiFaqs(city, region, basics) {
       },
       {
         q: "How does Illinois statutory summary suspension affect an Edwardsville DUI?",
-        a: "A statutory summary suspension is separate from the criminal case and can begin 46 days after notice unless successfully challenged. The timing should be checked quickly against official Illinois sources.",
+        a: "A statutory summary suspension is an administrative action imposed by the Secretary of State and can begin 46 days after notice. It is challenged by a petition to rescind filed in the same circuit court as the DUI case, and the timing should be checked quickly against official Illinois sources.",
       },
       {
         q: "What Edwardsville Police records might matter after a DUI arrest?",

@@ -1092,7 +1092,7 @@ export const siteData = {
       duiThreshold: "0.08% BAC",
       duiCharge: "A first DUI is generally a Class A misdemeanor unless aggravating facts apply.",
       duiLicense:
-        "A statutory summary suspension is separate from the criminal case and can begin 46 days after notice.",
+        "A statutory summary suspension is imposed by the Secretary of State and can begin 46 days after notice; it is challenged by a petition to rescind filed in the same circuit court as the DUI case.",
       personalInjuryDeadline:
         "Illinois generally gives two years to file personal injury claims, though claims involving government defendants can have shorter notice rules.",
       injuryVenue:
