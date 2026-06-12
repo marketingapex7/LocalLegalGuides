@@ -389,6 +389,26 @@ function duiPractice() {
   return practiceBySlug.get("dui");
 }
 
+function countyHubsList() {
+  return siteData.countyHubs ?? [];
+}
+
+function countyHubHref(hub) {
+  return `/${hub.practiceSlug}/${hub.slug}/`;
+}
+
+function countyHubRegions(hub) {
+  return hub.regionSlugs.map((slug) => siteData.regions.find((region) => region.slug === slug)).filter(Boolean);
+}
+
+function countyHubForCity(practiceSlug, citySlug) {
+  return countyHubsList().find(
+    (hub) =>
+      hub.practiceSlug === practiceSlug &&
+      countyHubRegions(hub).some((region) => region.cities.some((city) => city.slug === citySlug))
+  );
+}
+
 function duiCityEntries() {
   const practice = duiPractice();
   return siteData.regions.flatMap((region) =>
@@ -1261,6 +1281,10 @@ function relatedResourceLinks(region, isDui) {
 }
 
 function duiInternalLinksSection(city, region, practice) {
+  const countyHub = countyHubForCity(practice.slug, city.slug);
+  const countyHubLink = countyHub
+    ? `\n        <a class="related-card compact-related-card" href="${countyHubHref(countyHub)}">${escapeHtml(countyHub.countyName)} ${escapeHtml(practiceSeoLabel(practice, region))} guide</a>`
+    : "";
   const nearbyLinks = region.cities
     .filter((nearby) => nearby.slug !== city.slug)
     .slice(0, 6)
@@ -1278,7 +1302,7 @@ function duiInternalLinksSection(city, region, practice) {
         <p>Use these internal links to compare nearby city pages, switch to the matching injury guide, or return to the main DUI/DWI hub.</p>
       </div>
       <div class="related-grid">
-        <a class="related-card compact-related-card" href="/dui/">DUI/DWI hub</a>
+        <a class="related-card compact-related-card" href="/dui/">DUI/DWI hub</a>${countyHubLink}
         <a class="related-card compact-related-card" href="${clusterHref(region)}">${escapeHtml(region.name)} ${escapeHtml(practiceSeoLabel(practice, region))} cluster</a>
         ${
           regionHasPractice(region, "personal-injury")
@@ -4690,7 +4714,27 @@ function practicePage(practice) {
     </div>
   </section>`
   }
-  ${practiceHubContent(practice)}
+  ${
+    isDui && countyHubsList().some((hub) => hub.practiceSlug === "dui")
+      ? `<section class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">County-level guides</p>
+        <h2>County-level guides that connect nearby city pages.</h2>
+        <p>County pages explain the shared court and license path for a market, then link down to every city guide inside it.</p>
+      </div>
+      <div class="related-grid">${countyHubsList()
+        .filter((hub) => hub.practiceSlug === "dui")
+        .map(
+          (hub) =>
+            `<a class="related-card" href="${countyHubHref(hub)}"><span>${escapeHtml(hub.state)}</span><strong>${escapeHtml(hub.countyName)} ${escapeHtml(practiceSeoLabel(practice, hub))} guide</strong><p>${escapeHtml(hub.teaser)}</p></a>`
+        )
+        .join("")}</div>
+    </div>
+  </section>
+  `
+      : ""
+  }${practiceHubContent(practice)}
   ${
     isDui
       ? ""
@@ -6130,6 +6174,198 @@ function renderRegion(region) {
   });
 }
 
+function renderCountyHub(hub) {
+  const route = countyHubHref(hub);
+  const regions = countyHubRegions(hub);
+  const practice = practiceBySlug.get(hub.practiceSlug);
+  const label = practiceSeoLabel(practice, regions[0]);
+  const court = regions[0]?.duiCourt ?? regions[0]?.court;
+  const licenseOffice = regions[0]?.licenseOffice;
+  const basics = stateBasics(regions[0]);
+  const topicBySlug = new Map((hub.cityTopics ?? []).map((topic) => [topic.slug, topic.focus]));
+
+  const cityCards = regions
+    .flatMap((region) =>
+      region.cities.map(
+        (city) =>
+          `<a class="related-card" href="${pathForPracticeCity(hub.practiceSlug, city.slug)}"><span>${escapeHtml(region.name)} ${escapeHtml(label)}</span><strong>${escapeHtml(city.name)} ${escapeHtml(label)} guide</strong><p>${escapeHtml(
+            topicBySlug.get(city.slug) ?? `Local court, police records, and license context for ${city.name}.`
+          )}</p></a>`
+      )
+    )
+    .join("");
+
+  const clusterCards = regions
+    .map(
+      (region) =>
+        `<a class="related-card" href="${clusterHref(region)}"><span>Cluster</span><strong>${escapeHtml(region.name)} ${escapeHtml(label)} cluster</strong><p>${escapeHtml(region.teaser)}</p></a>`
+    )
+    .join("");
+
+  const processCards = (hub.processSteps ?? [])
+    .map(
+      (step) =>
+        `<article class="deadline-card"><span>${escapeHtml(step.label)}</span><h3>${escapeHtml(step.title)}</h3><p>${escapeHtml(step.body)}</p></article>`
+    )
+    .join("");
+
+  const licenseCards = (hub.licensePoints ?? [])
+    .map((point) => `<article class="info-card"><h3>${escapeHtml(point.title)}</h3><p>${escapeHtml(point.body)}</p></article>`)
+    .join("");
+
+  const resourceCards = (hub.resourceLinks ?? [])
+    .map(
+      (item) =>
+        `<a class="related-card" href="${item.href}"><span>Resource</span><strong>${escapeHtml(item.label)}</strong><p>Read the background guide, then return here for the county and city paths.</p></a>`
+    )
+    .join("");
+
+  const lawyerCards = (hub.lawyerQuestions ?? [])
+    .map((item) => `<article class="info-card"><h3>${escapeHtml(item.q)}</h3><p>${escapeHtml(item.why)}</p></article>`)
+    .join("");
+
+  const corridorChips = (hub.enforcementContext?.corridors ?? [])
+    .map((corridor) => `<span class="city-chip">${escapeHtml(corridor)}</span>`)
+    .join("");
+
+  const faqItems = (hub.faq ?? [])
+    .map(
+      (item, index) =>
+        `<details class="faq-item"${index === 0 ? " open" : ""}><summary>${escapeHtml(item.q)}</summary><p>${escapeHtml(item.a)}</p></details>`
+    )
+    .join("");
+
+  const sources = [
+    court?.href ? { label: court.name, href: court.href } : null,
+    licenseOffice?.href ? { label: licenseOffice.name, href: licenseOffice.href } : null,
+    ...(hub.sources ?? []),
+    ...(basics?.sources ?? []).filter((source) => /impaired|sentencing/i.test(source.label)),
+  ].filter(Boolean);
+
+  const title = hub.pageTitle;
+  const description = compactDescription(hub.metaDescription);
+  const breadcrumbs = [
+    { name: "Home", href: "/" },
+    { name: practice?.title ?? "DUI and DWI Guides", href: `/${hub.practiceSlug}/` },
+    { name: `${hub.countyName} ${label}`, href: route },
+  ];
+
+  const body = `${breadcrumbTrail(breadcrumbs)}
+  <section class="hero hero-tight">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">${escapeHtml(hub.heroEyebrow)}</p>
+        <h1>${escapeHtml(hub.heroTitle)}</h1>
+        <p class="lede">${escapeHtml(hub.heroLede)}</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#city-guides">Open a city guide</a>
+          <a class="button button-secondary" href="#county-faq">County FAQ</a>
+        </div>
+      </div>
+      <aside class="hero-card">
+        <div class="hero-card-header">
+          <span class="pill">County court</span>
+          <span class="pill pill-muted">${escapeHtml(hub.stateCode)}</span>
+        </div>
+        <p class="note"><strong>${escapeHtml(court?.name ?? "County court")}</strong><br />${escapeHtml(court?.address ?? "")}<br />${escapeHtml(court?.phone ?? "")}</p>
+        ${court?.href ? `<div class="hero-actions"><a class="button button-secondary" href="${court.href}" target="_blank" rel="noopener noreferrer">Official court page</a></div>` : ""}
+      </aside>
+    </div>
+  </section>
+
+  <section class="section" id="county-path">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Shared county path</p>
+        <h2>How a ${escapeHtml(hub.countyName)} ${escapeHtml(label)} case usually starts.</h2>
+        <p>The town changes the police agency and records office. The court and license path stays county- and state-level.</p>
+      </div>
+      <div class="card-grid two-up">${processCards}</div>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="city-guides">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">City guides</p>
+        <h2>${escapeHtml(hub.countyName)} ${escapeHtml(label)} guides by city.</h2>
+        <p>Each guide covers the local police department, records path, court reference, license office, and questions to ask before hiring a ${escapeHtml(label)} lawyer.</p>
+      </div>
+      <div class="related-grid">${cityCards}${clusterCards}</div>
+    </div>
+  </section>
+
+  <section class="section" id="license">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">License consequences</p>
+        <h2>How license consequences work in ${escapeHtml(hub.state)}.</h2>
+      </div>
+      <div class="card-grid two-up">${licenseCards}</div>
+      <div class="related-grid">${resourceCards}</div>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="enforcement">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Local enforcement context</p>
+        <h2>Corridors and agencies around ${escapeHtml(hub.countyName)}.</h2>
+        <p>${escapeHtml(hub.enforcementContext?.intro ?? "")}</p>
+      </div>
+      <div class="chip-grid">${corridorChips}</div>
+      <p class="note">${escapeHtml(hub.enforcementContext?.availabilityNote ?? "")}</p>
+    </div>
+  </section>
+
+  <section class="section" id="lawyer-questions">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Before you hire</p>
+        <h2>Questions to ask a ${escapeHtml(hub.countyName)} ${escapeHtml(label)} lawyer.</h2>
+        <p>This site does not recommend specific lawyers. These questions help you compare consultations.</p>
+      </div>
+      <div class="card-grid two-up">${lawyerCards}</div>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="county-faq">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">FAQ</p>
+        <h2>Quick answers for ${escapeHtml(hub.countyName)}.</h2>
+      </div>
+      <div class="faq-grid">${faqItems}</div>
+    </div>
+  </section>
+
+  <section class="section" id="sources">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Sources</p>
+        <h2>Official references used here.</h2>
+      </div>
+      <div class="source-grid">${sourceCards(sources)}</div>
+    </div>
+  </section>
+
+  ${editorialReviewBlock(true)}`;
+
+  return pageShell({
+    title,
+    description,
+    body,
+    active: `/${hub.practiceSlug}/`,
+    route,
+    schema: [
+      webPageSchema({ title, description, route }),
+      breadcrumbSchema(breadcrumbs),
+      faqSchema(hub.faq ?? []),
+      ...officeSchema([court, licenseOffice].filter(Boolean)),
+    ],
+  });
+}
+
 function render404() {
   const title = `Page Not Found | ${siteData.siteName}`;
   const description =
@@ -6272,6 +6508,10 @@ function sitemapEntries() {
     ...Object.keys(resourcePages),
   ];
 
+  for (const hub of countyHubsList()) {
+    entries.push(countyHubHref(hub));
+  }
+
   for (const region of siteData.regions) {
     entries.push(clusterHref(region));
     for (const city of region.cities) {
@@ -6287,6 +6527,9 @@ function duiSitemapEntries() {
   return [
     "/dui/",
     "/dui/locations/",
+    ...countyHubsList()
+      .filter((hub) => hub.practiceSlug === "dui")
+      .map(countyHubHref),
     ...Object.keys(resourcePages).filter((route) => /(dui|dwi)/i.test(route)),
     ...duiCityEntries().map((entry) => entry.href),
   ];
@@ -6307,7 +6550,9 @@ This site provides general legal information only. It is not legal advice, is no
 
 - Homepage: ${absoluteUrl("/")}
 - DUI/DWI hub: ${absoluteUrl("/dui/")}
-- DUI/DWI city index: ${absoluteUrl("/dui/locations/")}
+- DUI/DWI city index: ${absoluteUrl("/dui/locations/")}${countyHubsList()
+    .map((hub) => `\n- ${hub.countyName} ${hub.practiceSlug === "dui" ? "DUI/DWI" : hub.practiceSlug} county hub: ${absoluteUrl(countyHubHref(hub))}`)
+    .join("")}
 - Personal injury hub: ${absoluteUrl("/personal-injury/")}
 - Personal injury city index: ${absoluteUrl("/personal-injury/locations/")}
 - Regions: ${absoluteUrl("/regions/")}
@@ -6449,6 +6694,10 @@ async function main() {
         ]);
       }
     }
+  }
+
+  for (const hub of countyHubsList()) {
+    outputs.push([`${hub.practiceSlug}/${hub.slug}/index.html`, renderCountyHub(hub)]);
   }
 
   const staticPages = renderStaticPages();
