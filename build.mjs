@@ -6202,6 +6202,7 @@ function renderCountyHub(hub) {
   const court = regions[0]?.duiCourt ?? regions[0]?.court;
   const licenseOffice = regions[0]?.licenseOffice;
   const basics = stateBasics(regions[0]);
+  const packageInfo = regions.length === 1 ? sponsorPackage(regions[0]) : null;
   const topicBySlug = new Map((hub.cityTopics ?? []).map((topic) => [topic.slug, topic.focus]));
 
   const cityCards = regions
@@ -6270,6 +6271,21 @@ function renderCountyHub(hub) {
     { name: `${hub.countyName} ${label}`, href: route },
   ];
 
+  const countySponsorSection = packageInfo
+    ? `
+
+  <section class="section" id="county-sponsor">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Cluster sponsor</p>
+        <h2>One exclusive ${escapeHtml(label)} sponsor for ${escapeHtml(regions[0].name)}.</h2>
+        <p>This county hub is included with the five ${escapeHtml(regions[0].name)} city guides in a single exclusive ${escapeHtml(label)} sponsor package — six placements, one sponsor. The <a class="text-link" href="${clusterHref(regions[0])}">${escapeHtml(regions[0].name)} cluster page</a> is the sponsorship sales page.</p>
+      </div>
+      ${sponsorProfileCard(regions[0], packageInfo, "city")}
+    </div>
+  </section>`
+    : "";
+
   const body = `${breadcrumbTrail(breadcrumbs)}
   <section class="hero hero-tight">
     <div class="container hero-grid">
@@ -6313,7 +6329,7 @@ function renderCountyHub(hub) {
       </div>
       <div class="related-grid">${cityCards}${clusterCards}</div>
     </div>
-  </section>
+  </section>${countySponsorSection}
 
   <section class="section" id="license">
     <div class="container">

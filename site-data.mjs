@@ -17,7 +17,7 @@ const makeAvailableSponsorPackage = (coverageLabel) => ({
 
 const expansionSponsorPackages = Object.fromEntries(
   [
-    ["st-clair-county-core-il", "5 Illinois city pages for one selected practice area"],
+    ["st-clair-county-core-il", "Five Illinois city guides plus the St. Clair County hub for one selected practice area"],
     ["jefferson-county-gateway-mo", "5 Missouri city pages for one selected practice area"],
     ["south-county-mo", "5 Missouri city pages for one selected practice area"],
     ["north-county-mo", "5 Missouri city pages for one selected practice area"],
@@ -1006,7 +1006,7 @@ export const siteData = {
     "st-charles-county-mo": {
       status: "preview",
       termLabel: "12-month exclusive package",
-      coverageLabel: "5 Missouri city pages for one selected practice area",
+      coverageLabel: "Five Missouri city guides plus the St. Charles County hub for one selected practice area",
       sponsor: {
         firmName: "Your Firm Here",
         attorneyName: "Sponsor Preview",
@@ -2484,6 +2484,187 @@ export const siteData = {
           label: "North Carolina DWI consequences and limited driving privilege",
           href: "/resources/north-carolina-dwi-consequences-limited-driving-privilege/",
         },
+      ],
+    },
+    {
+      slug: "st-charles-county-mo",
+      practiceSlug: "dui",
+      countyName: "St. Charles County",
+      state: "Missouri",
+      stateCode: "MO",
+      pageTitle: "St. Charles County DWI Lawyer Guide: Court & License Help",
+      metaDescription:
+        "St. Charles County DWI guide: 11th Circuit court process, Missouri DOR license steps, lawyer questions, and DWI city guides for St. Charles, O'Fallon, St. Peters and more.",
+      teaser:
+        "One St. Charles County circuit court connecting the St. Charles, O'Fallon, St. Peters, Lake Saint Louis, and Wentzville DWI guides.",
+      heroEyebrow: "St. Charles County, Missouri",
+      heroTitle: "DWI in St. Charles County: one circuit court, five city guides.",
+      heroLede:
+        "A DWI stop in St. Charles, O'Fallon, St. Peters, Lake Saint Louis, or Wentzville is charged in the county where it happens and runs through the St. Charles County Circuit Court (11th Judicial Circuit) in St. Charles. The Missouri Department of Revenue handles the license side on a separate administrative track. Start with the shared county path below, then open your city guide for local records and contacts.",
+      regionSlugs: ["st-charles-county-mo"],
+      processSteps: [
+        {
+          label: "Step 1",
+          title: "Identify the arresting agency",
+          body: "City police handle most stops in these five communities, but a county or Missouri State Highway Patrol officer can also be involved. The agency named on your paperwork sets where police records and report requests begin.",
+        },
+        {
+          label: "Step 2",
+          title: "Confirm the county and court date",
+          body: "A Missouri DWI is charged in the county where the offense occurred and handled by that county's circuit court. For these five cities that is the St. Charles County Circuit Court (11th Judicial Circuit) in St. Charles. Confirm the county, date, and division printed on your citation or bond paperwork.",
+        },
+        {
+          label: "Step 3",
+          title: "Watch the 15-day DOR hearing deadline",
+          body: "A Missouri DWI arrest can start a Department of Revenue administrative license case that is separate from the criminal case. A written hearing request has a 15-day deadline; if the DOR upholds the action, you may then petition the circuit court for review.",
+        },
+        {
+          label: "Step 4",
+          title: "Gather documents before consultations",
+          body: "Collect the citation, bond or release paperwork, any chemical-test or refusal records, and any DOR mailing. Each city guide includes a document checklist and the local police records contact.",
+        },
+      ],
+      licensePoints: [
+        {
+          title: "The DOR runs a separate administrative track",
+          body: "Missouri's administrative suspension or revocation is imposed by the Department of Revenue, separate from the criminal case. You can request a DOR hearing within 15 days, then petition the circuit court for review if it is upheld.",
+        },
+        {
+          title: "A limited driving privilege can come from the court or DOR",
+          body: "Depending on the type and stage of the action, a limited driving privilege may be granted by the circuit court or issued by the Department of Revenue.",
+        },
+        {
+          title: "Reinstatement runs through the DOR",
+          body: "SATOP completion, proof of insurance (SR-22), ignition interlock, and fees may be required before driving privileges return.",
+        },
+      ],
+      cityTopics: [
+        { slug: "st-charles-mo", focus: "St. Charles Police records, 11th Circuit court context, and Missouri DOR license deadlines." },
+        { slug: "ofallon-mo", focus: "O'Fallon Police records, St. Charles County court, and DOR administrative hearing timing." },
+        { slug: "st-peters-mo", focus: "St. Peters Police records, county court context, and DOR license deadlines." },
+        { slug: "lake-saint-louis-mo", focus: "Lake Saint Louis police records, county court, and Missouri DOR license issues." },
+        { slug: "wentzville-mo", focus: "Wentzville traffic-charge context, county court, and DOR paperwork." },
+      ],
+      enforcementContext: {
+        intro:
+          "These five cities share commuter corridors where impaired-driving enforcement can involve city police, the St. Charles County Sheriff, or the Missouri State Highway Patrol depending on where the stop happens.",
+        corridors: ["I-70", "I-64", "I-364 / Page Avenue", "U.S. 40/61", "Route 94", "Route N", "Route K"],
+        availabilityNote:
+          "St. Charles County does not publish one combined town-by-town DWI arrest table. Each city guide lists the local police department and records path, and the county references come from official Missouri court and Department of Revenue sources.",
+      },
+      lawyerQuestions: [
+        { q: "How often do you handle DWI cases in the St. Charles County Circuit Court?", why: "County-specific 11th Circuit calendar and courtroom familiarity differs from general criminal experience." },
+        { q: "What should happen with my license in the first 15 days?", why: "The DOR administrative hearing request is an early, deadline-driven step." },
+        { q: "Which agency's records will matter in my case?", why: "City police, the county sheriff, and the highway patrol keep separate records." },
+        { q: "What outcomes have you seen in cases like mine?", why: "Ask for realistic ranges based on the facts, not promises." },
+        { q: "How are fees structured?", why: "Flat, staged, and what-is-included terms vary between firms." },
+        { q: "Who will actually appear in court with me?", why: "Some firms send different attorneys to different settings." },
+      ],
+      faq: [
+        { q: "Which court handles DWI cases for these St. Charles County cities?", a: "The St. Charles County Circuit Court (11th Judicial Circuit) at 300 N. Second Street in St. Charles is the court reference used across these city guides. Confirm your date and division on your paperwork." },
+        { q: "Where is a Missouri DWI charged?", a: "In the county where the offense occurred. For these five cities that is St. Charles County, but confirm the county shown on your citation if a stop happened elsewhere." },
+        { q: "Can the license case move separately from the criminal case?", a: "Yes. The Missouri Department of Revenue runs an administrative suspension or revocation separate from the court case. A written hearing request has a 15-day deadline, with circuit-court review available if the DOR upholds the action." },
+        { q: "Who can grant a limited driving privilege?", a: "Depending on the action, a limited driving privilege may be granted by the circuit court or issued by the Department of Revenue." },
+        { q: "Do I need a St. Charles County DWI lawyer?", a: "This site does not recommend specific lawyers. The county and city guides explain the court, records, and DOR license path so you can ask sharper questions in any consultation." },
+        { q: "Where do I find my city's police records contact?", a: "Each city guide lists the local police department address, phone, and records context for St. Charles, O'Fallon, St. Peters, Lake Saint Louis, and Wentzville." },
+      ],
+      sources: [
+        { label: "Missouri Department of Revenue DWI license information", href: "https://dor.mo.gov/driver-license/revocation-reinstatement/dwi.html" },
+        { label: "Missouri administrative DWI suspension statute (RSMo 302.505)", href: "https://revisor.mo.gov/main/OneSection.aspx?section=302.505" },
+      ],
+      resourceLinks: [
+        { label: "Missouri DWI administrative hearing guide", href: "/resources/missouri-dwi-administrative-hearing/" },
+        { label: "Missouri DWI administrative hearing lawyer questions", href: "/resources/missouri-dwi-administrative-hearing-lawyer-questions/" },
+      ],
+    },
+    {
+      slug: "st-clair-county-il",
+      practiceSlug: "dui",
+      countyName: "St. Clair County",
+      state: "Illinois",
+      stateCode: "IL",
+      pageTitle: "St. Clair County DUI Lawyer Guide: Court & License Help",
+      metaDescription:
+        "St. Clair County DUI guide: 20th Circuit court at Belleville, Illinois summary-suspension rules, lawyer questions, and DUI city guides for Belleville, O'Fallon, Fairview Heights and more.",
+      teaser:
+        "One St. Clair County circuit court connecting the Belleville, O'Fallon, Fairview Heights, Shiloh, and Swansea DUI guides.",
+      heroEyebrow: "St. Clair County, Illinois",
+      heroTitle: "DUI in St. Clair County: one circuit court, five city guides.",
+      heroLede:
+        "A DUI stop in Belleville, O'Fallon, Fairview Heights, Shiloh, or Swansea is charged in the county where it happens and heard at the St. Clair County Courthouse in Belleville (20th Judicial Circuit). The Illinois Secretary of State imposes the statutory summary suspension, which is challenged in that same court. Start with the shared county path below, then open your city guide for local records and contacts.",
+      regionSlugs: ["st-clair-county-core-il"],
+      processSteps: [
+        {
+          label: "Step 1",
+          title: "Identify the arresting agency",
+          body: "City police handle most stops in these five communities, but a county or Illinois State Police officer can also be involved. The agency named on your paperwork sets where police records and report requests begin.",
+        },
+        {
+          label: "Step 2",
+          title: "Confirm the county and court date",
+          body: "An Illinois DUI is charged in the county where the offense occurred and heard in that county's circuit court. For these five cities that is the St. Clair County Courthouse in Belleville (20th Judicial Circuit). Confirm the county, date, and courtroom printed on your citation or bond paperwork.",
+        },
+        {
+          label: "Step 3",
+          title: "Watch the 46-day summary-suspension clock",
+          body: "The Secretary of State imposes a statutory summary suspension that begins 46 days after notice. It is challenged by a petition to rescind filed in the same circuit court as the DUI case (625 ILCS 5/2-118.1), so timing is strict.",
+        },
+        {
+          label: "Step 4",
+          title: "Gather documents before consultations",
+          body: "Collect the citation, bond or release paperwork, the law-enforcement sworn report, and any chemical-test or refusal records. Each city guide includes a document checklist and the local police records contact.",
+        },
+      ],
+      licensePoints: [
+        {
+          title: "The Secretary of State imposes the suspension",
+          body: "The statutory summary suspension is an administrative action by the Illinois Secretary of State that begins 46 days after notice, commonly 6 months for a failed test or 12 months for a refusal on a first offense.",
+        },
+        {
+          title: "It is challenged in the same court as the DUI",
+          body: "A petition to rescind the summary suspension is filed in the same circuit court handling the DUI case, not a separate forum (625 ILCS 5/2-118.1).",
+        },
+        {
+          title: "A first offender may drive with an MDDP",
+          body: "Eligible first offenders can drive during the suspension using a Monitoring Device Driving Permit (MDDP) with a BAIID issued through the Secretary of State.",
+        },
+      ],
+      cityTopics: [
+        { slug: "belleville-il", focus: "Belleville Police records, the St. Clair County Courthouse at the county seat, and Illinois summary-suspension timing." },
+        { slug: "ofallon-il", focus: "O'Fallon Police records, St. Clair County court, and Secretary of State license issues." },
+        { slug: "fairview-heights-il", focus: "Fairview Heights Police records, county court, and summary-suspension deadlines." },
+        { slug: "shiloh-il", focus: "Shiloh police records, county court context, and license issues." },
+        { slug: "swansea-il", focus: "Swansea Police records, county court, and Secretary of State suspension timing." },
+      ],
+      enforcementContext: {
+        intro:
+          "These five cities share Metro East corridors where impaired-driving enforcement can involve city police, the St. Clair County Sheriff, or the Illinois State Police depending on where the stop happens.",
+        corridors: ["I-64", "I-255", "IL-15", "IL-159", "IL-161", "Green Mount Road"],
+        availabilityNote:
+          "St. Clair County does not publish one combined town-by-town DUI arrest table. Each city guide lists the local police department and records path, and the county references come from official Illinois court and Secretary of State sources.",
+      },
+      lawyerQuestions: [
+        { q: "How often do you handle DUI cases in the St. Clair County Courthouse?", why: "County-specific 20th Circuit calendar and courtroom familiarity differs from general criminal experience." },
+        { q: "Should I file a petition to rescind the summary suspension?", why: "The petition is filed in the same court and is time-sensitive after the 46-day notice." },
+        { q: "Am I eligible for an MDDP to keep driving?", why: "First-offender eligibility and BAIID requirements affect day-to-day driving during the suspension." },
+        { q: "Which agency's records will matter in my case?", why: "City police, the county sheriff, and the state police keep separate records." },
+        { q: "How are fees structured?", why: "Flat, staged, and what-is-included terms vary between firms." },
+        { q: "Who will actually appear in court with me?", why: "Some firms send different attorneys to different settings." },
+      ],
+      faq: [
+        { q: "Which court handles DUI cases for these St. Clair County cities?", a: "The St. Clair County Courthouse at 10 Public Square in Belleville (20th Judicial Circuit) is the court reference used across these city guides. Confirm your date and courtroom on your paperwork." },
+        { q: "Where is an Illinois DUI charged?", a: "In the county where the offense occurred. For these five cities that is St. Clair County, but confirm the county shown on your citation if a stop happened elsewhere." },
+        { q: "When does the statutory summary suspension start?", a: "It begins 46 days after notice and is imposed by the Illinois Secretary of State, separate from the criminal charge." },
+        { q: "How is the summary suspension challenged?", a: "By a petition to rescind filed in the same circuit court handling the DUI case (625 ILCS 5/2-118.1), not a separate administrative forum. Timing is strict." },
+        { q: "Do I need a St. Clair County DUI lawyer?", a: "This site does not recommend specific lawyers. The county and city guides explain the court, records, and Secretary of State license path so you can ask sharper questions in any consultation." },
+        { q: "Where do I find my city's police records contact?", a: "Each city guide lists the local police department address, phone, and records context for Belleville, O'Fallon, Fairview Heights, Shiloh, and Swansea." },
+      ],
+      sources: [
+        { label: "Illinois DUI statute (625 ILCS 5/11-501)", href: "https://www.ilga.gov/documents/legislation/ilcs/documents/062500050K11-501.htm" },
+      ],
+      resourceLinks: [
+        { label: "Illinois DUI license suspension guide", href: "/resources/illinois-dui-license-suspension/" },
+        { label: "Madison County DUI process guide", href: "/resources/madison-county-dui-process/" },
       ],
     },
   ],
